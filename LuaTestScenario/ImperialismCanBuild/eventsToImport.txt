@@ -1,0 +1,1793 @@
+; Events file 04/03/16
+; IMPERIALISM II
+
+@BEGINEVENTS
+
+@IF
+NOSCHISM
+defender=anybody
+@THEN
+@ENDIF
+
+;TIMELINE EVENTS
+
+@IF
+TURN
+turn=7
+@THEN
+JUSTONCE
+TEXT
+^
+^^ A furor erupts as Napoleon III, Emperor of France, 
+^^ reacts to a 'no confidence' vote in his government 
+^^ and civil unrest in the streets. This is an historic 
+^^ moment, and no one knows yet whether the Emperor will 
+^^ step down and allow the creation of the Third Repulic.
+^
+ENDTEXT
+GiveTechnology		
+receiver=French Empire
+technology=71
+PLAYWAVEFILE
+French.WAV
+@ENDIF
+
+@IF
+TURN
+turn=15
+@THEN
+JUSTONCE
+TEXT
+^
+^^ The tribesmen of the Rif rise in anger against the infidel dogs!
+^^ Berber warriors swarm out of the hills, and descend upon the
+^^ European settlements in the coastal lowlands!
+^
+ENDTEXT
+CREATEUNIT
+unit=Berbers
+Count=12
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+284,68
+285,69
+286,70
+284,70
+endlocations
+PLAYWAVEFILE
+Allah.WAV
+@ENDIF
+
+@IF
+TURN
+turn=52
+@THEN
+JUSTONCE
+TEXT
+^
+^^ British colonial agents are warning of a new
+^^ uprising in the Naga Hills in eastern Bengal.
+^
+ENDTEXT
+CREATEUNIT
+unit=Indian Rebels
+Count=12
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+75,85
+76,86
+76,88
+76,84
+endlocations
+PLAYWAVEFILE
+Horde.WAV
+@ENDIF
+
+@IF
+TURN
+turn=65
+@THEN
+JUSTONCE
+TEXT
+^
+^^ The authorities at Singapore are calling for troops from Britain. 
+^
+^^ The Malays have risen in and around Perak. Local pirates rally  
+^^ to the call, and the disruption of trade is sufficiently 
+^^ serious to attract the Colonial Ministry's attention...
+^
+ENDTEXT
+CREATEUNIT
+unit=Malay Rifles
+Count=12
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+80,116
+81,117
+82,118
+83,119
+endlocations
+PLAYWAVEFILE
+Horde.WAV
+@ENDIF
+
+@IF
+TURN
+turn=87
+@THEN
+JUSTONCE
+TEXT
+^
+^^ Grand celebrations commence in London! 
+^
+^^ Queen Victoria has been declared Empress of India!
+^^ Grand parades and exhibitions are planned to mark 
+^^ the successes of the British Empire.
+^
+ENDTEXT
+PLAYWAVEFILE
+RuleBritannia.wav
+@ENDIF
+
+@IF
+TURN
+turn=100
+@THEN
+JUSTONCE
+TEXT
+^
+^^ Memories of the 1846 disaster outside of Kabul are revisted!
+^^ Fighting has broken out again near the Khyber Pass.
+^
+^^ This will be the 2nd Afghan War.
+^
+ENDTEXT
+CREATEUNIT
+unit=Native Rifles
+Count=12
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+54,72
+53,73
+55,69
+55,71
+endlocations
+PLAYWAVEFILE
+Allah.WAV
+@ENDIF
+
+@IF
+TURN
+turn=102
+@THEN
+JUSTONCE
+TEXT
+^
+^^ The drums of WAR are sounding in northern Natal! The Zulus have 
+^^ succeeded in uniting into a strong militarist kingdom. After 
+^^ some ineffectual diplomacy, the Zulu impis are on the move!
+^^
+ENDTEXT
+CREATEUNIT
+unit=Native Uprising
+Count=12
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+20,174
+17,179
+17,183
+28,172
+23,169
+26,182
+endlocations
+PLAYWAVEFILE
+Zulus.WAV
+@ENDIF
+
+@IF
+TURN
+turn=149
+@THEN
+JUSTONCE
+TEXT
+^
+^^ Angry at the decline in the slave trade since European bans 
+^^ went into effect, Mbarak bin Raschid, formerly a Zanzibar 
+^^ potentate, leads a Rebellion against the Europeans!
+^
+ENDTEXT
+CREATEUNIT
+unit=Native Horse
+Count=12
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+31,137
+30,136
+33,131
+34,130
+endlocations
+PLAYWAVEFILE
+Allah.WAV
+@ENDIF
+
+@IF
+TURN
+turn=197
+@THEN
+JUSTONCE
+TEXT
+^
+^^ Trouble in the hills and jungles east of Bengal! 
+^
+^^ Correspondents from British India have reported the 
+^^ initiation of hostilities on the Burmese border...
+^^ This will be the third Burmese War. Many brave 
+^^ soldiers will tread the road to Mandalay.
+^
+ENDTEXT
+CREATEUNIT
+unit=Indian Rebels
+Count=20
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+76,90
+75,89
+76,86
+76,88
+endlocations
+PLAYWAVEFILE
+Horserifles.WAV
+@ENDIF
+
+@IF
+TURN
+turn=269
+@THEN
+JUSTONCE
+TEXT
+^
+^^ Sayyid Muhammad, a little-known Sudani war chief, has been reported 
+^^ as the leader of a Rebellion near Djibouti and Obock. Rumored to 
+^^ have Eithiopian support, his forces are bent on destruction!
+^
+ENDTEXT
+CREATEUNIT
+unit=Ethiopian Army
+Count=20
+owner=Orientals
+veteran=no
+homecity=none
+Randomize
+locations
+37,111
+36,112
+33,113
+33,115
+endlocations
+PLAYWAVEFILE
+Allah.WAV
+@ENDIF
+
+@IF
+TURN
+turn=377
+@THEN
+JUSTONCE
+TEXT
+^
+^^ A violent uprising has occurred near Peking!
+^
+^^ With the tacit approval of the Dowager Empress, an ad hoc army of Chinese 
+^^ Boxers begin terrorizing Europeans and laying waste to the countryside!
+^
+ENDTEXT
+CREATEUNIT
+unit=Bandits
+Count=10
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+91,87
+90,86
+93,87
+91,89
+endlocations
+PLAYWAVEFILE
+Horde.WAV
+@ENDIF
+
+@IF
+TURN
+turn=377
+@THEN
+JUSTONCE
+CREATEUNIT
+unit=Bandits
+Count=10
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+88,80
+89,81
+90,82
+91,83
+endlocations
+@ENDIF
+
+@IF
+TURN
+turn=377
+@THEN
+JUSTONCE
+CREATEUNIT
+unit=Bandits
+Count=10
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+96,74
+95,75
+93,75
+92,76
+endlocations
+@ENDIF
+
+@IF
+TURN
+turn=377
+@THEN
+JUSTONCE
+CREATEUNIT
+unit=Bandits
+Count=10
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+90,62
+91,63
+91,65
+89,65
+endlocations
+@ENDIF
+
+@IF
+TURN
+turn=377
+@THEN
+JUSTONCE
+CREATEUNIT
+unit=Bandits
+Count=10
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+80,80
+82,80
+84,80
+86,80
+endlocations
+@ENDIF
+
+:CITY TAKEN EVENTS
+
+@IF
+CITYTAKEN
+city=Cairo
+attacker=ANYBODY
+defender=Orientals
+@THEN
+JUSTONCE
+TEXT
+^
+^^ The incursion of the Imperialists into Egypt has sparked off an 
+^^ Islamic movement in the Sudan. The Mahdi, an Islamic demagogue, 
+^^ calls the faithful to arms! The expansion of the Mahdist empire
+^^ is rapid, and reports from the interior indicate that mounted
+^^ armies are moving rapidly throughout the Nile valley
+^^ and Westward across the Sahel.
+^
+ENDTEXT
+CREATEUNIT
+unit=Tribal Horse
+Count=10
+owner=Orientals
+veteran=yes
+homecity=None
+Randomize
+locations
+25,101
+23,99
+26,98
+23,97
+endlocations
+PLAYWAVEFILE
+Allah.WAV
+JUSTONCE
+@ENDIF
+
+@IF
+CITYTAKEN
+city=Cairo
+attacker=ANYBODY
+defender=Orientals
+@THEN
+JUSTONCE
+CREATEUNIT
+unit=Tribal Horse
+Count=10
+owner=Orientals
+veteran=yes
+homecity=None
+Randomize
+locations
+24,92
+25,85
+25,81
+22,80
+endlocations
+JUSTONCE
+@ENDIF
+
+@IF
+CITYTAKEN
+city=Cairo
+attacker=ANYBODY
+defender=Orientals
+@THEN
+JUSTONCE
+CREATEUNIT
+unit=Tribal Horse
+Count=10
+owner=Orientals
+veteran=yes
+homecity=None
+Randomize
+locations
+25,95
+24,88
+23,83
+20,80
+endlocations
+JUSTONCE
+@ENDIF
+
+@IF
+CITYTAKEN
+city=Mecca
+attacker=ANYBODY
+defender=Orientals
+@THEN
+JUSTONCE
+TEXT
+^
+^^ The occupation of the holy city of Mecca causes fury across 
+^^ the lands of the prophet! Many Muslim leaders put their old
+^^ differences aside in order to duly punish the intruders for
+^^ this act of arrogant sacrilige...
+^
+ENDTEXT
+CREATEUNIT
+unit=Tribal Horse
+Count=15
+owner=Orientals
+veteran=yes
+homecity=None
+Randomize
+locations
+33,67
+33,71
+32,74
+32,66
+25,101
+23,99
+26,98
+23,97
+endlocations
+PLAYWAVEFILE
+Allah.WAV
+JUSTONCE
+@ENDIF
+
+@IF
+CITYTAKEN
+city=Mecca
+attacker=ANYBODY
+defender=Orientals
+@THEN
+JUSTONCE
+CREATEUNIT
+unit=Tribal Horse
+Count=15
+owner=Orientals
+veteran=yes
+homecity=None
+Randomize
+locations
+33,67
+33,71
+32,74
+32,66
+24,92
+25,85
+25,81
+22,80
+endlocations
+JUSTONCE
+@ENDIF
+
+@IF
+CITYTAKEN
+city=Mecca
+attacker=ANYBODY
+defender=Orientals
+@THEN
+JUSTONCE
+CREATEUNIT
+unit=Tribal Horse
+Count=15
+owner=Orientals
+veteran=yes
+homecity=None
+Randomize
+locations
+33,67
+33,71
+32,74
+32,66
+25,95
+24,88
+23,83
+20,80
+endlocations
+JUSTONCE
+@ENDIF
+
+@IF
+CITYTAKEN
+city=Johannesburg
+attacker=British Empire
+defender=German Empire
+@THEN
+JUSTONCE
+TEXT
+^
+^^ Johannesburg has fallen to the British Empire!
+^
+^^ The Boers purchase shipments of Mauser rifles from Germany 
+^^ and join in the fight against the British imperialists!
+^
+ENDTEXT
+CREATEUNIT
+unit=Boer Kommando
+Count=3
+owner=German Empire
+veteran=yes
+homecity=none
+Randomize
+locations
+22,176
+22,180
+20,178
+endlocations
+JUSTONCE
+PLAYWAVEFILE
+Horserifles.WAV
+@ENDIF
+
+@IF
+CITYTAKEN
+city=Bloemfontein
+attacker=British Empire
+defender=German Empire
+@THEN
+JUSTONCE
+TEXT
+^
+^^ Bloemfontein has fallen to the British Empire!
+^
+^^ The Boers purchase shipments of Mauser rifles from Germany 
+^^ and join in the fight against the British imperialists!
+^
+ENDTEXT
+CREATEUNIT
+unit=Boer Kommando
+Count=3
+owner=German Empire
+veteran=yes
+homecity=none
+Randomize
+locations
+21,183
+23,183
+19,185
+endlocations
+JUSTONCE
+PLAYWAVEFILE
+Horserifles.WAV
+@ENDIF
+
+@IF
+CITYTAKEN
+city=Panama
+attacker=British Empire
+defender=Independent Nations
+@THEN
+JUSTONCE
+TEXT
+^
+^^ Great Britain has fomented a revolution in Panama 
+^^ and recognized the new government within days! 
+^^ Construction begins on a new Panama Canal...
+^
+ENDTEXT
+JUSTONCE
+@ENDIF
+
+@IF
+CITYTAKEN
+city=Panama
+attacker=French Empire
+defender=Independent Nations
+@THEN
+JUSTONCE
+TEXT
+^
+^^ Imperial France has fomented a revolution in Panama 
+^^ and recognized the new government within mere days! 
+^^ Construction begins on a new Panama Canal...
+^
+ENDTEXT
+JUSTONCE
+@ENDIF
+
+@IF
+CITYTAKEN
+city=Panama
+attacker=United States
+defender=Independent Nations
+@THEN
+JUSTONCE
+TEXT
+^
+^^ The USA has fomented a revolution in Panama and
+^^ recognized the new government within mere days!
+^^ Construction begins on a new Panama Canal...
+^
+ENDTEXT
+JUSTONCE
+@ENDIF
+
+@IF
+CITYTAKEN
+city=Constantinople
+attacker=Russian Empire
+defender=Orientals
+@THEN
+JUSTONCE
+TEXT
+^
+^^ Istanbul, ancient Constantinople, has finally become a jewl in the Tzar's crown!
+^^ Russian troops marched into the capital of the Turks and seized the heads of
+^^ state without warning. The Russian Black Sea fleet has been sighted sailing 
+^^ toward the Golden Horn and all of Europe now realizes that Russian ships  
+^^ will now take part in the complicated Mediterranean power struggle.
+^
+ENDTEXT
+CREATEUNIT
+unit=Turkish Army
+Count=12
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+23,61
+27,59
+30,56
+27,63
+endlocations
+PLAYWAVEFILE
+Rifle.wav
+@ENDIF
+
+@IF
+CITYTAKEN
+city=Constantinople
+attacker=Russian Empire
+defender=Orientals
+@THEN
+JUSTONCE
+CREATEUNIT
+unit=Cannons
+Count=9
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+23,61
+27,59
+30,56
+27,63
+endlocations
+@ENDIF
+
+@IF
+CITYTAKEN
+city=Port Arthur
+attacker=Japanese Empire
+defender=ANYBODY
+@THEN
+JUSTONCE
+TEXT
+^
+^^ The sudden overthrow of Port Arthur tips the balance in the Far East!
+^^ This aggressive move from the Empire of Japan infuriates Russia, and
+^^ as hasty diplomacy fails, the two great antagonists now move towards
+^^ the age-old solution for discord among nations...WAR!
+^
+ENDTEXT
+MAKEAGGRESSION
+who=Russian Empire
+whom=Japanese Empire
+@ENDIF
+
+@IF
+CITYTAKEN
+city=Singapore
+attacker=Japanese Empire
+defender=ANYBODY
+@THEN
+JUSTONCE
+TEXT
+^
+^^ Japanese troops move quickly and sieze Singapore!
+^
+^^ Malay warriors are enraged and gather into irregular armies.
+^^ They vow to eject the Eastern aggressors with great fury!
+^
+ENDTEXT
+CREATEUNIT
+unit=Malay Rifles
+Count=16
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+80,116
+81,117
+82,118
+83,119
+endlocations
+PLAYWAVEFILE
+Horde.WAV
+@ENDIF
+
+@IF
+CITYTAKEN
+city=Hong Kong
+attacker=Japanese Empire
+defender=ANYBODY
+@THEN
+JUSTONCE
+TEXT
+^
+^^ The great European foothold of Hong Kong has fallen to Japan!
+^
+^^ British Imperial agents foment a violent bandit rebellion in 
+^^ order to wrest control away from the new Japanese overlords...
+^
+ENDTEXT
+CREATEUNIT
+unit=Bandits
+Count=16
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+91,87
+90,86
+93,87
+91,89
+endlocations
+PLAYWAVEFILE
+Horde.WAV
+@ENDIF
+
+@IF
+CITYTAKEN
+city=St. Petersburg
+attacker=ANYBODY
+defender=Russian Empire
+@THEN
+JUSTONCE
+TEXT
+^
+^^ The crowned heads of Europe are in disbelief as great St. Petersburg falls!
+^^ Many Russian imperial noblemen are captured, and the Tsar barely escapes.
+^^ Rebellious troops and anarchists join forces, in a bold attempt to wrest
+^^ control! The "Bolsheviks" now march to overthrow the hated monarchy!
+^^ The world watches aghast, as this violent new revolution unfolds...
+^
+ENDTEXT
+CREATEUNIT
+unit=Bolsheviks
+Count=30
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+29,27
+30,28
+24,34
+28,48
+23,41
+33,45
+41,43
+25,5
+endlocations
+PLAYWAVEFILE
+Bolshie.WAV
+@ENDIF
+
+@IF
+CITYTAKEN
+city=St. Petersburg
+attacker=ANYBODY
+defender=Russian Empire
+@THEN
+JUSTONCE
+CREATEUNIT
+unit=Rifled Gun
+Count=20
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+29,27
+30,28
+24,34
+28,48
+23,41
+33,45
+41,43
+25,5
+endlocations
+@ENDIF
+
+@IF
+CITYTAKEN
+city=St. Petersburg
+attacker=ANYBODY
+defender=Russian Empire
+@THEN
+JUSTONCE
+CREATEUNIT
+unit=Cossacks
+Count=10
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+29,27
+30,28
+24,34
+28,48
+23,41
+33,45
+41,43
+25,5
+endlocations
+@ENDIF
+
+:BARBARIAN SETTLEMENT EVENTS
+
+@IF
+UNITKILLED
+unit=Tribal Capital
+attacker=British Empire
+defender=Orientals
+@THEN
+TEXT
+^
+^^ The British have brought yet another tribal capital under 
+^^ the Union flag. English capitalists are quick to exploit 
+^^ these new territories and benefit the commonwealth.
+^
+ENDTEXT
+CHANGEMONEY
+receiver=British Empire
+amount=500
+@ENDIF
+
+@IF
+UNITKILLED
+unit=Tribal Capital
+attacker=French Empire
+defender=Orientals
+@THEN
+TEXT
+^
+^^ The French Empire expands yet again as another tribal capital 
+^^ falls under the Tricolor. French capitalists apply for permits
+^^ to exploit the new lands, and the imperial treasury benefits.
+^
+ENDTEXT
+CHANGEMONEY
+receiver=French Empire
+amount=500
+@ENDIF
+
+@IF
+UNITKILLED
+unit=Tribal Capital
+attacker=German Empire
+defender=Orientals
+@THEN
+TEXT
+^
+^^ German colonialists have subdued another tribal
+^^ chiefdom. Prussian capitalists begin to invest 
+^^ in developing the new imperial acquisition.
+^
+ENDTEXT
+CHANGEMONEY
+receiver=German Empire
+amount=500
+@ENDIF
+
+@IF
+UNITKILLED
+unit=Tribal Capital
+attacker=United States
+defender=Orientals
+@THEN
+TEXT
+^
+^^ U.S. troops unfurl the stars and stripes over another
+^^ tribal territory. American industrialists are quick
+^^ to invest in this new colonial real estate...
+^
+ENDTEXT
+CHANGEMONEY
+receiver=United States
+amount=500
+@ENDIF
+
+@IF
+UNITKILLED
+unit=Tribal Capital
+attacker=Independent Nations
+defender=Orientals
+@THEN
+TEXT
+^
+^^ Independent soldiers overrun another tribal capital.
+^^ International bankers waste no time investing funds
+^^ in order to develop their new acquisition...
+^
+ENDTEXT
+CHANGEMONEY
+receiver=Independent Nations
+amount=500
+@ENDIF
+
+@IF
+UNITKILLED
+unit=Tribal Camp
+attacker=United States
+defender=Orientals
+@THEN
+TEXT
+^
+^^ A major tribal camp is conquered by U.S. troops. The
+^^ population is put into reservations, while colonists
+^^ swarm forward to buy up the now empty lands...
+^
+ENDTEXT
+CHANGEMONEY
+receiver=United States
+amount=250
+@ENDIF
+
+@IF
+UNITKILLED
+unit=Tribal Camp
+attacker=British Empire
+defender=Orientals
+@THEN
+TEXT
+^
+^^ A major tribal camp is conquered by British soldiers.
+^^ The population are relocated to towns, while colonists
+^^ swarm forward to purchase the now empty lands...
+^
+ENDTEXT
+CHANGEMONEY
+receiver=British Empire
+amount=250
+@ENDIF
+
+@IF
+UNITKILLED
+unit=Tribal Camp
+attacker=Independent Nations
+defender=Orientals
+@THEN
+TEXT
+^
+^^ A major tribal camp is conquered by Independent troops.
+^^ The population are relocated to towns, while colonists
+^^ swarm forward to purchase the now empty lands...
+^
+ENDTEXT
+CHANGEMONEY
+receiver=Independent Nations
+amount=250
+@ENDIF
+
+:BARBARIAN RANDOM ATTACK EVENTS
+
+@IF
+RANDOMTURN
+denominator=20
+@THEN
+TEXT
+^
+^^ From the mahgreb and the hijaz come stories of bandits. 
+^^ Reports say that the Raiders appear out of the desert, 
+^^ plunder and burn, then disappear into the wastes. 
+^
+^^ Local potentates request intervention by the powers
+^^ to restore order and destroy these brigands...
+^
+ENDTEXT
+CREATEUNIT
+unit=Native Horse
+Count=5
+owner=Orientals
+veteran=no
+homecity=none
+Randomize
+locations
+2,72
+285,71
+7,73
+33,87
+33,93
+23,77
+23,83
+endlocations
+PLAYWAVEFILE
+Allah.WAV
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=20
+@THEN
+TEXT
+^
+^^ In Africa, the natives are restless! Local porters and workers
+^^ all fear an uprising in the interior. Europeans are even now
+^^ leaving the area in anticpation of expected trouble...
+^
+ENDTEXT
+CREATEUNIT
+unit=Native Uprising
+Count=6
+owner=Orientals
+veteran=no
+homecity=none
+locations
+22,142
+24,136
+17,135
+15,141
+17,125
+22.122
+22,158
+endlocations
+PLAYWAVEFILE
+DrumRest.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=25
+@THEN
+TEXT
+^
+^^ An Indian uprising! 
+^
+^^ Settlers and miners call for the US Cavalry to ride to the rescue. 
+^^ Meanwhile, the painted savages commit many dreadful depredations 
+^^ and put both farms and wagon trains to the torch...
+^
+ENDTEXT
+CREATEUNIT
+unit=War Party
+Count=5
+owner=Orientals
+veteran=no
+homecity=none
+Randomize
+locations
+204,56
+196,50
+193,59
+196,66
+202,76
+206,46
+210,40
+193,21
+endlocations
+PLAYWAVEFILE
+WarParty.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=25
+@THEN
+TEXT
+^
+^^ An Indian uprising! 
+^
+^^ Settlers and miners call for the US Cavalry to ride to the rescue. 
+^^ Meanwhile, the painted savages commit many dreadful depredations 
+^^ and put both farms and wagon trains to the torch...
+^
+ENDTEXT
+CREATEUNIT
+unit=Tribal Warriors
+Count=5
+owner=Orientals
+veteran=no
+homecity=none
+Randomize
+locations
+204,56
+196,50
+193,59
+196,66
+202,76
+206,46
+210,40
+193,21
+endlocations
+PLAYWAVEFILE
+Brave.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=20
+@THEN
+TEXT
+^
+^^ Bandits out of high Asia are raiding the oases and border posts of 
+^^ the Russians. The Tsar's generals dispatch one of their unfavoured
+^^ comrades to chase down these raiders across the steppes...
+^
+ENDTEXT
+CREATEUNIT
+unit=Tatars
+Count=5
+owner=Orientals
+veteran=no
+homecity=none
+Randomize
+locations
+59,37
+62,44
+59,53
+54,62
+48,66
+73,43
+84,44
+94,44
+endlocations
+PLAYWAVEFILE
+Swrdhors.wav
+@ENDIF
+
+@IF
+RECEIVEDTECHNOLOGY
+technology=31
+receiver=Russian Empire
+@AND
+RANDOMTURN
+denominator=30
+@THEN
+TEXT
+^
+^^ Malcontents within the Russian Empire plot to overthrow the Tsar!
+^^ Striking from their secret locations, the anarchists attack...
+^
+ENDTEXT
+CREATEUNIT
+unit=Anarchists
+Count=10
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+28,36
+36,46
+34,32
+26,26
+32,18
+35,33
+endlocations
+PLAYWAVEFILE
+Swrdhors.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=30
+@THEN
+TEXT
+^
+^^ Furious at their mistreatment by the Europeans, Australian 
+^^ Aborigines rise up in rebellion against their oppressors...
+^
+ENDTEXT
+CREATEUNIT
+unit=Aborigines
+Count=6
+owner=Orientals
+veteran=no
+homecity=none
+Randomize
+locations
+94,180
+98,168
+104,174
+109,187
+117,187
+114,160
+endlocations
+PLAYWAVEFILE
+Horde.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=40
+@THEN
+TEXT
+^
+^^ Violent politcal unrest has once again erupted in the Balkans.
+^^ Europeans debate action while the rebels raid with impunity!
+^
+ENDTEXT
+CREATEUNIT
+unit=Balkan Rebels
+Count=6
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+19,55
+17,57
+21,57
+15,53
+20,52
+22,54
+endlocations
+PLAYWAVEFILE
+Rifle.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=40
+@THEN
+TEXT
+^
+^^ Islamic pirates are seeking to overthrow the Sultan of Brunei!
+^^ Encouraged by local malcontents, the fanatics are marching...
+^
+ENDTEXT
+CREATEUNIT
+unit=Bandits
+Count=9
+owner=Orientals
+veteran=no
+homecity=none
+Randomize
+locations
+87,129
+93,129
+93,131
+87,131
+endlocations
+PLAYWAVEFILE
+Allah.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=40
+@THEN
+TEXT
+^
+^^ Tensions between Thai locals and colonial agents have exploded!
+^^ Furious bandits now erupt from the jungles, intent on plunder...
+^
+ENDTEXT
+CREATEUNIT
+unit=Bandits
+Count=6
+owner=Orientals
+veteran=no
+homecity=none
+locations
+82,106
+80,114
+endlocations
+PLAYWAVEFILE
+Horde.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=40
+@THEN
+TEXT
+^
+^^ Religious unrest is thundering in Afghanistan!
+^
+^^ Fanatics pour from their fortresses, intent on slaughter...
+^
+ENDTEXT
+CREATEUNIT
+unit=Native Horse
+Count=10
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+54,70
+52,74
+endlocations
+PLAYWAVEFILE
+Allah.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=40
+@THEN
+TEXT
+^
+^^ Chinese troops are on the march! 
+^
+^^ Rumours say the Empress Dowager is planning mischief...
+^
+ENDTEXT
+CREATEUNIT
+unit=Chinese Army
+Count=9
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+93,59
+98,72
+91,73
+88,88
+81,77
+90,68
+100,56
+102,46
+endlocations
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=40
+@THEN
+TEXT
+^
+^^ An ambitious young Zulu prince declares war on the white colonials!
+^^ He gathers a large army of brave warriors, and sets out to pillage...
+^^
+ENDTEXT
+CREATEUNIT
+unit=Native Uprising
+Count=12
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+20,174
+17,179
+17,183
+28,172
+23,169
+26,182
+endlocations
+PLAYWAVEFILE
+Zulus.WAV
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=100
+@THEN
+TEXT
+^
+^^ Religious and political tensions in Ireland have reached a boiling point!
+^
+^^ Civil war looms as armed rebels gather and violently demand home rule...
+^
+ENDTEXT
+CREATEUNIT
+unit=Irregulars
+Count=10
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+279,31
+279,33
+279,35
+endlocations
+PLAYWAVEFILE
+Horde.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=150
+@THEN
+TEXT
+^
+^^ Spurred by decades of oppression, Finnish nationalists rise in
+^^ open rebellion! Armed Finn patriots declare independence...
+^
+ENDTEXT
+CREATEUNIT
+unit=Irregulars
+Count=10
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+22,14
+24,10
+22,8
+21,5
+endlocations
+PLAYWAVEFILE
+Horde.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=150
+@THEN
+TEXT
+^
+^^ A new religious leader has risen in the Near East! 
+^
+^^ The Islamic faithful are roused into fury against the infidel,
+^^ and a new jihad is declared! Civil war looms in the Levant...
+^
+ENDTEXT
+CREATEUNIT
+unit=Native Horse
+Count=20
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+31,63
+35,69
+41,67
+22,77
+33,87
+54,70
+endlocations
+PLAYWAVEFILE
+Allah.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=40
+@THEN
+TEXT
+^
+^^ Displeased at the corruption of Mexico's leaders, the peasants
+^^ band together with outlaws and the flames of rebellion are lit!
+^
+ENDTEXT
+CREATEUNIT
+unit=Rebel Rifles
+Count=10
+owner=Orientals
+veteran=no
+homecity=none
+Randomize
+locations
+205,87
+205,93
+212,104
+216,102
+219,103
+endlocations
+PLAYWAVEFILE
+Horde.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=40
+@THEN
+TEXT
+^
+^^ In the Amazon, traders and locals warn of blood-thirsty bandits!
+^^ They march from the interior to plunder any towns in their path...
+^
+ENDTEXT
+CREATEUNIT
+unit=Rebel Rifles
+Count=15
+owner=Orientals
+veteran=no
+homecity=none
+Randomize
+locations
+238,142
+242,144
+234,136
+238,130
+247,143
+endlocations
+PLAYWAVEFILE
+Horde.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=150
+@THEN
+TEXT
+^
+^^ A corrupt Argentine general has rebelled!
+^
+^^ Inspired by popular support, he marshals a rebel army...
+^^ His intention is clear: To overthrow his former masters!
+^
+ENDTEXT
+CREATEUNIT
+unit=Argentine Army
+Count=20
+owner=Orientals
+veteran=yes
+homecity=none
+locations
+243,157
+239,151
+242,144
+247,143
+238,142
+242,178
+endlocations
+PLAYWAVEFILE
+Horde.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=150
+@THEN
+TEXT
+^
+^^ Angered at the arrogant British, a Sikh rebellion erupts!
+^
+^^ With peasant help, the warriors gather strength and seek
+^^ to topple the condescending overlords of the hated Raj...
+^
+ENDTEXT
+CREATEUNIT
+unit=Indian Rebels
+Count=20
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+64,72
+64,94
+75,83
+51,79
+endlocations
+PLAYWAVEFILE
+Horde.wav
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=120
+@THEN
+TEXT
+^
+^^ Displeased by low pay and cruel discipline, the Cossaks revolt!
+^
+^^ A rogue force now goes on the rampage and seeks for plunder...
+^
+ENDTEXT
+CREATEUNIT
+unit=Cossacks
+Count=10
+owner=Orientals
+veteran=yes
+homecity=none
+Randomize
+locations
+27,37
+25,37
+35,33
+36,46
+endlocations
+PLAYWAVEFILE
+Horde.wav
+@ENDIF
+
+:AGENT EVENTS
+
+@IF
+RANDOMTURN
+denominator=150
+@THEN
+CREATEUNIT
+unit=Agent
+owner=British Empire
+veteran=no
+homecity=none
+locations
+287,35
+61,79
+endlocations
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=150
+@THEN
+CREATEUNIT
+unit=Agent
+owner=French Empire
+veteran=no
+homecity=none
+locations
+2,42
+87,107
+endlocations
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=150
+@THEN
+CREATEUNIT
+unit=Agent
+owner=Russian Empire
+veteran=no
+homecity=none
+locations
+25,21
+107,51
+endlocations
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=150
+@THEN
+CREATEUNIT
+unit=Agent
+owner=United States
+veteran=no
+homecity=none
+locations
+226,62
+190,62
+endlocations
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=150
+@THEN
+CREATEUNIT
+unit=Agent
+owner=German Empire
+veteran=no
+homecity=none
+locations
+11,37
+9,19
+endlocations
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=150
+@THEN
+CREATEUNIT
+unit=Agent
+owner=Japanese Empire
+veteran=no
+homecity=none
+locations
+116,66
+113,69
+endlocations
+@ENDIF
+
+@IF
+RANDOMTURN
+denominator=150
+@THEN
+CREATEUNIT
+unit=Agent
+owner=Independent Nations
+veteran=no
+homecity=none
+locations
+11,55
+240,194
+endlocations
+@ENDIF
+
+@ENDEVENTS

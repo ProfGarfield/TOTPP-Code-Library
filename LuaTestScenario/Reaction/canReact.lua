@@ -1,0 +1,18 @@
+-- This file will be changed by the Scenario Creator
+
+-- This file should provide a function cr.canReact(triggerUnit,reactingUnit)-->string or false
+-- The triggerUnit is the unit that is causing ("triggering") the reaction, probably by trying
+-- to generate a munition (but possibly due to some other event).
+-- 
+-- The reactingUnit can be any unit in the game.  cr.canReact must determine whether reactingUnit will,
+-- in fact, attack the trigger unit.  This function must take into account unit types, distance, diplomatic
+-- status, and anything and everything else (including limited reactions per unit per turn--but there are premade tools for this), with the following two exceptions:
+-- First, if the trigger unit is killed by other reacting units, reactingUnit will not actually react
+-- Second, if the scenario parameters limit the number of reactions to a single unit, reactingUnit will
+-- not react if the limit is already met
+--
+-- If reactingUnit cannot react to triggerUnit, then the function returns false
+-- If it can, the function should return a string, the string being a 'category' name for the kind of attack
+-- (for example "Dive" if a plane is attacking from a higher altitude, or "Attack" for a 'normal' attack)
+-- Information about the reactions will be split into categories of units and "category", so
+-- don't make too many categories, particularly if the player doesn't need to know distinctions to play

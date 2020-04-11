@@ -1,0 +1,1394 @@
+TOTPP: Allocating 106480 bytes for events (growable)
+Chose "events.txt" as events file
+
+
+ Debugging filename: EVENTS
+@INITFLAG found
+New event structure created
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CHECKFLAG found
+looking for [continuous],who=,flag=,[mask=],[threshold=],[count=],state=,[technology=]
+found who=everybody (king id=-6)
+found flag=0 (flag=1)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=0 (turn number 0)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=1 (turn number 1)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=2 (turn number 2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=3 (turn number 3)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=4 (turn number 4)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found city=rome
+found attacker=anybody (king id=-6)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=warriors (id=2)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN CREATEUNIT found
+looking for unit=,owner=,veteran=,homecity=,[incapital],locations,endlocations,[count=]
+found owner=triggerattacker (king id=-3)
+found unit=fighter (unit id=27)
+found homecity=none
+found incapital
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found continuous
+found city=rome
+found attacker=anybody (king id=-3)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found continuous
+found unit=phalanx (id=3)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found continuous
+found city=rome
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=phalanx (id=3)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found city=persepolis
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN FLAG found
+looking for [who=],flag=|mask=,[continuous],state=
+found continuous
+found who=romans (king id=1)
+found state=on
+found flag=0 (flag=0)
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found city=trondheim
+found attacker=anybody (king id=1)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN FLAG found
+looking for [who=],flag=|mask=,[continuous],state=
+found who=romans (king id=1)
+found state=on
+found flag=0 (flag=0)
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found continuous
+found city=thebes
+found attacker=anybody (king id=1)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=3 (turn number 3)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN DELAY found
+looking for delay=
+found delay=2
+
+@THEN CREATEUNIT found
+looking for unit=,owner=,veteran=,homecity=,[incapital],locations,endlocations,[count=]
+found owner=triggerattacker (king id=-3)
+found unit=fighter (unit id=27)
+found homecity=none
+found incapital
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found continuous
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found continuous
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found continuous
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found continuous
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+@ENDEVENTS found
+
+Used heap space: 8461 bytes
+TOTPP: Allocating 106480 bytes for events (growable)
+Chose "events.txt" as events file
+
+
+ Debugging filename: EVENTS
+@INITFLAG found
+New event structure created
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CHECKFLAG found
+looking for [continuous],who=,flag=,[mask=],[threshold=],[count=],state=,[technology=]
+found who=everybody (king id=-6)
+found flag=0 (flag=1)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=0 (turn number 0)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=1 (turn number 1)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=2 (turn number 2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=3 (turn number 3)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=4 (turn number 4)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found city=rome
+found attacker=anybody (king id=-6)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=warriors (id=2)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN CREATEUNIT found
+looking for unit=,owner=,veteran=,homecity=,[incapital],locations,endlocations,[count=]
+found owner=triggerattacker (king id=-3)
+found unit=fighter (unit id=27)
+found homecity=none
+found incapital
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found continuous
+found city=rome
+found attacker=anybody (king id=-3)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found continuous
+found unit=phalanx (id=3)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found continuous
+found city=rome
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=phalanx (id=3)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found city=persepolis
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN FLAG found
+looking for [who=],flag=|mask=,[continuous],state=
+found continuous
+found who=romans (king id=1)
+found state=on
+found flag=0 (flag=0)
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found city=trondheim
+found attacker=anybody (king id=1)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN FLAG found
+looking for [who=],flag=|mask=,[continuous],state=
+found who=romans (king id=1)
+found state=on
+found flag=0 (flag=0)
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found continuous
+found city=thebes
+found attacker=anybody (king id=1)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=3 (turn number 3)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN DELAY found
+looking for delay=
+found delay=2
+
+@THEN CREATEUNIT found
+looking for unit=,owner=,veteran=,homecity=,[incapital],locations,endlocations,[count=]
+found owner=triggerattacker (king id=-3)
+found unit=fighter (unit id=27)
+found homecity=none
+found incapital
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found continuous
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found continuous
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found continuous
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found continuous
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+@ENDEVENTS found
+
+Used heap space: 8461 bytes
+TOTPP: Allocating 106480 bytes for events (growable)
+Chose "events.txt" as events file
+
+
+ Debugging filename: EVENTS
+@INITFLAG found
+New event structure created
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CHECKFLAG found
+looking for [continuous],who=,flag=,[mask=],[threshold=],[count=],state=,[technology=]
+found who=everybody (king id=-6)
+found flag=0 (flag=1)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=0 (turn number 0)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=1 (turn number 1)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=2 (turn number 2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=3 (turn number 3)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=4 (turn number 4)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found city=rome
+found attacker=anybody (king id=-6)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=warriors (id=2)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN CREATEUNIT found
+looking for unit=,owner=,veteran=,homecity=,[incapital],locations,endlocations,[count=]
+found owner=triggerattacker (king id=-3)
+found unit=fighter (unit id=27)
+found homecity=none
+found incapital
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found continuous
+found city=rome
+found attacker=anybody (king id=-3)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found continuous
+found unit=phalanx (id=3)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found continuous
+found city=rome
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=phalanx (id=3)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found city=persepolis
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN FLAG found
+looking for [who=],flag=|mask=,[continuous],state=
+found continuous
+found who=romans (king id=1)
+found state=on
+found flag=0 (flag=0)
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found city=trondheim
+found attacker=anybody (king id=1)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN FLAG found
+looking for [who=],flag=|mask=,[continuous],state=
+found who=romans (king id=1)
+found state=on
+found flag=0 (flag=0)
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found continuous
+found city=thebes
+found attacker=anybody (king id=1)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=3 (turn number 3)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN DELAY found
+looking for delay=
+found delay=2
+
+@THEN CREATEUNIT found
+looking for unit=,owner=,veteran=,homecity=,[incapital],locations,endlocations,[count=]
+found owner=triggerattacker (king id=-3)
+found unit=fighter (unit id=27)
+found homecity=none
+found incapital
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found continuous
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found continuous
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found continuous
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found continuous
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+@ENDEVENTS found
+
+Used heap space: 8785 bytes
+TOTPP: Allocating 106480 bytes for events (growable)
+Chose "events.txt" as events file
+TOTPP: Allocating 106480 bytes for events (growable)
+Chose "events.txt" as events file
+TOTPP: Allocating 106480 bytes for events (growable)
+Chose "eventsToImport.txt" as events file
+
+
+ Debugging filename: EVENTS
+@INITFLAG found
+New event structure created
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CHECKFLAG found
+looking for [continuous],who=,flag=,[mask=],[threshold=],[count=],state=,[technology=]
+found who=everybody (king id=-6)
+found flag=0 (flag=1)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=0 (turn number 0)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=1 (turn number 1)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=2 (turn number 2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=3 (turn number 3)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=4 (turn number 4)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found city=rome
+found attacker=anybody (king id=-6)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=warriors (id=2)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN CREATEUNIT found
+looking for unit=,owner=,veteran=,homecity=,[incapital],locations,endlocations,[count=]
+found owner=triggerattacker (king id=-3)
+found unit=fighter (unit id=27)
+found homecity=none
+found incapital
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found continuous
+found city=rome
+found attacker=anybody (king id=-3)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found continuous
+found unit=phalanx (id=3)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found continuous
+found city=rome
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=phalanx (id=3)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found city=persepolis
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN FLAG found
+looking for [who=],flag=|mask=,[continuous],state=
+found continuous
+found who=romans (king id=1)
+found state=on
+found flag=0 (flag=0)
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found city=trondheim
+found attacker=anybody (king id=1)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN FLAG found
+looking for [who=],flag=|mask=,[continuous],state=
+found who=romans (king id=1)
+found state=on
+found flag=0 (flag=0)
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF CITYTAKEN found
+looking for [continuous],city=,attacker=,defender=
+found continuous
+found city=thebes
+found attacker=anybody (king id=1)
+found defender=anybody (king id=-2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=3 (turn number 3)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+
+@THEN DELAY found
+looking for delay=
+found delay=2
+
+@THEN CREATEUNIT found
+looking for unit=,owner=,veteran=,homecity=,[incapital],locations,endlocations,[count=]
+found owner=triggerattacker (king id=-3)
+found unit=fighter (unit id=27)
+found homecity=none
+found incapital
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found continuous
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found continuous
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found continuous
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found continuous
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF TURN found
+looking for [continuous],turn=
+found turn=2 (turn number 2)
+
+@AND found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+
+@IF found - creating new event structure
+New event structure created
+
+@IF UNITKILLED found
+looking for [continuous],[defender only],[map=],unit=,attacker=,defender=
+found unit=archers (id=4)
+found attacker=anybody (king id=-2)
+found defender=anybody (king id=-2)
+@THEN found
+
+@THEN TEXT found
+looking for [no broadcast],ENDTEXT
+found ENDTEXT
+@ENDIF found
+@ENDEVENTS found
+
+Used heap space: 8788 bytes

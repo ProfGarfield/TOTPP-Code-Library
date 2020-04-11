@@ -1,0 +1,16 @@
+Rome=0
+Egypt=3
+
+Pathing for legion on desert:
+41,29,1 --> 42,28,1 --> 43,27,1
+
+Legion on ocean we want to teleport to map 2 (65?) 
+0,18,1  --> go to 79,21,65
+
+Unit slot
+warriors=2
+phalanx=3
+archers=4
+Legion=5
+
+When phalanx on jungle (65,7,1), I want archers to show up on 42,34,1 and 52,24,1 and 49,31,1

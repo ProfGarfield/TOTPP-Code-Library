@@ -1,0 +1,86 @@
+VIII. POPULATIONS
+
+Like other scenario designers, I strive for accuracy in city and national populations. The 
+reality is that some compromises must be made. Jan Lahmeyer's historical world populations site has been instrumental for finding dependable figures for populations of historical cities back to about 1850, and in some cases much earlier still. However, the way Civ2 handles this is not as exact as I would prefer. A Civ2 city is not simply the urban construct and its inhabitants. It is the city and its hinterland--the agricultural complex that supports the concentration of people in the urban area itself. As such, the total population of a Civ2 city should probably be larger than the strictly urban population as recorded in demographic data. I used a formula for representing this city-and-hinterland population. I usually doubled the total population figure for any given city and added more if the city was located in a very populated country. Even so, I realized that this was not going to be as accurate as I would have liked. The alternative way of determining populations was to compare the city population totals against the total population of the entire country in question for the year 1870. Here again, there was a problem. Given the truly massive population figures of nations like China, India, and even Japan, there was simply no practical way to represent these countries' actual populations. The game cannot accomodate size 40 and 50 cities. Just doesn't work. So, I tried to create city populations that were as representative as possible. Hopefully, the solution that I've come up with will work in the context of this scenario.
+
+IX. SPECIAL NOTES:
+
+Certain aspects of this scenario need to be explained. 
+
+1.) Strange and unnaccountable difficulties with the ship movement and its relationship to the road movement multiplier have required me to make some unhappy compromises. The Railroads in this scenario are actually roads, but use the railroad graphic. The road multiplier is 7. My original idea was to make the multiplier 10. I would have preferred 15 or thereabouts. Some stretches of both the Russian Trans-Siberian railroad and the American Trancontinental railroad contain some sections of actual Civ2 railroads, and will require no movement points for units to enter. These actual railroad stretches can be plundered and destroyed, however. The road multiplier applies to rivers too.
+ 
+2.) After wrestling with the issue of whom to assign the Dutch colonial empire, I finally decided to give it to the German/Austrian/Scandinavian Civ. This will tend to even out the colonial situation in the far east.
+ 
+3.) Some  inaccuracies exist. I'm well aware that Bokhara fell to the Russians prior to the 
+opening of this scenario in 1870, but for the sake of consistency, I have decided to make it an Oriental city. There might well be some question about the presence of Swakopmund as well, but I was determined to make sure that southwest Africa was represented by at least 1 city.
+ 
+4.) Some might complain that the British Empire is very large and therefore the most advantageous civ to play and that this tends to unbalance the scenario in favor of the British. The only answer I have is that I was attempting to recreate the history of the period as closely as the Civ2 game will allow. If this puts the British in the number 1 spot, then so be it. The other powers will be a challenge to play. Take a look at the Victory Conditions before you dismiss the scenario altogether.
+ 
+5.) The way the scenario works is interesting. There is a neat interaction between the 
+governments, the economies, and the tech acquisition. In Monarchy, the constant problem is fiscal insolvency, but you ARE able to attack whom you want when you want. In Republic, which can be acquired by all civs relatively quickly, any empire will be generally solvent, but limited in where and when it can expand and declare war--the Upper House must approve. The Imperial Powers wonder will help with this "problem." So the trade-off is there. Moreover, the tech advantage of Republic is reduced quite a bit by the fact of the 10:1 tech ratio. Given these little complications, the Imperialism government, and, to a lesser extent, the Autocracy government, looks pretty good when compared with Monarchy and Republic. Given the distances, corruption can take a huge bite from the budget, and the Imperialism government can reduce this problem considerably. The key factor here is that, no matter what government you're in, the money difficulties will always exist if you want to keep a good science rate, except perhaps with Democracy, which will only be acquired relatively late in the game. The real problem for every empire is tech acquistion. And there is one solution; TRADE. To solve the problems of the various empires, trade is essential. A few trade routes can generate 4000 gold upon delivery! It is possible, even with the very high tech ratio, to gain 4 techs in a year--12 turns. With a little luck and planning, more than 4 is possible. The Trade Goods units are cheaper than the default (Caravans) and (Freight), and can be produced quickly. The immense distances mean that even the smallest trade routes will generate several hundred gold, and it's not unusual to generate 2000 gold with a good route. Fiscal insolvency can be dealt with, even in Monarchy, but to acquire techs at a reasonable rate, a player MUST trade. This means that somewhere in the empire, a player must be constructing trade units and shipping them to other continents all the time. This dovetails neatly with the whole atmosphere of the period. Control of the seas is very necessary. If an enemy can interdict your trade, then tech acquisition comes to a standstill, and money problems could also result. Therefore, one must keep abreast of, if not ahead of, other empires' naval technology. In order to do this, you must trade. So, trade gives you the money to stay afloat, and the technology to keep up with your potential enemies, and the technology allows you to protect your trade lanes. Because the trade units cannot pass through zones of control, there is added emphasis on selecting coastal cities for trading. Although land wars can certainly be waged, this scenario is much more of a naval/trade scenario, and this fits well with the period.
+
+6.) At start, some of the player civs have naval bases in their home countries and around the 
+world. The cities in England all have Coaling stations, as do Halifax, Columbo, Sydney, Adelaide, Quebec, Kingston, Bombay, Orissa, Calcutta, Singapore, Hong Kong, Trinidad, Capetown, and Melbourne. The French have Coaling Stations in Hanoi, Nantes, Bordeaux, and Marseilles. The Russians have Coaling Stations in St. Petersburg and Sevastopol. The Americans have Coaling Stations in New York, Boston, New Orleans, Charleston, and San Francisco. The Germans have Coaling Stations in Hamburg and Amsterdam. These improvements represent the naval support facilities available to these nations and are placed even though none of the civs have the requisite tech to build more. 
+
+7.) Naval Movement; sometimes, the program does strange things. When you look at the movement numbers for naval units in the Pedia, you will notice that they are wrong. This couldn't be prevented, and was a side-effect of the high road-movement multiplier. When you move ships, simply look at the total movement available and ignore what is stated in the Pedia. As a matter of fact, ignore ALL movement numbers in the Pedia.
+
+8.) About Africa; While testing the scenario, I noticed that there was a lot of space on the 
+"Dark Continent." The problem was that there was little or no incentive to go there. No new 
+cities can be founded, and, except for Sokoto and Timbuktu, there are few cities in the interior to capture. At almost the last minute, I put in a Tribal Capital unit and made its defense value low and its movement 0. An event will reward British, French, or German units that attack and defeat these Tribal Capital units--100 gold for each one eliminated. The Russians, Japanese, Americans, and Independents will not receive a cash reward for eliminating these Tribal Capital units, but by destroying them, will effectively prevent other empires from earning it. Additionally, a random unit, the Elephants unit, will appear at various places throughout southern and central Africa and run amok, so there will be danger invloved in this exploration. I also added the Expedition unit. This unit IS barely powerful enough to attack the Tribal Capitals, but will be endangered by the Elephants. The Elephants pose little danger to most military units of the empires. The advantage of the Expedition unit is that it is cheaper and moves much faster than any other unit the Imperial powers can build. It is available with African Exploration. 
+
+9.) Coastal and shipbuilding; There are quite a few Coastal Fortresses located in cities around the world at the start of the scenario. However, to build more, players must acquire the requisite technology, which none have at the start. There are also quite a few cities that cannot build coastal improvements even though they are clearly on a seacoast, and there are quite a few more cities that cannot build ships. Shipbuilding, and more especially dreadnought-building, was the exclusive province of a special type of shipyard, though I do leave room for potential in many cities worldwide. Many of the single-square, island cities cannot build coastal because I don't want them; 1.) defended with Coastal Defenses, 2.) to skyrocket their populations w/a Harbor, or 3.) to boost their production unrealistically w/a World Port. Small islands like Antigua and Guadulupe are small and will STAY small. The lists of cities that cannot build coastal and cannot build ships is a big one. You'll just have to examine your cities, no matter what empire you play. 
+
+10.) Random Orientals; There are 4 types of Oriental units that are generated randomly throughout the game. These are: Native Uprising in subsaharan Africa, War Party in the American West, Native Horse in the Mahgreb and Hijaz, and Native Horse in the central Asian steppe zone. Occupation of the "location" squares will limit the appearance of these units, so establishing actual forts in the interior of these regions is advisable.
+
+X. PBEM (Play-By-Email) AND MULTI-PLAY.
+
+To really enjoy this scenario to the fullest extent, it is suggested that at least 6 out of 7 of 
+the players be humans, and done via simultaneous or hot-seat play, or PBEM. The problem is this; If one sets the game to the "Prince" or Commodore setting of difficulty, then diplomacy is relatively restrained, but not enough to be accurate or realistic, and the Oriental units are at an undesired fraction of their intended strength. Set on the next higher level of difficulty, the Orientals are at the full intended strength, but the AI runs the other players in a very 
+annoyingly bloodthirsty manner. In solo play, there is almost constant warfare somewhere, and most of the time, every empire on the map is at war with some other empire. Not very realistic, considering the period. Additionally, the AI doesn't seem to be able to overcome the tech acquisition difficulties. A human running the Japanese Empire, for example, will be able, through judicious trading, to stay even with the leading AI player (usually the British), in terms of technology. But when the AI runs the Japanese, they inevitably fall far behind. An aggressive human playing the Japanese can, by 1880, carve an empire out of China. I have never seen an AI-run Japan even come close to achieving this. This is a feature of the MGE AI, and something that I can't forestall or manipulate away. SO, the ideal way to use this scenario is to place actual humans on all the imperial thrones and enjoy the game.  
+
+XI. VICTORY
+
+IN ORDER TO WIN THIS SCENARIO;
+    1.) Take over the entire world by 1900
+    2.) Win the WORLD WAR--Have control of all European capitals by the end of the game.               These include; Berlin, London, Paris, Madrid, Rome, Moscow, Vienna, and Constantinople. 
+        "Allied" victories do count as victory in this context. All players in an established 
+        alliance system can win if the capitals are occupied by troops of the alliance. (Note; if
+        all the players conspire to join an all-European Grand Alliance, they can probably "win"
+        the game using this victory condition. However, it does tend to defeat the purpose of            the game as well as eliminating the FUN (!) of playing. SO; the suggested LIMIT for              any alliance, for the purposes of this kind of Victory, is 3. No more than 3 empires may         form an alliance and achieve Victory by Winning the WORLD WAR.)
+    3.) SPECIAL "COLONIAL" VICTORY; Control Lhasa, Bangkok, Baghdad, Alexandria, Buenos                 Aires, Caracas, Mexico City, Mandalay, Shanghai, Peking, Manilla, Tananarive, Addis              Ababa, Timbuktu, Dar-es-Salaam, Darien, Samarkand, Erevan, Cairo, Khartoum,                      Constantinople, Teheran, Kabul, Havana, Honolulu, Sokoto, and Fez by 1900. 
+    4.) Note that Victories # 1 and # 3 MUST be completed prior to the year 1900. AFTER that 
+        date, only victory via Winning the WORLD WAR can be achieved. If no empire or                    alliance is able to Win the WORLD WAR by 1920, then the scenario is declared a draw.
+
+XII. CREDITS
+
+Above all, my utmost thanks goes out to Gareth Burch (a.k.a. fairline) for his unparalelled unit graphics. The event that urged me to revise this scenario was his sending me his own alternative units gif for the scenario. It was spectacularly good and spurred me to get back to work. Almost all the unit graphics are his, so I'll only point out here the ones that aren't, and don't have sigs.
+
+The Steam Yacht was from the MGE American Civil War scen.
+
+The Elephant, the Steamer, and the Expedition units were created my Morten Blaabjerg, however, the latter two were heavily modified by myself.
+
+The Raw Materials graphic was created by "gukguk."
+
+The Battlecruiser unit is a USS Alaska battlecruiser by Nemo, also heavily modifed by myself.
+
+Included in the units gif are several alternative graphics for those who might want to use them. In particular, I should point out the alternative Agent graphic. The idea behind the Agent was to include a very powerful yet vulnerable unit, in the (Spy) slot and utilizing all the powers of a (Spy) and more. During this period there were colorful characters of a unique variety. These were westerners who had essentially "gone native." The advantage of doing so, of course, was that these Agents could thereby greatly facilitate the best efforts of their respective imperialist powers in the field. We naturally think of figures like T.E. Lawrence [of Arabia] and Charles "Chinese" Gordon. But in America there were similar persons--"Buffalo" Bill Cody and "Kit" Carson. So, alternative graphics might be desirable, according to which civ one happens to be playing.
+
+SPECIAL THANKS:
+
+To Jan Lahmeyer, who has offered the most invaluable assistance that I have ever come across. Without Mr. Lahmeyer's help, the city populations would have been mere guesswork. As it is, they are remarkably accurate. I cannot suggest strongly enough that anyone designing scenarios seek out his site and peruse the wealth of data that resides there. His site URL is; Http://www.library.uu.nl/wesp/populstat/populhome.html Please do check out this site; you will not believe your eyes!
+
+Photos of the Great War. This site is full of superb photography of WWI. I've toyed with the 
+conversion of various graphics using pix from this site. I suggest that anyone with an interest in WWI visit this wonderful site and look through the photos there. The URL is; 
+http://www.ukans.edu/~kansite/ww_one/photos/greatwar.htm
+
+To Carl Fritz, (a.k.a. Gothmog) for producing the amazing CivCity and CivTweak utility programs, without which, this whole project would have been far more difficult to produce, and far less "neat" that it is. Carl has also readily advised me whenever I ran into difficulties and problems.
+
+To Henrik Lohmander, who assisted me mightily in putting together the events file. He also 
+created the People gif file to my specifications and enhanced the Prussian Militarism and 
+Britannia Rule the Waves wonder graphics, as well as providing the Garrison graphic. And he is a playtester par excellance! Thanks again, Henrik.
+
+To Bernd Brosing, for being kind enough to create the title gif splash page. I selected the 
+painting, and he was able to convert it to a usable form in no time at all. It looks great and 
+gives the scenario precisely the flavor I was seeking to impart.
+
+To Nick Dowling (a.k.a. Case). Nick offered some sterling advice which helped me resolve some little problems while revising this 2nd version. Clearly, a man of insight. He is also quite a good reviewer of scenarios. ;) 

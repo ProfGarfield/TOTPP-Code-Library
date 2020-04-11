@@ -1,0 +1,17 @@
+@SCENARIO
+@width=500
+@title=%STRING0
+^^Length: %STRING1 to %STRING2
+^^IMPERIALISM II
+^
+^^A remake of Exile's famous Imperialism scenario.
+^
+^^Control one of the imperial powers and dominate the world by 1900.
+^^Many new features, extended unit tree, and new barbarian threats...
+^
+^^Check out the Readme files.
+^^SPECIAL NOTES:
+^^Government switching is permitted, pollution will not appear.
+^
+@end -- this line must be here!
+
