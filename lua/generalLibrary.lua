@@ -138,6 +138,7 @@
 --#gen.activate(unit)-->void
 --#gen.activateWithSource(unit,source)-->void
 --#gen.linkActivationFunction(function(unit,source)-->void)-->void
+--#gen.getTileID(tileObject or int,int or nil,int or nil)-->int (by Knighttime, converts a tile/coordinates to a single integer as an ID number)
 
 --
 -- FUNCTION IMPLEMENTATIONS
@@ -1173,6 +1174,26 @@ function gen.linkActivationFunction(activationFn)
 end
 
 
+
+--gen.getTileID(tileObject or int,int or nil,int or nil)-->int (by Knighttime, converts a tile/coordinates to a single integer as an ID number)
+-- Returns a single-value numeric key that uniquely identifies a tile on any map
+--[[ by Knighttime, modified by Prof. Garfield ]]
+function gen.getTileID (tileORX,y,z)
+    local tile=nil
+    if civ.isTile(tileORX) then
+        tile = tileORX
+    else
+        tile = civ.getTile(tileORX,y,z or 0)
+    end
+	if tile == nil then
+		error("ERROR: \"getTileID\" function called with an invalid tile or coordinates")
+		return nil
+	end
+	local mapWidth, mapHeight, mapQuantity = civ.getMapDimensions()
+	local mapOffset = tile.z * mapWidth * mapHeight
+	local tileOffset = tile.x + (tile.y * mapWidth)
+	return mapOffset + tileOffset
+end
 
 
 

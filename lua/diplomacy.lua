@@ -25,6 +25,18 @@ local gen = require("generalLibrary")
 
 local diplomacy = {}
 
+local diplomacyState = "notLinked"
+
+local function linkState(tableInState)
+    if type(tableInState)~="table" then
+        error("diplomacy.linkState takes a table as an argument.")
+    else
+        diplomacyState = tableInState
+    end
+    diplomacyState.diplomaticOffers = diplomaticOffers.diplomaticOffers or {}
+end
+diplomacy.linkState = linkState
+
 -- checkSymmetricBit1(int1,int2,bitNumber,errorMessage)-->bool
 -- if the bitNumber'th bit in int1 and int2 are both 1,
 -- then return true
@@ -182,6 +194,31 @@ end
 diplomacy.clearVendettaWith = clearVendettaWith
 
 
+-- a diplomaticOffer is a table with the following keys
+--  .offerMaker = tribeID
+--      the ID number of the tribe making the offer of a change in the
+--      diplomatic state
+--  .offerReceiver = tribeID
+--      the ID number of the tribe receiving the offer of a change in
+--      the diplomatic state
+--  .offerType = string
+--      "peace" offer is to establish a peace treaty
+--      "ceaseFire" offer is to establish a cease fire state
+--      "alliance" offer is to establish an alliance
+--  .offerMoney = integer
+--      The tribe making the offer will give this amount of money
+--      to the receiver if the offer is accepted (or all money, 
+--      if treasury is smaller)
+--  .demandMoney = integer
+--      The tribe making the offer will take this amount of money
+--      from the receiver if the offer is accepted.  Offer can't be
+--      accepted if receiver doesn't have the money
+--
+
+-- manageDiplomaticOffers(tribeID,functionState,offer)
+--      
+local function manageDiplomaticOffers(tribeID,functionState,offer)
+    local functionState = functionState or "choose"
 
 return diplomacy
 
