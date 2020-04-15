@@ -88,6 +88,22 @@ keyboard.F9 = 184
 --keyboard.F10 = nil -- F10 doesn't seem to exist
 keyboard.F11 = 186
 keyboard.F12 = 187
+keyboard.shift = {}
+keyboard.shift.ctrl = {}
+keyboard.ctrl = {}
+keyboard.ctrl.shift = {}
 
+local shift_offset = 256
+local ctrl_offset = 512
+
+for i,v in pairs(keyboard) do
+	if i ~= "ctrl" and i ~= "shift" 
+	then
+		keyboard.shift[i] = shift_offset + v
+		keyboard.ctrl[i] = ctrl_offset + v
+		keyboard.shift.ctrl[i] = shift_offset + ctrl_offset + v
+		keyboard.ctrl.shift[i] = shift_offset + ctrl_offset + v
+	end
+end
 
 return keyboard
