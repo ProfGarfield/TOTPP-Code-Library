@@ -33,7 +33,7 @@ defender=ANYBODY
 @THEN
 TEXT
 The citizens are rounded up and sold as slaves in the market in Athens.
-This looks like a perfect location to found a new colony!
+This looks like a perfect location to found a new colony!EventsToImport
 ENDTEXT
 CREATEUNIT
 unit=Slave

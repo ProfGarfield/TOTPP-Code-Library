@@ -21,6 +21,9 @@ local flag = require("flag")
 local counter = require("counter")
 local text = require("text")
 local legacy = require("legacyEventEngine")
+local legacyEventsTable = require("getLegacyEvents")
+legacy.supplyLegacyEventsTable(legacyEventsTable)
+local promotion = require("promotion")
 local state = {}
 local object = require("object")
 --local munitions = require("munitions")
@@ -95,8 +98,8 @@ end
 -- note that if the aggressor loses, aggressor.location will not work
 local function doWhenUnitKilledInCombat(loser,winner,aggressor,victim,aggressorLocation,
     victimVetStatus,aggressorVetStatus)-->void
-    promotion.unitKilledInCombat(loser,winner,aggressor,victim,aggressorLocation,
-    victimVetStatus,aggressorVetStatus)
+    --promotion.unitKilledInCombat(loser,winner,aggressor,victim,aggressorLocation,
+    --victimVetStatus,aggressorVetStatus)
 
 end
 

@@ -443,13 +443,34 @@ end
 -- function gen.removeRailroad(tile) end
 
 -- gen.hasFortress(tile)-->boolean
--- function gen.hasFortress(tile) end
+function gen.hasFortress(tile)
+    tile = toTile(tile)
+    -- must be fortress, and not airbase
+    return checkBits(tile.improvements,"x1xxxx0x")
+end
+
 
 -- gen.placeFortress(tile)-->void
--- function gen.placeFortress(tile) end
+-- places fortress (replacing airbase/transporter if necessary)
+-- If city on tile, nothing happens
+function gen.placeFortress(tile) 
+    tile = toTile(tile)
+    if tile.city then
+        return
+    end
+    tile.improvements = setBits(tile.improvements,"x1xxxx0x")
+    return
+end
 
 -- gen.removeFortress(tile)-->void
--- function gen.removeFortress(tile) end
+-- Checks that a fortress is in place (so as not to change
+-- other terrain improvements), and if so, removes the fortress
+function gen.removeFortress(tile) 
+    tile = toTile(tile)
+    if checkBits(tile.improvements,"x1xxxx0x") then
+        tile.improvements = setBit0(tile.improvements,7)
+    end
+end
 
 -- gen.hasAirbase(tile)-->boolean
 -- function gen.hasAirbase(tile) end

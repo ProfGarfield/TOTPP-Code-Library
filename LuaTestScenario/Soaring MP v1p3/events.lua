@@ -21,6 +21,8 @@ local flag = require("flag")
 local counter = require("counter")
 local text = require("text")
 local legacy = require("legacyEventEngine")
+local legacyEventsTable = require("getLegacyEvents")
+legacy.supplyLegacyEventsTable(legacyEventsTable)
 local state = {}
 local object = require("object")
 local munitions = require("munitions")
@@ -95,7 +97,13 @@ end
 -- Perhaps create a unit for the next tribe in line, and then delete that unit
 -- when it is activated
 local function doAfterProduction(turn,tribe)-->void
-
+    -- spend 1/6 of a ship's movement.  Fractions of remaining movement keep track
+    -- of how many more times a ship can 'recharge' its movement allowance
+    for unit in civ.iterateUnits() do
+        if unit.type.domain == 2 and unit.owner == tribe then
+            unit.moveSpent = math.max(unit.moveSpent,1)
+        end
+    end
 end
 
 
@@ -104,8 +112,13 @@ end
 -- note that if the aggressor loses, aggressor.location will not work
 local function doWhenUnitKilledInCombat(loser,winner,aggressor,victim,aggressorLocation,
     victimVetStatus,aggressorVetStatus)-->void
-    promotion.unitKilledInCombat(loser,winner,aggressor,victim,aggressorLocation,
-    victimVetStatus,aggressorVetStatus)
+    --promotion.unitKilledInCombat(loser,winner,aggressor,victim,aggressorLocation,
+    --victimVetStatus,aggressorVetStatus)
+   if loser.type == object.uRichVillage then
+       civ.ui.text(text.substitute("The citizens are rounded up and enslaved, and %STRING1 %STRING2 of plunder makes its way to the %STRING3 treasury.  This looks like a perfect location to found a new colony!",{param.richVillagePlunder,param.currencyPlural,winner.owner.adjective}))
+       civ.createUnit(object.uSlave,winner.owner,winner.location)
+       winner.owner.money=winner.owner.money+param.richVillagePlunder
+   end
 
 end
 
@@ -154,17 +167,53 @@ local function doOnCityProduction(city,prod) -->void
 end
 
 local function doOnActivateUnit(unit,source) --> void
+    -- recharge ship movement for AI
+    --local moveMult = totpp.movementMultipliers.aggregate
+    --local remainingCharges = (unit.type.move-unit.moveSpent)%moveMult
+    --print(unit.type.move-unit.moveSpent,2*moveMult,remainingCharges,unit.type.domain,gen.printBits(unit.attributes,16))
+    --if (not (unit.owner.isHuman)) and unit.type.domain == 2 and 
+    --    (unit.type.move-unit.moveSpent < 2*moveMult) and remainingCharges > 0 then
+    --    remainingCharges = remainingCharges - 1
+    --    unit.moveSpent =  moveMult - remainingCharges
+    --    unit.attributes = 0
+    --    --unit.attributes = gen.setBit0(unit.attributes,7)
+    --end
+end
 
+-- returns true if the unit is on a land tile, or is adjacent to one
+local function landAdjacent(unit)
+   local offsets = {{0,0},{0,2},{1,1},{2,0},{1,-1},{0,-2},{-1,-1},{-2,0},{-1,1}}
+   local center = unit.location
+   for __,offset in pairs(offsets) do
+       local t = civ.getTile(center.x+offset[1],center.y+offset[2],center.z)
+       if t.terrainType%16~=10 then
+           return true
+       end
+   end
+   return false
+end
+
+local function rechargeShipMovement(unit)
+    local moveMult = totpp.movementMultipliers.aggregate
+    local remainingCharges = (unit.type.move-unit.moveSpent)%moveMult
+    if remainingCharges > 0 and landAdjacent(unit) then
+        remainingCharges = remainingCharges - 1
+        unit.moveSpent =  moveMult - remainingCharges
+    end
 end
 
 local function doOnKeyPress(keyCode)
-    print(keyCode)
+    --print(keyCode)
     if keyCode == 72 --[[h]] then
     end
     if keyCode == 73 --[[i]] then
     end
     if keyCode == keyboard.k --[[k]] and civ.getActiveUnit() then
         munitions.doMunition(civ.getActiveUnit(),kAttack,doOnActivateUnit)
+        local activeUnit = civ.getActiveUnit()
+        if activeUnit.type.domain == 2 then
+            rechargeShipMovement(activeUnit)
+        end
         return
     end
     if keyCode == keyboard.backspace and civ.getActiveUnit() then
@@ -176,17 +225,19 @@ end
 
 local cityNames = require("soaringCityNames")
 local function doOnCityFounded(city) --> void
-
+    civ.ui.text("City Location is "..tostring(city.location.x)..","..tostring(city.location.y))
     city.name = cityNames[gen.getTileID(city.location)] or "Do Not Build"
     if city.location.terrainType%16 ~= 7 then
-        text.simple("This colony will fail due to a poor choice of location.  Colonies can only be successfully founded by Colonist units on \'Colony Site\' terrain.","Game Concepts: Colony Sites")
-        civ.deleteCity(city)
+        if city.owner.isHuman then
+            text.simple("This colony will fail due to a poor choice of location.  Colonies can only be successfully founded by Colonist units on \'Colony Site\' terrain.","Game Concepts: Colony Sites")
+        end
+--        civ.deleteCity(city)
     end
-    local activeUnitType = civ.getActiveUnit().type
-    if city.owner.isHuman and activeUnitType.role == 5 and activeUnitType ~= object.uColonist then
+    local activeUnitType = civ.getActiveUnit() and civ.getActiveUnit().type
+    if activeUnitType and city.owner.isHuman and activeUnitType.role == 5 and activeUnitType ~= object.uColonist then
         text.simple("This colony will fail due to a lack of supplies.  Only colonist units carry enough supplies to successfully found cities on \'Colony Site\' terrain.","Game Concepts: Colonists")
         city.name = "Do Not Build"
-        civ.deleteCity(city)
+  --      civ.deleteCity(city)
     end
 
 
@@ -282,3 +333,5 @@ end)
 civ.scen.onGameEnds(function(reason)
     return legacy.endTheGame(reason)
 end)
+
+civ.scen.onTurn(doOnTurn)

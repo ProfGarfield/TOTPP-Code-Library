@@ -1,6 +1,5 @@
 local param = {}
 
-param.mySampleParameter = 1
-param.anotherSampleParameter = 3
-
+param.richVillagePlunder = 150
+param.currencyPlural = "Drachmae"
 return param

@@ -17,7 +17,14 @@ end
 --print(scenarioFolderPath)
 --print(package.path)
 
-local eventTable = require(legacyEventTableName)
+local eventTable = {} --require(legacyEventTableName)
+local function supplyLegacyEventsTable(table)
+    if type(table)~="table" then
+        error("legacyEventEngine.supplyLegacyEventsTable expects a table as input")
+    else
+        eventTable = table
+    end
+end
 local civlua = require("civlua")
 local func = require("functions")
 
@@ -1648,4 +1655,5 @@ canNegotiate = canNegotiate,
 doNegotiationEvents = doNegotiationEvents,
 endTheGame = endTheGame,
 linkState = linkState,
+supplyLegacyEventsTable=supplyLegacyEventsTable,
 }

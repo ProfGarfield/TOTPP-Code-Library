@@ -11,7 +11,7 @@ local showEventParsed = true
 
 -- Change this if the events text file you are converting has a different name
 -- file is relative to the current directory
-local eventTextFileName="eventsToImport.txt"
+local eventTextFileName="importedEvents.txt"
 
 -- Change this if you don't want to use the default name for the output file
 -- The OS time should hopefully prevent file overwrites
