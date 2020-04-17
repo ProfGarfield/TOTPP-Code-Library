@@ -327,7 +327,7 @@ end
 --    parameters for what and how to offer
 --                 * gift_units_text -> Text to be shown to ask for confirmation
 --                 * gift_units_confirmation -> Dialog to show after confirmation
---                 * gift_units_locations -> A list of locations to put the gift. It will start with the first one,
+--                 * gift_units_locations -> A list of locations per tribe name to put the gift. It will start with the first one,
 --                                           and use all of them until one is valid
 --                 * gitft_units_error -> A error message to be displayed in case no suitable location is found
 --                   (only happens when gift_units_location is provided)
@@ -347,7 +347,11 @@ local function giftUnits(tribe, options)
    go_ahead = text.menu(menu_table, gift_units_question, gift_units_question, true)
    if go_ahead == 1 then
       units = destroyUnitsIn(tile)
-      position = options.gift_units_locations or {{ tile.x, tile.y, tile.z }}
+      if options.gift_units_locations ~= nil and options.gift_units_locations[tribe.name] ~= nil then
+	 position = options.gift_units_locations[tribe.name]
+      else
+	 position = {{ tile.x, tile.y, tile.z }}
+      end
       if recreateUnitsIn(units, position, tribe) then
 	 message = options.gift_units_confirmation or "Units in $tile transferred to $receiver"
       else
@@ -466,7 +470,7 @@ end
 --                 * same_civ_player -> Text when a player attemps to gift something to his/herself.
 --                 * gift_units_text -> Text to be shown to ask for confirmation
 --                 * gift_units_confirmation -> Dialog to show after confirmation
---                 * gift_units_locations -> A list of locations to put the gift. It will start with the first one,
+--                 * gift_units_locations -> A list of locations per tribe name to put the gift. It will start with the first one,
 --                                           and use all of them until one is valid
 --                 * gitft_units_error -> A error message to be displayed in case no suitable location is found
 --                   (only happens when gift_units_location is provided)
