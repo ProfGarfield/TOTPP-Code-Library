@@ -325,6 +325,7 @@ end
 --
 --    options is to be pased on, and may contain different configuration
 --    parameters for what and how to offer
+--                 * giftUnitsMaxCharUnitList -> Limit of characters for the list of units description (default: 300)
 --                 * giftUnitsText -> Text to be shown to ask for confirmation
 --                 * giftUnitsConfirmation -> Dialog to show after confirmation
 --                 * giftUnitsLocations -> A list of locations per tribe name to put the gift. It will start with the first one,
@@ -335,12 +336,38 @@ end
 --    You can use the following replacement parameters
 --                 * %RECEIVER -> Tribe name of who is receiving the gift
 --                 * %TILE     -> Tile where it happens
+--                 * %UNITS     -> Friendly text about the units given
 --
 local function giftUnits(tribe, options)
+   local function buildUnitsText(tile, maxcChar)
+      local text = ""
+      byType = {}
+      for unit in tile.units do
+	 if byType[unit.type.id] == nil then
+	    byType[unit.type.id] = 1
+	 else
+	    byType[unit.type.id] = byType[unit.type.id] + 1
+	 end
+      end
+      for i,v in pairs(byType) do
+	 if text:len() < maxChar then
+	    thisPart = tostring(v).." "..civ.getUnitType(i).name
+	    if text == "" then
+	       text = thisPart
+	    else
+	       text = text..", "..thisPart
+	    end
+	 end
+      end
+      return text
+   end
+	 
    tile = civ.getCurrentTile()
+   maxChar = options.giftUnitsMaxCharUnitList or 300
    translationTable = { { code = "%%RECEIVER", value = tribe.name },
-      { code = "%%TILE", value = tostring(tile.x)..","..tostring(tile.y).." in map "..tostring(tile.z) } };
-   giftUnitsQuestion = options.giftUnitsText or "Do you confirm gifting all units to %RECEIVER in %TILE?"
+      { code = "%%TILE", value = tostring(tile.x)..","..tostring(tile.y).." in map "..tostring(tile.z) },
+      { code = "%%UNITS", value = buildUnitsText(tile,maxchar) }}
+   giftUnitsQuestion = options.giftUnitsText or "Do you confirm gifting %UNITS to %RECEIVER in %TILE?"
    giftUnitsQuestion = textTransform(giftUnitsQuestion, translationTable)
    menuTable = {}
    menuTable[1] = "Ok!"
@@ -468,6 +495,7 @@ end
 --                 * giftMoneyConfirmation -> Text to display when money is gifted
 --                 * giftMoneyAmounts -> A table with the available amounts and the text associated to them
 --                 * sameCivPlayer -> Text when a player attemps to gift something to his/herself.
+--                 * giftUnitsMaxCharUnitList -> Limit of characters for the list of units description (default: 300)
 --                 * giftUnitsText -> Text to be shown to ask for confirmation
 --                 * giftUnitsConfirmation -> Dialog to show after confirmation
 --                 * giftUnitsLocations -> A list of locations per tribe name to put the gift. It will start with the first one,
@@ -484,6 +512,7 @@ end
 --                 * %MONEY -> The amount of money given out
 --                 * %TILE     -> Tile where it happens
 --                 * %CITY0     -> Name of the city
+--                 * %UNITS     -> Friendly text about the units given
 --
 --    Offers present regardless of the cursor position
 --                    * Money
