@@ -234,15 +234,15 @@ end
 
 -- Default amounts of money for gift-money screen
 local defaultGiftMoneyAmounts = {}
-defaultGiftMoneyAmounts[1] = "1"
-defaultGiftMoneyAmounts[5] = "5"
-defaultGiftMoneyAmounts[10] = "10"
-defaultGiftMoneyAmounts[50] = "50"
-defaultGiftMoneyAmounts[100] = "100"
-defaultGiftMoneyAmounts[500] = "500"
-defaultGiftMoneyAmounts[1000] = "1000"
-defaultGiftMoneyAmounts[5000] = "5000"
-defaultGiftMoneyAmounts[10000] = "5000"
+defaultGiftMoneyAmounts[1] = "Add 1"
+defaultGiftMoneyAmounts[5] = "Add 5"
+defaultGiftMoneyAmounts[10] = "Add 10"
+defaultGiftMoneyAmounts[50] = "Add 50"
+defaultGiftMoneyAmounts[100] = "Add 100"
+defaultGiftMoneyAmounts[500] = "Add 500"
+defaultGiftMoneyAmounts[1000] = "Add 1000"
+defaultGiftMoneyAmounts[5000] = "Add 5000"
+defaultGiftMoneyAmounts[10000] = "Add 5000"
 
 -- Offers a menu to gift a given amount of money 
 --
@@ -262,19 +262,33 @@ local function giftMoneyMenu(tribe, options)
    giftMoneyText = options.giftMoneyText or "Which amount should we gift to our %RECEIVER friends?"
    giftMoneyText = textTransform(giftMoneyText, translationTable)
    giftMoneyAmounts = options.giftMoneyAmounts or defaultGiftMoneyAmounts
-   menuTable = {}
    player = civ.getCurrentTribe()
-   totalMoney = player.money
-   for i,v in pairs(giftMoneyAmounts) do
-      if(i<=totalMoney) then
-	 menuTable[i] = v
+   totalMoney  = 0
+   ended = False
+   repeat
+      menuTable = {}
+      lastOne = 1
+      for i,v in pairs(giftMoneyAmounts) do
+	 if(i<=(player.money-totalMoney)) then
+	    menuTable[i] = v
+	 end
+	 if(i+1) > lastOne then
+	    lastOne = i+1
+	 end
       end
-   end
-   money = text.menu(menuTable, giftMoneyText, giftMoneyText, true)
+      if(totalMoney>0) then
+	 menuTable[lastOne] = "Yes, give "..tostring(totalMoney).."!"
+      end
+      tmp = giftMoneyText .. "(".. tostring(totalMoney).. " cumulated)"
+      money = text.menu(menuTable, tmp, tmp, true)
+      if giftMoneyAmounts[money]~=nil then
+	 totalMoney = totalMoney + money
+      end
+   until giftMoneyAmounts[money]==nil
    if money~=0 then
-      tribe.money = tribe.money + money
-      player.money = player.money - money
-      translationTable[#translationTable + 1 ] = { code = "%%MONEY", value = money }
+      tribe.money = tribe.money + totalMoney
+      player.money = player.money - totalMoney
+      translationTable[#translationTable + 1 ] = { code = "%%MONEY", value = totalMoney }
       message = options.giftMoneyConfirmation or "%MONEY sent to our %RECEIVER friends!"
       message = textTransform(message, translationTable)
       civ.ui.text(message)
