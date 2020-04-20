@@ -233,49 +233,73 @@ end
 
 
 -- Default amounts of money for gift-money screen
-local default_gift_money_amounts = {}
-default_gift_money_amounts[1] = "1"
-default_gift_money_amounts[5] = "5"
-default_gift_money_amounts[10] = "10"
-default_gift_money_amounts[50] = "50"
-default_gift_money_amounts[100] = "100"
-default_gift_money_amounts[500] = "500"
-default_gift_money_amounts[1000] = "1000"
-default_gift_money_amounts[5000] = "5000"
-default_gift_money_amounts[10000] = "5000"
+local defaultGiftMoneyAmounts = {}
+defaultGiftMoneyAmounts[1] = "Add 1"
+defaultGiftMoneyAmounts[5] = "Add 5"
+defaultGiftMoneyAmounts[10] = "Add 10"
+defaultGiftMoneyAmounts[50] = "Add 50"
+defaultGiftMoneyAmounts[100] = "Add 100"
+defaultGiftMoneyAmounts[500] = "Add 500"
+defaultGiftMoneyAmounts[1000] = "Add 1000"
+defaultGiftMoneyAmounts[5000] = "Add 5000"
+defaultGiftMoneyAmounts[10000] = "Add 5000"
 
 -- Offers a menu to gift a given amount of money 
 --
 --    options is to be pased on, and may contain different configuration
 --    parameters for what and how to offer
---                 * gift_money_text -> Text to display in main dialog text
---                 * gift_money_confiramtion -> Text to display when money is gifted
---                 * gift_money_amounts -> A table with the available amounts and the text associated with them
+--                 * giftMoneyText -> Text to display in main dialog text
+--                 * giftMoneyConfirmation -> Text to display when money is gifted
+--                 * giftMoneyAmounts -> A table with the available amounts and the text associated with them
 --    You can use the following replacement parameters
---                 * $receiver -> Tribe name of who is receiving the gift
---                 * $money -> The amount of money given out
+--                 * %RECEIVER -> Tribe name of who is receiving the gift
+--                 * %RECEIVERADJECTIVE -> Tribe adjective of who is receiving the gift
+--                 * %MONEY -> The amount of money given out
 --
 --    Tribe: The tribe to pass money to
 local function giftMoneyMenu(tribe, options)
-   translationTable = { { code = "$receiver", value = tribe.name } };
+   translationTable = { { code = "%%RECEIVER", value = tribe.name }, { code = "%%RECEIVERADJECTIVE", value = tribe.adjective } };
    options = options or {}
-   gift_money_text = options.gift_money_text or "Which amount should we gift to our $receiver friends?"
-   gift_money_text = textTransform(gift_money_text, translationTable)
-   gift_money_amounts = options.gift_money_amounts or default_gift_money_amounts
-   menu_table = {}
+   giftMoneyText = options.giftMoneyText or "Which amount should we gift to our %RECEIVER friends?"
+   giftMoneyText = textTransform(giftMoneyText, translationTable)
+   giftMoneyAmounts = options.giftMoneyAmounts or defaultGiftMoneyAmounts
    player = civ.getCurrentTribe()
-   total_money = player.money
-   for i,v in pairs(gift_money_amounts) do
-      if(i<=total_money) then
-	 menu_table[i] = v
+   totalMoney  = 0
+   prevMoney = -1
+   ended = False
+   repeat
+      menuTable = {}
+      lastOne = 1
+      for i,v in pairs(giftMoneyAmounts) do
+	 if(i<=(player.money-totalMoney)) then
+	    menuTable[i] = v
+	 end
+	 if(i+1) > lastOne then
+	    lastOne = i+1
+	 end
       end
-   end
-   money = text.menu(menu_table, gift_money_text, gift_money_text, true)
+      if(prevMoney~=-1) then
+         menuTable[lastOne] = "Substract "..tostring(prevMoney).."!"
+      end
+      if(totalMoney>0) then
+	 menuTable[lastOne+1] = "Yes, give "..tostring(totalMoney).."!"
+      end
+
+      tmp = giftMoneyText .. "(".. tostring(totalMoney).. " cumulated)"
+      money = text.menu(menuTable, tmp, tmp, true)
+      if giftMoneyAmounts[money]~=nil then
+	 totalMoney = totalMoney + money
+         prevMoney = money
+      elseif money == lastOne then
+         totalMoney = totalMoney - prevMoney
+         prevMoney =  -1
+      end
+   until giftMoneyAmounts[money]==nil and money~=lastOne
    if money~=0 then
-      tribe.money = tribe.money + money
-      player.money = player.money - money
-      translationTable[#translationTable + 1 ] = { code = "$money", value = money }
-      message = options.gift_money_confirmation or "$money sent to our $receiver friends!"
+      tribe.money = tribe.money + totalMoney
+      player.money = player.money - totalMoney
+      translationTable[#translationTable + 1 ] = { code = "%%MONEY", value = totalMoney }
+      message = options.giftMoneyConfirmation or "%MONEY sent to our %RECEIVER friends!"
       message = textTransform(message, translationTable)
       civ.ui.text(message)
    end
@@ -325,37 +349,71 @@ end
 --
 --    options is to be pased on, and may contain different configuration
 --    parameters for what and how to offer
---                 * gift_units_text -> Text to be shown to ask for confirmation
---                 * gift_units_confirmation -> Dialog to show after confirmation
---                 * gift_units_locations -> A list of locations per tribe name to put the gift. It will start with the first one,
+--                 * giftUnitsMaxCharUnitList -> Limit of characters for the list of units description (default: 300)
+--                 * giftUnitsText -> Text to be shown to ask for confirmation
+--                 * giftUnitsConfirmation -> Dialog to show after confirmation
+--                 * giftUnitsLocations -> A list of locations per tribe name to put the gift. It will start with the first one,
 --                                           and use all of them until one is valid
---                 * gitft_units_error -> A error message to be displayed in case no suitable location is found
---                   (only happens when gift_units_location is provided)
+--                 * giftUnitsError -> A error message to be displayed in case no suitable location is found
+--                   (only happens when giftUnitsLocations is provided)
 --
 --    You can use the following replacement parameters
---                 * $receiver -> Tribe name of who is receiving the gift
---                 * $tile     -> Tile where it happens
+--                 * %RECEIVER -> Tribe name of who is receiving the gift
+--                 * %RECEIVERADJECTIVE -> Tribe adjective of who is receiving the gift
+--                 * %TILE     -> Tile where it happens
+--                 * %UNITS     -> Friendly text about the units given
 --
 local function giftUnits(tribe, options)
+   local function buildUnitsText(tile, maxcChar)
+      local text = ""
+      byType = {}
+      for unit in tile.units do
+	 if byType[unit.type.id] == nil then
+	    byType[unit.type.id] = 1
+	 else
+	    byType[unit.type.id] = byType[unit.type.id] + 1
+	 end
+      end
+      unitsInText = 0
+      for i,v in pairs(byType) do
+	 if text:len() < maxChar then
+	    thisPart = tostring(v).." "..civ.getUnitType(i).name
+	    if text == "" then
+	       text = thisPart
+	    else
+	       text = text..", "..thisPart
+	    end
+            unitsInText = unitsInText + v
+	 end
+      end
+      if unitsInText < #tile.units then
+         text = text.." and "..tostring(#tile.units-unitsInText).." other units"
+      end
+      return text
+   end
+	 
    tile = civ.getCurrentTile()
-   translationTable = { { code = "$receiver", value = tribe.name },
-      { code = "$tile", value = tostring(tile.x)..","..tostring(tile.y).." in map "..tostring(tile.z) } };
-   gift_units_question = options.gift_unit_text or "Do you confirm gifting all units to $receiver in $tile?"
-   gift_units_question = textTransform(gift_units_question, translationTable)
-   menu_table = {}
-   menu_table[1] = "Ok!"
-   go_ahead = text.menu(menu_table, gift_units_question, gift_units_question, true)
-   if go_ahead == 1 then
+   maxChar = options.giftUnitsMaxCharUnitList or 300
+   translationTable = { { code = "%%RECEIVER", value = tribe.name },
+      { code = "%%RECEIVERADJECTIVE", value = tribe.adjective }
+      { code = "%%TILE", value = tostring(tile.x)..","..tostring(tile.y).." in map "..tostring(tile.z) },
+      { code = "%%UNITS", value = buildUnitsText(tile,maxchar) }}
+   giftUnitsQuestion = options.giftUnitsText or "Do you confirm gifting %UNITS to %RECEIVER in %TILE?"
+   giftUnitsQuestion = textTransform(giftUnitsQuestion, translationTable)
+   menuTable = {}
+   menuTable[1] = "Ok!"
+   goAhead = text.menu(menuTable, giftUnitsQuestion, giftUnitsQuestion, true)
+   if goAhead == 1 then
       units = destroyUnitsIn(tile)
-      if options.gift_units_locations ~= nil and options.gift_units_locations[tribe.name] ~= nil then
-	 position = options.gift_units_locations[tribe.name]
+      if options.giftUnitsLocations ~= nil and options.giftUnitsLocations[tribe.name] ~= nil then
+	 position = options.giftUnitsLocations[tribe.name]
       else
 	 position = {{ tile.x, tile.y, tile.z }}
       end
       if recreateUnitsIn(units, position, tribe) then
-	 message = options.gift_units_confirmation or "Units in $tile transferred to $receiver"
+	 message = options.giftUnitsConfirmation or "Units in %TILE transferred to %RECEIVER"
       else
-	 message = options.gift_units_error or "Some units were lost as no suitable destination square was found!"
+	 message = options.giftUnitsError or "Some units were lost as no suitable destination square was found!"
       end
       message = textTransform(message, translationTable)
       civ.ui.text(message)
@@ -366,31 +424,33 @@ end
 --
 --    options is to be pased on, and may contain different configuration
 --    parameters for what and how to offer
---                 * gift_city_text -> Text to be shown to ask for confirmation
---                 * gift_city_confirmation -> Dialog to show after confirmation
---                 * gift_city_destroy units -> Whether all units needs to be destroyed after the city is given out
+--                 * giftCityText -> Text to be shown to ask for confirmation
+--                 * giftCityConfirmation -> Dialog to show after confirmation
+--                 * giftCityDestroyUnits -> Whether all units needs to be destroyed after the city is given out
 --
 --    You can use the following replacement parameters
---                 * $receiver -> Tribe name of who is receiving the gift
---                 * $city     -> Name of the city
+--                 * %RECEIVER -> Tribe name of who is receiving the gift
+--                 * %RECEIVERADJECTIVE -> Tribe adjective of who is receiving the gift
+--                 * %CITY     -> Name of the city
 --
 local function giftCity(tribe, options)
    tile = civ.getCurrentTile()
    city = tile.city
-   translationTable = { { code = "$receiver", value = tribe.name },
-      { code = "$city", value = city.name } }
-   gift_city_question = options.gift_city_text or "Do you confirm gifting $city to $receiver?"
-   gift_city_question = textTransform(gift_city_question, translationTable)
-   menu_table = {}
-   menu_table[1] = "Ok!"
-   go_ahead = text.menu(menu_table, gift_city_question, gift_city_question, true)
-   if go_ahead == 1 then
+   translationTable = { { code = "%%RECEIVER", value = tribe.name },
+      { code = "%%RECEIVERADJECTIVE", value = tribe.adjective },
+      { code = "%%CITY", value = city.name } }
+   giftCityQuestion = options.giftCityText or "Do you confirm gifting %CITY to %RECEIVER?"
+   giftCityQuestion = textTransform(giftCityQuestion, translationTable)
+   menuTable = {}
+   menuTable[1] = "Ok!"
+   goAhead = text.menu(menuTable, giftCityQuestion, giftCityQuestion, true)
+   if goAhead == 1 then
       units = destroyUnitsIn(tile)
-      destroy_units = options.gift_city_destroy_units or false
+      destroyUnits = options.giftCityDestroyUnits or false
       city.owner = tribe
       position = {{ tile.x, tile.y, tile.z }}
-      if destroy_units or recreateUnitsIn(units, position, tribe) then
-	 message = options.gift_city_confirmation or "$city transferred to $receiver"
+      if destroyUnits or recreateUnitsIn(units, position, tribe) then
+	 message = options.giftCityConfirmation or "%CITY transferred to %RECEIVER"
       else
 	 message = "Unexpected error - Some units were lost!"
       end
@@ -404,18 +464,19 @@ end
 --
 --    options is to be pased on, and may contain different configuration
 --    parameters for what and how to offer
---                 * gift_tech_text -> Tech to be shown in the Tech window
---                 * gift_tech_confirmation -> Text to show when map is passed
---                 * gift_tech_no_techs -> Text to show when no tech to offer
---                 * gift_tech_not_trade -> Table with names of techs that can't be traded
+--                 * giftTechText -> Tech to be shown in the Tech window
+--                 * giftTechConfirmation -> Text to show when map is passed
+--                 * giftTechNoTechs -> Text to show when no tech to offer
+--                 * giftTechNotTrade -> Table with names of techs that can't be traded
 --
 --    You can use the following replacement parameters
---                 * $receiver -> Tribe name of who is receiving the gift
+--                 * %RECEIVER -> Tribe name of who is receiving the gift
+--                 * %RECEIVERADJECTIVE -> Tribe adjective of who is receiving the gift
 --                 * $tech     -> Name of the tech
 --
 local function giftTechnology(tribe, options) -- 
-   local function techInTable(tech, tech_table)
-      for i, v in pairs(tech_table) do
+   local function techInTable(tech, techTable)
+      for i, v in pairs(techTable) do
 	 if v == tech.name then
 	    return true
 	 end
@@ -423,32 +484,32 @@ local function giftTechnology(tribe, options) --
       return false
    end
 
-   translationTable = { { code = "$receiver", value = tribe.name } };
+   translationTable = { { code = "%%RECEIVER", value = tribe.name },  { code = "%%RECEIVERADJECTIVE", value = tribe.adjective },};
    player = civ.getCurrentTribe()
-   list_techs = {}
-   tech_techs = {}
-   tech_table = options.gift_tech_not_trade or {}
+   listTechs = {}
+   techTechs = {}
+   techTable = options.giftTechNotTrade or {}
    for techId = 0,99 do
       tech = civ.getTech(techId)
-      if not tribe:hasTech(tech) and player:hasTech(tech) and not techInTable(tech, tech_table)
+      if not tribe:hasTech(tech) and player:hasTech(tech) and not techInTable(tech, techTable)
       then
-	 list_techs[#list_techs+1] = tech.name
-	 tech_techs[#tech_techs+1] = tech
+	 listTechs[#listTechs+1] = tech.name
+	 techTechs[#techTechs+1] = tech
       end
    end
-   if #list_techs == 0 then
-      message = options.gift_tech_no_techs or  "There are no tech we can give to $receiver"
+   if #listTechs == 0 then
+      message = options.giftTechNoTechs or  "There are no tech we can give to %RECEIVER"
       message = textTransform(message, translationTable)
       civ.ui.text(message)
    else
-      gift_tech_text = options.gift_tech_text or "Which tech to give our friends $receiver?"
-      gift_tech_text = textTransform(gift_tech_text, translationTable)
-      techId = text.menu(list_techs, gift_tech_text, gift_tech_text, true)
+      giftTechText = options.giftTechText or "Which tech to give our friends %RECEIVER?"
+      giftTechText = textTransform(giftTechText, translationTable)
+      techId = text.menu(listTechs, giftTechText, giftTechText, true)
       if techId ~= 0 then
-	 tech = tech_techs[techId]
+	 tech = techTechs[techId]
 	 translationTable[#translationTable + 1] = { code = "$tech", value = tech.name } ;
 	 tribe:giveTech(tech)
-	 message = options.gift_tech_confirmation or "$tech given to $receiver"
+	 message = options.giftTechConfirmation or "$tech given to %RECEIVER"
 	 message = textTransform(message, translationTable)
 	 civ.ui.text(message)
       end
@@ -462,28 +523,31 @@ end
 --
 --    options is an optional table, and may contain different configuration
 --    parameters for what and how to offer
---                 * main_dialog_text -> Text to display in main dialog text
---                 * civ_selection_text -> Text to display when selecting destination civ
---                 * gift_money_text -> Text to display in main dialog text
---                 * gift_money_confiramtion -> Text to display when money is gifted
---                 * gift_money_amounts -> A table with the available amounts and the text associated to them
---                 * same_civ_player -> Text when a player attemps to gift something to his/herself.
---                 * gift_units_text -> Text to be shown to ask for confirmation
---                 * gift_units_confirmation -> Dialog to show after confirmation
---                 * gift_units_locations -> A list of locations per tribe name to put the gift. It will start with the first one,
+--                 * mainDialogText -> Text to display in main dialog text
+--                 * civSelectionText -> Text to display when selecting destination civ
+--                 * giftMoneyText -> Text to display in main dialog text
+--                 * giftMoneyConfirmation -> Text to display when money is gifted
+--                 * giftMoneyAmounts -> A table with the available amounts and the text associated to them
+--                 * sameCivPlayer -> Text when a player attemps to gift something to his/herself.
+--                 * giftUnitsMaxCharUnitList -> Limit of characters for the list of units description (default: 300)
+--                 * giftUnitsText -> Text to be shown to ask for confirmation
+--                 * giftUnitsConfirmation -> Dialog to show after confirmation
+--                 * giftUnitsLocations -> A list of locations per tribe name to put the gift. It will start with the first one,
 --                                           and use all of them until one is valid
---                 * gitft_units_error -> A error message to be displayed in case no suitable location is found
---                   (only happens when gift_units_location is provided)
---                 * gift_city_text -> Text to be shown to ask for confirmation
---                 * gift_city_confirmation -> Dialog to show after confirmation
---                 * gift_city_destroy units -> Whether all units needs to be destroyed after the city is given out
+--                 * giftUnitsError -> A error message to be displayed in case no suitable location is found
+--                   (only happens when giftUnitsLocations is provided)
+--                 * giftCityText -> Text to be shown to ask for confirmation
+--                 * giftCityConfirmation -> Dialog to show after confirmation
+--                 * giftCityDestroyUnits -> Whether all units needs to be destroyed after the city is given out
 --
 --    
 --    You can use the following replacement parameters
---                 * $receiver -> Tribe name of who is receiving the gift
---                 * $money -> The amount of money given out
---                 * $tile     -> Tile where it happens
---                 * $city     -> Name of the city
+--                 * %RECEIVER -> Tribe name of who is receiving the gift
+--                 * %RECEIVERADJECTIVE -> Tribe adjective of who is receiving the gift
+--                 * %MONEY -> The amount of money given out
+--                 * %TILE     -> Tile where it happens
+--                 * %CITY0     -> Name of the city
+--                 * %UNITS     -> Friendly text about the units given
 --
 --    Offers present regardless of the cursor position
 --                    * Money
@@ -522,15 +586,15 @@ local function diplomacyMenu(options)
       end
 
       options = options or {}
-      main_dialog_text = options.main_dialog_text or "Choose your option"
+      mainDialogText = options.mainDialogText or "Choose your option"
       menuTable = buildOptions()
-      gift = text.menu(menuTable, main_dialog_text, main_dialog_text, true)
+      gift = text.menu(menuTable, mainDialogText, mainDialogText, true)
       if gift ~= 0 then
-	 civ_selection_text = options.civ_selection_text or "Choose the civ to gift to"
+	 civSelectionText = options.civSelectionText or "Choose the civ to gift to"
 	 for i = 0, 7 do
 	    menuTable[i+1] = civ.getTribe(i).name
 	 end
-	 tribeId = text.menu(menuTable, civ_selection_text, civ_selection_text, true)
+	 tribeId = text.menu(menuTable, civSelectionText, civSelectionText, true)
       end
       if tribeId~=0 and gift ~=0 then
 	 -- How I miss switch/case
@@ -549,8 +613,8 @@ local function diplomacyMenu(options)
 	       giftCity(tribe, options)
 	    end
 	 else
-	    error_message = options.same_civ_player or "You can't gift yourself!"
-	    civ.ui.text(error_message)
+	    errorMessage = options.sameCivPlayer or "You can't gift yourself!"
+	    civ.ui.text(errorMessage)
 	 end
       end
 end
