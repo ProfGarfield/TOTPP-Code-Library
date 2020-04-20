@@ -253,17 +253,19 @@ defaultGiftMoneyAmounts[10000] = "Add 5000"
 --                 * giftMoneyAmounts -> A table with the available amounts and the text associated with them
 --    You can use the following replacement parameters
 --                 * %RECEIVER -> Tribe name of who is receiving the gift
+--                 * %RECEIVERADJECTIVE -> Tribe adjective of who is receiving the gift
 --                 * %MONEY -> The amount of money given out
 --
 --    Tribe: The tribe to pass money to
 local function giftMoneyMenu(tribe, options)
-   translationTable = { { code = "%%RECEIVER", value = tribe.name } };
+   translationTable = { { code = "%%RECEIVER", value = tribe.name }, { code = "%%RECEIVERADJECTIVE", value = tribe.adjective } };
    options = options or {}
    giftMoneyText = options.giftMoneyText or "Which amount should we gift to our %RECEIVER friends?"
    giftMoneyText = textTransform(giftMoneyText, translationTable)
    giftMoneyAmounts = options.giftMoneyAmounts or defaultGiftMoneyAmounts
    player = civ.getCurrentTribe()
    totalMoney  = 0
+   prevMoney = -1
    ended = False
    repeat
       menuTable = {}
@@ -276,15 +278,23 @@ local function giftMoneyMenu(tribe, options)
 	    lastOne = i+1
 	 end
       end
-      if(totalMoney>0) then
-	 menuTable[lastOne] = "Yes, give "..tostring(totalMoney).."!"
+      if(prevMoney~=-1) then
+         menuTable[lastOne] = "Substract "..tostring(prevMoney).."!"
       end
+      if(totalMoney>0) then
+	 menuTable[lastOne+1] = "Yes, give "..tostring(totalMoney).."!"
+      end
+
       tmp = giftMoneyText .. "(".. tostring(totalMoney).. " cumulated)"
       money = text.menu(menuTable, tmp, tmp, true)
       if giftMoneyAmounts[money]~=nil then
 	 totalMoney = totalMoney + money
+         prevMoney = money
+      elseif money == lastOne then
+         totalMoney = totalMoney - prevMoney
+         prevMoney =  -1
       end
-   until giftMoneyAmounts[money]==nil
+   until giftMoneyAmounts[money]==nil and money~=lastOne
    if money~=0 then
       tribe.money = tribe.money + totalMoney
       player.money = player.money - totalMoney
@@ -349,6 +359,7 @@ end
 --
 --    You can use the following replacement parameters
 --                 * %RECEIVER -> Tribe name of who is receiving the gift
+--                 * %RECEIVERADJECTIVE -> Tribe adjective of who is receiving the gift
 --                 * %TILE     -> Tile where it happens
 --                 * %UNITS     -> Friendly text about the units given
 --
@@ -363,6 +374,7 @@ local function giftUnits(tribe, options)
 	    byType[unit.type.id] = byType[unit.type.id] + 1
 	 end
       end
+      unitsInText = 0
       for i,v in pairs(byType) do
 	 if text:len() < maxChar then
 	    thisPart = tostring(v).." "..civ.getUnitType(i).name
@@ -371,7 +383,11 @@ local function giftUnits(tribe, options)
 	    else
 	       text = text..", "..thisPart
 	    end
+            unitsInText = unitsInText + v
 	 end
+      end
+      if unitsInText < #tile.units then
+         text = text.." and "..tostring(#tile.units-unitsInText).." other units"
       end
       return text
    end
@@ -379,6 +395,7 @@ local function giftUnits(tribe, options)
    tile = civ.getCurrentTile()
    maxChar = options.giftUnitsMaxCharUnitList or 300
    translationTable = { { code = "%%RECEIVER", value = tribe.name },
+      { code = "%%RECEIVERADJECTIVE", value = tribe.adjective }
       { code = "%%TILE", value = tostring(tile.x)..","..tostring(tile.y).." in map "..tostring(tile.z) },
       { code = "%%UNITS", value = buildUnitsText(tile,maxchar) }}
    giftUnitsQuestion = options.giftUnitsText or "Do you confirm gifting %UNITS to %RECEIVER in %TILE?"
@@ -413,12 +430,14 @@ end
 --
 --    You can use the following replacement parameters
 --                 * %RECEIVER -> Tribe name of who is receiving the gift
+--                 * %RECEIVERADJECTIVE -> Tribe adjective of who is receiving the gift
 --                 * %CITY     -> Name of the city
 --
 local function giftCity(tribe, options)
    tile = civ.getCurrentTile()
    city = tile.city
    translationTable = { { code = "%%RECEIVER", value = tribe.name },
+      { code = "%%RECEIVERADJECTIVE", value = tribe.adjective },
       { code = "%%CITY", value = city.name } }
    giftCityQuestion = options.giftCityText or "Do you confirm gifting %CITY to %RECEIVER?"
    giftCityQuestion = textTransform(giftCityQuestion, translationTable)
@@ -452,6 +471,7 @@ end
 --
 --    You can use the following replacement parameters
 --                 * %RECEIVER -> Tribe name of who is receiving the gift
+--                 * %RECEIVERADJECTIVE -> Tribe adjective of who is receiving the gift
 --                 * $tech     -> Name of the tech
 --
 local function giftTechnology(tribe, options) -- 
@@ -464,7 +484,7 @@ local function giftTechnology(tribe, options) --
       return false
    end
 
-   translationTable = { { code = "%%RECEIVER", value = tribe.name } };
+   translationTable = { { code = "%%RECEIVER", value = tribe.name },  { code = "%%RECEIVERADJECTIVE", value = tribe.adjective },};
    player = civ.getCurrentTribe()
    listTechs = {}
    techTechs = {}
@@ -523,6 +543,7 @@ end
 --    
 --    You can use the following replacement parameters
 --                 * %RECEIVER -> Tribe name of who is receiving the gift
+--                 * %RECEIVERADJECTIVE -> Tribe adjective of who is receiving the gift
 --                 * %MONEY -> The amount of money given out
 --                 * %TILE     -> Tile where it happens
 --                 * %CITY0     -> Name of the city
