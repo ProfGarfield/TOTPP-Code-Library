@@ -145,11 +145,11 @@ local kAttack = {}
 --  message to show if a unit (or units) is created
 --
 
-kAttack[object.uSubmarine.id] = {goldCost = 500,moveCost = 3,allowedTerrainTypes={10,},
-        treasuryFailMessage = "This munition requires 500 gold to fire.",
-        terrainTypeFailMessage = object.uSubmarine.name.." units can only fire "..object.uCruiseMsl.name.." units at sea.",
-        requiredTech = object.aRocketry,
-        techFailMessage = object.uSubmarine.name.." units cannot fire fire "..object.uCruiseMsl.name.." units until we have discovered "..object.aRocketry.name..".",
-        generatedUnitType = object.uCruiseMsl, activate = true,}
+--kAttack[object.uSubmarine.id] = {goldCost = 500,moveCost = 3,allowedTerrainTypes={10,},
+--        treasuryFailMessage = "This munition requires 500 gold to fire.",
+--        terrainTypeFailMessage = object.uSubmarine.name.." units can only fire "..object.uCruiseMsl.name.." units at sea.",
+--        requiredTech = object.aRocketry,
+--        techFailMessage = object.uSubmarine.name.." units cannot fire fire "..object.uCruiseMsl.name.." units until we have discovered "..object.aRocketry.name..".",
+--        generatedUnitType = object.uCruiseMsl, activate = true,}
 
 return kAttack

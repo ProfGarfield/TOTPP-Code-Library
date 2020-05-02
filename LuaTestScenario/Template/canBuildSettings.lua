@@ -106,7 +106,7 @@ local canBuildFunctions = require("canBuild")
 --          Be careful that the 'can build chain' does not form a loop
 --          A single entry not in a table will be 'wrapped' with a table in post processing
 --      .requireSomeAsAlternateProduction = unitTypeObject or improvementObject or wonderObject or table of these objects
---          the city can only build the item if city:canBuild(item) is true for at least one item in the list
+--          the city can only build the item if the city can build some of the items in the list
 --          Be careful that the 'can build chain' does not form a loop
 --          A single entry not in a table will be 'wrapped' with a table in post processing
 --      .numberOfAlternateProduction = integer
@@ -130,6 +130,16 @@ local canBuildFunctions = require("canBuild")
 --          use this (or overrideFunction) if you want to have more than one valid way to produce the item
 --          the 'table' format is important.  Unlike other parameters, you must enclose the value of 
 --          alternateParameters in a table, even if there is only one itemParameters as the value
+--      .computerOnly = bool or nil
+--          if true, item can only be built by computer controlled players
+--          if false or nil, either human or AI players can build
+--          (in conjunction with alternateParameters, this can be used to have different conditions for the
+--          ai and human players)
+--      .humanOnly = bool or nil
+--          if true, item can only be built by human controlled players
+--          if false or nil, either human or AI players can build
+--          (in conjunction with alternateParameters, this can be used to have different conditions for the
+--          ai and human players)
 --
 --
 

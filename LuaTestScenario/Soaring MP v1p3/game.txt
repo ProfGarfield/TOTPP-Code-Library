@@ -2809,14 +2809,11 @@ agents suspected.
 @width=320
 @title=Intelligence Advisor
 %STRING0 %STRING1 will desert for %NUMBER0 thousand drachmae.
-Remember, only Barbarians and Lydian Barbarians can be bribed,
-no player units or Persians!
 
 @DESERT2
 @width=320
 @title=Intelligence Advisor
 %STRING0 %STRING1 will desert for %NUMBER0 thousand drachmae.
-Remember, only Barbarians and Lydians can be bribed.
 
 Forget it.
 Pay %NUMBER0 thousand drachmae.

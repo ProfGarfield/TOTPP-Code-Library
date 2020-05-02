@@ -31,6 +31,8 @@ local backspaceAttack = require("munitionsSecondaryAttack")
 local keyboard = require("keyboard")
 local canBuildFunctions = require("canBuild")
 local canBuildSettings = require("canBuildSettings")
+local log = require("log")
+local helpkey = require("helpkey")
 -- define flags and counters here
 for i=0,7 do
     flag.define("tribe"..tostring(i).."AfterProductionNotDone",true)
@@ -58,6 +60,8 @@ local function linkStateTableToModules()
     -- link the state table to the legacyEventEngine
     state.legacyState = state.legacyState or {}
     legacy.linkState(state.legacyState)
+    state.logTable = state.logTable or {}
+    log.linkState(state.logTable)
 end
 linkStateTableToModules()
 
@@ -119,6 +123,27 @@ local function doWhenUnitKilledInCombat(loser,winner,aggressor,victim,aggressorL
        civ.createUnit(object.uSlave,winner.owner,winner.location)
        winner.owner.money=winner.owner.money+param.richVillagePlunder
    end
+   if loser.type.role == 5 then
+       -- capture slaves
+       if loser == victim then
+           if loser.type == object.uSlave then
+               text.simple(text.substitute("We have captured some %STRING1 "..loser.type.name.."s.",{loser.owner.adjective}))
+               local newSlave = civ.createUnit(object.uSlave,winner.owner,winner.location)
+               newSlave.homeCity = nil
+           elseif loser.type == object.uColonist or loser.type == object.uCitizen 
+               or loser.type == object.uEngineer or loser.type == object.uHelot then
+               text.simple(text.substitute("We have captured and enslaved some %STRING1 %STRING2s",
+                {loser.owner.adjective,loser.type.name}))
+               local newSlave = civ.createUnit(object.uSlave,winner.owner,winner.location)
+               newSlave.homeCity = nil
+           end
+       elseif loser == aggressor then
+           text.simple(text.substitute("Our %STRING1s have been defeated and enslaved by the %STRING2.",
+           {loser.type.name,winner.owner.name}))
+           local newSlave = civ.createUnit(object.uSlave,winner.owner,winner.location)
+           newSlave.homeCity = nil
+       end
+   end
 
 end
 
@@ -126,6 +151,7 @@ end
 -- this will be necessary in any other event that 'kills' a unit
 local function doOnUnitKilled(loser,winner)--> void
    legacy.doUnitKilledEvents(loser,winner) 
+
 
 end
 
@@ -155,11 +181,13 @@ end
 
 local function doOnCityTaken(city,defender) -->void
     legacy.doCityTakenEvents(city,defender)
+    log.onCityTaken(city,defender)
 
 end
 
 local function doOnCityDestroyed(city) --> void
     legacy.doCityDestroyedEvents(city)
+    log.onCityDestroyed(city)
 end
 
 local function doOnCityProduction(city,prod) -->void
@@ -181,16 +209,20 @@ local function doOnActivateUnit(unit,source) --> void
 end
 
 -- returns true if the unit is on a land tile, or is adjacent to one
+-- or, if the unit doesn't have the trireme flag set
 local function landAdjacent(unit)
-   local offsets = {{0,0},{0,2},{1,1},{2,0},{1,-1},{0,-2},{-1,-1},{-2,0},{-1,1}}
-   local center = unit.location
-   for __,offset in pairs(offsets) do
-       local t = civ.getTile(center.x+offset[1],center.y+offset[2],center.z)
-       if t.terrainType%16~=10 then
-           return true
-       end
-   end
-   return false
+    if not(gen.isCoastal(unit.type)) then
+        return true
+    end
+    local offsets = {{0,0},{0,2},{1,1},{2,0},{1,-1},{0,-2},{-1,-1},{-2,0},{-1,1}}
+    local center = unit.location
+    for __,offset in pairs(offsets) do
+        local t = civ.getTile(center.x+offset[1],center.y+offset[2],center.z)
+        if t.terrainType%16~=10 then
+            return true
+        end
+    end
+    return false
 end
 
 local function rechargeShipMovement(unit)
@@ -199,14 +231,64 @@ local function rechargeShipMovement(unit)
     if remainingCharges > 0 and landAdjacent(unit) then
         remainingCharges = remainingCharges - 1
         unit.moveSpent =  moveMult - remainingCharges
+        text.simple(text.substitute("Our %STRING1 has had its movement allowance replenished.",{unit.type.name}),"Movement Replenishment")
+    elseif remainingCharges == 0 then
+        text.simple(text.substitute("Our %STRING1 has used up its full allotment of movement replenishment for the current turn.  Only sea units with fractional movement points remaining can restore their movement allowance.",{unit.type.name}),"Seafaring Rules: Movement Replenishment")
+
+    else
+        text.simple("","Seafaring Rules: Movement Replenishment")
+        text.simple(text.substitute("Our %STRING1 is not adjacent to a land square.  Sea units must be adjacent to land squares in order to restore their movement allowance",{unit.type.name}),"Seafaring Rules: Movement Replenishment")
     end
 end
 
+local helpTextByUnitTypeID = {
+[object.uColonist.id]="Can found new cities on colony sites, and join existing cities.",
+[object.uCitizen.id]="Can join existing cities.",
+
+[object.uTransportShip.id]="Press K to restore movement when adjacent to land.",
+[object.uTransportGalley.id]="Press K to restore movement when adjacent to land.",
+[object.uTrireme.id]="Press K to restore movement (even if not adjacent to land.",
+[object.uPunicGalley.id]="Press K to restore movement when adjacent to land.",
+[object.uBireme.id]="Press K to restore movement when adjacent to land.",
+[object.uLiburnae.id]="Press K to restore movement when adjacent to land.",
+[object.uPentreconter.id]="Press K to restore movement when adjacent to land.",
+}
+local function helpFunction(unit) return nil end
+
 local function doOnKeyPress(keyCode)
     --print(keyCode)
-    if keyCode == 72 --[[h]] then
+    local activeUnit = civ.getActiveUnit()
+    if keyCode % 256 == keyboard.b and activeUnit and activeUnit.location.city
+        and activeUnit.location.city.size < civ.cosmic.sizeAquaduct and activeUnit.type.role == 5 and 
+        not (activeUnit.type == object.uColonist or activeUnit.type == object.uCitizen) then
+        local cityLoc = activeUnit.location
+        cityLoc.city.size = cityLoc.city.size-1
+        local replacementUnit = civ.createUnit(activeUnit.type,activeUnit.owner,activeUnit.location)
+        replacementUnit.homeCity = activeUnit.homeCity
+        replacementUnit.moveSpent = activeUnit.moveSpent
+        replacementUnit.attributes = activeUnit.attributes
+        replacementUnit.damage = activeUnit.damage
+        gen.activate(replacementUnit)
+        text.simple(text.substitute("Only %STRING1s and %STRING2s can join cities.",
+        {object.uCitizen.name,object.uColonist.name}))
+        return
     end
-    if keyCode == 73 --[[i]] then
+    --if activeUnit then
+    --    local activeUnitType = activeUnit.type
+    --    local activeUnitOwner = activeUnit.owner
+    --    local activeUnitLocation = activeUnit.location
+    --    print(activeUnitType,activeUnitOwner,activeUnitLocation)
+    --end
+    if keyCode == keyboard.tab then
+        helpkey.helpKey(keyCode,keyboard.tab,{},helpTextByUnitTypeID,helpFunction)
+        return
+    end
+    if keyCode == keyboard.one then
+        text.openArchive()
+    end
+    if keyCode == keyboard.escape then
+        log.combatReportFunction()
+        return
     end
     if keyCode == keyboard.k --[[k]] and civ.getActiveUnit() then
         munitions.doMunition(civ.getActiveUnit(),kAttack,doOnActivateUnit)
@@ -216,6 +298,7 @@ local function doOnKeyPress(keyCode)
         end
         return
     end
+    -- Only citizens and colonists can join cities
     if keyCode == keyboard.backspace and civ.getActiveUnit() then
         munitions.doMunition(civ.getActiveUnit(),backspaceAttack,doOnActivateUnit)
         return
@@ -225,7 +308,7 @@ end
 
 local cityNames = require("soaringCityNames")
 local function doOnCityFounded(city) --> void
-    civ.ui.text("City Location is "..tostring(city.location.x)..","..tostring(city.location.y))
+    --civ.ui.text("City Location is "..tostring(city.location.x)..","..tostring(city.location.y))
     city.name = cityNames[gen.getTileID(city.location)] or "Do Not Build"
     if city.location.terrainType%16 ~= 7 then
         if city.owner.isHuman then
@@ -282,6 +365,7 @@ civ.scen.onUnitKilled(function(loser,winner)
     doWhenUnitKilledInCombat(loser,winner,aggressor,victim,aggressorLocation,victimVeteranStatusBeforeCombat,
         aggressorVeteranStatusBeforeCombat)
     doOnUnitKilled(loser,winner)
+    log.onUnitKilled(winner,loser)
 end)
 
 civ.scen.onCityTaken(doOnCityTaken)
