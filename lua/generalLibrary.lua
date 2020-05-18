@@ -139,6 +139,7 @@
 --#gen.activateWithSource(unit,source)-->void
 --#gen.linkActivationFunction(function(unit,source)-->void)-->void
 --#gen.getTileID(tileObject or int,int or nil,int or nil)-->int (by Knighttime, converts a tile/coordinates to a single integer as an ID number)
+--#gen.distance(tileUnitCityA,tileUnitCityB,zDist=0)-->integer
 
 --
 -- FUNCTION IMPLEMENTATIONS
@@ -1217,6 +1218,36 @@ function gen.getTileID (tileORX,y,z)
 end
 
 
+-- distance(tileUnitCityA,tileUnitCityB)-->integer
+-- gen.distance(tileUnitCityA,tileUnitCityB)-->integer
+-- returns the distance (1-norm, not Euclidian) (in terms of tiles, not coordinates) between 
+-- objects A and B, that have a natural location (also converts doubles and triples of tables)
+-- zDist is the number of tiles that one unit of z coordinate "distance" is equivalent to
+local function distance(tileUnitCityA,tileUnitCityB,zDist)
+    zDist = zDist or 0
+    local locA = nil
+    local locB = nil
+    if type(tileUnitCityA)=="table" then
+        locA=toTile(tileUnitCityA)
+    elseif civ.isUnit(tileUnitCityA) or civ.isCity(tileUnitCityA) then
+        locA=tileUnitCityA.location
+    elseif civ.isTile(tileUnitCityA) then
+        locA = tileUnitCityA
+    else
+        error("gen.distance: first argument must be a tile (or coordinates of a tile), or a unit or a city.")
+    end
+    if type(tileUnitCityB)=="table" then
+        locB=toTile(tileUnitCityB)
+    elseif civ.isUnit(tileUnitCityB) or civ.isCity(tileUnitCityB) then
+        locB=tileUnitCityB.location
+    elseif civ.isTile(tileUnitCityB) then
+        locB = tileUnitCityB
+    else
+        error("gen.distance: second argument must be a tile (or coordinates of a tile), or a unit or a city.")
+    end
+    return (math.abs(locA.x-locB.x)+math.abs(locA.y-locB.y)+2*zDist*math.abs(locA.z-locB.z))//2
+end
+gen.distance = distance
 
 
 

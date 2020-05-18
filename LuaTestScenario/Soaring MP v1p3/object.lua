@@ -246,14 +246,14 @@ object.iTransporter             = civ.getImprovement(35)
 -- Tribes
 -- recommended key prefix 't'
 --
-object.tBarbarians              = civ.getTribe(0)
-object.tWhiteTribe              = civ.getTribe(1)
-object.tGreenTribe              = civ.getTribe(2)
-object.tBlueTribe               = civ.getTribe(3)
-object.tYellowTribe             = civ.getTribe(4)
-object.tCyanTribe               = civ.getTribe(5)
-object.tOrangeTribe             = civ.getTribe(6)
-object.tPurpleTribe             = civ.getTribe(7)
+object.tMinorCities              = civ.getTribe(0)
+object.tAthenians              = civ.getTribe(1)
+object.tCorinthians              = civ.getTribe(2)
+object.tIonians              = civ.getTribe(3)
+object.tSpartans             = civ.getTribe(4)
+object.tLydians               = civ.getTribe(5)
+object.tPhoenicians            = civ.getTribe(6)
+object.tEtruscans             = civ.getTribe(7)
 
 -- Wonders
 -- recommended key prefix 'w'

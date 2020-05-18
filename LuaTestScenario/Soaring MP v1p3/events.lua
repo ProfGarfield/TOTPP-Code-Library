@@ -7,8 +7,9 @@ if string.find(package.path, scenarioFolderPath, 1, true) == nil then
    package.path = package.path .. ";" .. scenarioFolderPath
 end
 
---[[
+
 console={}
+--[[
 musicFolder= string.gsub(eventsPath,civ.getToTDir(),"..")
 musicFolder= string.gsub(musicFolder,"events.lua","").."\\Music"
 console.musicFolder = musicFolder
@@ -33,10 +34,12 @@ local canBuildFunctions = require("canBuild")
 local canBuildSettings = require("canBuildSettings")
 local log = require("log")
 local helpkey = require("helpkey")
+local diplomacy = require("diplomacy")
 -- define flags and counters here
 for i=0,7 do
     flag.define("tribe"..tostring(i).."AfterProductionNotDone",true)
 end
+
 
 
 -- This function is is a place for functions that link to the
@@ -109,6 +112,7 @@ local function doAfterProduction(turn,tribe)-->void
         end
     end
 end
+console.afterProduction = doAfterProduction
 
 
 -- This will only run when a unit is killed in combat (i.e. not when an event
@@ -225,10 +229,32 @@ local function landAdjacent(unit)
     return false
 end
 
+-- checks if there is a ship with an attack value "near"
+-- (param.shipInterceptionDistance) a unit
+-- returns the unit if there is, returns false if not
+local function nearbyEnemyShip(unit)
+    local unitTribe = unit.owner
+    for otherUnit in civ.iterateUnits() do
+        if otherUnit.type.domain == 2 and otherUnit.type.attack > 0 and
+            (diplomacy.warExists(unitTribe,otherUnit.owner) or otherUnit.owner == object.tLydians
+            or otherUnit.owner == object.tMinorCities) and 
+            gen.distance(unit,otherUnit) <= param.shipInterceptionDistance then
+            return otherUnit
+        end
+    end
+    return false
+end
+        
+
+
 local function rechargeShipMovement(unit)
     local moveMult = totpp.movementMultipliers.aggregate
     local remainingCharges = (unit.type.move-unit.moveSpent)%moveMult
-    if remainingCharges > 0 and landAdjacent(unit) then
+    local nearbyShip = nearbyEnemyShip(unit)
+    if nearbyShip then
+        text.simple(text.substitute("Our %STRING1 cannot replenish its movement points due to the nearby %STRING2 %STRING3.  Ships can't replenish their movement points within %STRING4 squares of an enemy warship.",
+        {unit.type.name,nearbyShip.owner.adjective,nearbyShip.type.name,tostring(param.shipInterceptionDistance)}),"Seafaring Rules: Movement Replenishment")
+    elseif remainingCharges > 0 and landAdjacent(unit) then
         remainingCharges = remainingCharges - 1
         unit.moveSpent =  moveMult - remainingCharges
         text.simple(text.substitute("Our %STRING1 has had its movement allowance replenished.",{unit.type.name}),"Movement Replenishment")
@@ -236,7 +262,6 @@ local function rechargeShipMovement(unit)
         text.simple(text.substitute("Our %STRING1 has used up its full allotment of movement replenishment for the current turn.  Only sea units with fractional movement points remaining can restore their movement allowance.",{unit.type.name}),"Seafaring Rules: Movement Replenishment")
 
     else
-        text.simple("","Seafaring Rules: Movement Replenishment")
         text.simple(text.substitute("Our %STRING1 is not adjacent to a land square.  Sea units must be adjacent to land squares in order to restore their movement allowance",{unit.type.name}),"Seafaring Rules: Movement Replenishment")
     end
 end
@@ -247,7 +272,7 @@ local helpTextByUnitTypeID = {
 
 [object.uTransportShip.id]="Press K to restore movement when adjacent to land.",
 [object.uTransportGalley.id]="Press K to restore movement when adjacent to land.",
-[object.uTrireme.id]="Press K to restore movement (even if not adjacent to land.",
+[object.uTrireme.id]="Press K to restore movement (even if not adjacent to land).",
 [object.uPunicGalley.id]="Press K to restore movement when adjacent to land.",
 [object.uBireme.id]="Press K to restore movement when adjacent to land.",
 [object.uLiburnae.id]="Press K to restore movement when adjacent to land.",

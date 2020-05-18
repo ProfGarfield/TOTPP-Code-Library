@@ -395,7 +395,7 @@ local function giftUnits(tribe, options)
    tile = civ.getCurrentTile()
    maxChar = options.giftUnitsMaxCharUnitList or 300
    translationTable = { { code = "%%RECEIVER", value = tribe.name },
-      { code = "%%RECEIVERADJECTIVE", value = tribe.adjective }
+      { code = "%%RECEIVERADJECTIVE", value = tribe.adjective },
       { code = "%%TILE", value = tostring(tile.x)..","..tostring(tile.y).." in map "..tostring(tile.z) },
       { code = "%%UNITS", value = buildUnitsText(tile,maxchar) }}
    giftUnitsQuestion = options.giftUnitsText or "Do you confirm gifting %UNITS to %RECEIVER in %TILE?"
