@@ -224,7 +224,7 @@ local function reactionEngine(theTriggerUnit,theTableOfMunitionsGenerated,canRea
             triggerUnit = unitReturned
             reactionsToTriggerUnit = reactionsToTriggerUnit + 1
         end
-    until (tableIsEmpty(tableOfReactingUnits) or not(triggerUnit) or (reactionsToTriggerUnit > maximumReactionsAgainstTriggerUnit))
+    until (tableIsEmpty(tableOfReactingUnits) or not(triggerUnit) or (reactionsToTriggerUnit >= maximumReactionsAgainstTriggerUnit))
 
     local tabulationData = {}
     tabulationData[0]={[1]="Tribe",[2]="Unit Type",[3]="Reaction Category"}

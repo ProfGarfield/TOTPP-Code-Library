@@ -167,6 +167,7 @@ local WarriorsKilled = {
    deadUnit = nil
    deadUnitLoc = nil
   civ.scen.onUnitKilled(function (killed, killedBy)
+      print(killed,killedBy)
       log.onUnitKilled(killedBy,killed)
       kw.legionMessage(killed)
       if killed.type.id == 2 then
@@ -200,10 +201,13 @@ civ.scen.onCityTaken(function(city,defender)
 end)
 
 civ.scen.onCityDestroyed(function(city)
+    print(city)
     log.onCityDestroyed(city)
 end)
 
-civ.scen.onResolveCombat(function(defaultResolutionFunction, defender, attacker) if attacker.hitpoints <=0 or defender.hitpoints <=0 then end return defaultResolutionFunction(defender,attacker) end)
+civ.scen.onResolveCombat(function(defaultResolutionFunction, defender, attacker) 
+    print(defender,attacker)
+    if attacker.hitpoints <=0 or defender.hitpoints <=0 then end return defaultResolutionFunction(defender,attacker) end)
 
 local function doAfterProduction(tribe,turn)
     text.simple("After Production for "..tribe.name.." on turn "..civ.getTurn())
@@ -212,11 +216,11 @@ local function doAfterProduction(tribe,turn)
 end
 
 local function doOnActivateUnit(unit,source)
+    gen.clearAdjacentAirProtection(unit)
     if flag.value("tribe"..tostring(civ.getCurrentTribe().id).."AfterProductionNotComplete") then
         doAfterProduction(civ.getCurrentTribe(),civ.getTurn())
         flag.setFalse("tribe"..tostring(civ.getCurrentTribe().id).."AfterProductionNotComplete")
     end
-    civ.ui.text(unit.type.name.." activated.  On Tile "..tostring(unit.location.x)..","..tostring(unit.location.y)..") with goto order "..tostring(unit.gotoTile))
     local lowerTile = civ.getTile(unit.location.x,unit.location.y+2,unit.location.z)
     if lowerTile.defender and lowerTile.defender ~= unit.owner then
         civ.ui.text("unitSouth")

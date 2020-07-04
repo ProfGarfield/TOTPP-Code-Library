@@ -115,6 +115,7 @@ end
 console.afterProduction = doAfterProduction
 
 
+
 -- This will only run when a unit is killed in combat (i.e. not when an event
 -- 'kills' a unit)
 -- note that if the aggressor loses, aggressor.location will not work
@@ -126,6 +127,9 @@ local function doWhenUnitKilledInCombat(loser,winner,aggressor,victim,aggressorL
        civ.ui.text(text.substitute("The citizens are rounded up and enslaved, and %STRING1 %STRING2 of plunder makes its way to the %STRING3 treasury.  This looks like a perfect location to found a new colony!",{param.richVillagePlunder,param.currencyPlural,winner.owner.adjective}))
        civ.createUnit(object.uSlave,winner.owner,winner.location)
        winner.owner.money=winner.owner.money+param.richVillagePlunder
+       if not gen.unitTypeOnTile(winner.location,{object.uStrategos}) then
+            winner.damage = winner.type.hitpoints-1
+        end
    end
    if loser.type.role == 5 then
        -- capture slaves
@@ -347,6 +351,7 @@ local function doOnCityFounded(city) --> void
         city.name = "Do Not Build"
   --      civ.deleteCity(city)
     end
+    civ.addImprovement(city,object.iCityWalls)
 
 
 end
@@ -365,6 +370,7 @@ local firstRoundOfCombat = true
 local aggressorVeteranStatusBeforeCombat = false
 local aggressorLocation = nil -- if the aggressor dies, this information isn't available in onUnitKilled
 local victimVeteranStatusBeforeCombat = false
+local defenderStratego = false
 local function doOnResolveCombat(defaultResolutionFunction,defender,attacker)
     -- this if statement will only be executed once per combat
     if firstRoundOfCombat then
@@ -372,8 +378,23 @@ local function doOnResolveCombat(defaultResolutionFunction,defender,attacker)
         aggressorVeteranStatusBeforeCombat = attacker.veteran
         aggressorLocation = attacker.location
         victimVeteranStatusBeforeCombat = defender.veteran
-
+        if gen.unitTypeOnTile(attacker.location,{object.uStrategos}) then
+            defender.damage = defender.damage+math.floor(defender.type.hitpoints*0.2)
+        end
+        if gen.unitTypeOnTile(defender.location,{object.uStrategos}) then
+            defenderStratego = true
+            -- this makes sure that if there is a stratego on both sides of the conflict, 
+            -- the defender won't survive with negative hp
+            if defender.damage >= defender.type.hitpoints then
+                defender.damage = defender.type.hitpoints -1
+            end
+        else
+            defenderStratego = false
+        end
     end -- firstRoundOfCombat
+    if defenderStratego and defender.hitpoints < attacker.type.firepower then
+        attacker.damage = attacker.damage + 2*defender.type.firepower
+    end
     return defaultResolutionFunction(defender,attacker)
 end
 
