@@ -1,0 +1,26 @@
+@SCENARIO
+@width=450
+@title=%STRING0
+^^Length: %STRING1 to %STRING2
+^"Pile on the brown man's burden and, if ye rouse his hate, 
+^ Meet his old-fashioned reasons with Maxims up to date." 
+^^Henry Labouchère, 1899 (parody of White Man's Burden by Kipling)
+^
+^The Berlin Conference of 1884 set off a race among European powers to claim as much 
+land as possible in Africa. This scenario recreates the Scrambe for Africa. It begins 
+in 1889 when Italy has set up new colonies in Somalia and looks to take over Abyssinia. 
+Menelik II, the new Emperor of Abyssinia is having none of that and looks to 
+expand his empire. Britain, France, Germany, Portugal, and the Ottoman Empire have their 
+own agendas: Britain would like to regain Sudan from the Mahdists and expand in South 
+Africa, France would like to extend its empire in West Africa, Germany and Portugal try to  
+expand their claims in East Africa, and the Ottomans would like to restore their empire to 
+its former glory.
+All civilizations are playable, but some are easier than others.
+^  ~ Hardest:  Abyssinians, Ottomans, Italians
+^  ~ Middling: Germans, Portuguese
+^  ~ Easiest:  Englishmen, Frenchmen
+^The Game ends with the outbreak of World War I.
+^SPECIAL RULES: No Government changes, No Space Race (of course!),
+^  6 turns per year. Slow Population Growth.
+@end -- this line must be here!
+

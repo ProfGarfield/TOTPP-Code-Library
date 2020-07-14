@@ -141,11 +141,11 @@
 ;amount=+150
 ;@ENDIF
 
-;FIRST PERSIAN INVASION 540BC - 210
+;FIRST PERSIAN INVASION 540BC - turn 42 
 
 @IF
 TURN
-TURN=210
+TURN=42
 @THEN
 GIVETECHNOLOGY
 TECHNOLOGY=93
@@ -305,11 +305,11 @@ locations
 endlocations
 @ENDIF
 
-;SECOND PERSION INVASION 492BC - 258
+;SECOND PERSION INVASION 492BC - turn 51 (instead of 258)
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 GIVETECHNOLOGY
 TECHNOLOGY=94
@@ -679,7 +679,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -696,7 +696,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -713,7 +713,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -732,7 +732,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -749,7 +749,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -766,7 +766,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -785,7 +785,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -802,7 +802,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -819,7 +819,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -838,7 +838,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -855,7 +855,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -872,7 +872,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -891,7 +891,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -908,7 +908,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -927,7 +927,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -944,7 +944,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -961,7 +961,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -980,7 +980,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -997,7 +997,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -1014,7 +1014,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -1033,7 +1033,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -1050,7 +1050,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -1067,7 +1067,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -1086,7 +1086,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -1103,7 +1103,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -1122,7 +1122,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal
@@ -1139,7 +1139,7 @@ endlocations
 
 @IF
 TURN
-TURN=258
+TURN=51
 @THEN
 CREATEUNIT
 unit=Persian Immortal

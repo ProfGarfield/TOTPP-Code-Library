@@ -35,6 +35,15 @@ local canBuildSettings = require("canBuildSettings")
 local log = require("log")
 local helpkey = require("helpkey")
 local diplomacy = require("diplomacy")
+local diplomacySettings = require("diplomacySettings")
+local cityNames = require("soaringCityNames")
+
+local param = require("parameters")-- parameters.lua is a separate file to store scenario parameters in.
+-- You could have them here as well, but it might contribute to cluttering this file
+-- If you put some of your code in other files, you may also need to require the parameters there also
+
+
+local object = require("object") -- object.lua is a file with names for unitTypes, improvementTypes, tribes, etc.
 -- define flags and counters here
 for i=0,7 do
     flag.define("tribe"..tostring(i).."AfterProductionNotDone",true)
@@ -71,13 +80,31 @@ linkStateTableToModules()
 local justOnce = function (key, f) civlua.justOnce(civlua.property(state.justOnce, key), f)
 end
 
+-- changes the stats of certain units so they are different for the
+-- AI and for Humans
+-- use in onScenarioLoaded and AfterProduction
+local function setUnitStats(tribe)
+    -- AI won't attack powerful rich villages, so reduce their defense
+    -- for the AI
+    -- AI can't use the strategos attack bonus, so give it a powerful
+    -- attack value, HP, and FP, and make it ignore walls 
+    -- the equivalent of the old stratego stats, except defense is still 0
+    -- 
+    if tribe.isHuman then
+        object.uRichVillage.defense = 12
+        object.uRichVillage.role = 1
+        object.uStrategos.attack = 0
+        object.uStrategos.firepower = 1
+        object.uStrategos.hitpoints = 10
+    else
+        object.uRichVillage.defense = 0
+        object.uRichVillage.role = 6
+        object.uStrategos.attack = 28
+        object.uStrategos.firepower = 8
+        object.uStrategos.hitpoints = 40
+    end
+end
 
-local param = require("parameters")-- parameters.lua is a separate file to store scenario parameters in.
--- You could have them here as well, but it might contribute to cluttering this file
--- If you put some of your code in other files, you may also need to require the parameters there also
-
-
-local object = require("object") -- object.lua is a file with names for unitTypes, improvementTypes, tribes, etc.
 
 local function doOnTurn(turn)--> void
     -- this makes doAfterProduction work
@@ -97,6 +124,133 @@ local function doOnTurn(turn)--> void
 
 end
 
+
+
+-- upgrade a colony site, depending on the existing stuff on the tile
+local function upgradeColonySite(tile)
+    if tile.terrainType % 16 ~= 7 then
+        -- tile not a colony site
+        return 
+    end
+    if tile.defender and tile.defender ~= object.tMinorCities then
+        -- tile is covered by a tribe's unit
+        return
+    end
+    if tile.city then
+        -- tile already has a city, so no upgrades
+        return
+    end
+    if gen.unitTypeOnTile(tile,object.uFortress) and cityNames[gen.getTileID(tile)] then
+        local newCity = civ.createCity(object.tMinorCities,tile)
+        newCity.name = cityNames[gen.getTileID(newCity.location)]
+        civ.addImprovement(newCity,object.iCityWalls)
+        -- remove the rich villages
+        for unit in newCity.location.units do
+            if unit.type == object.uRichVillage then
+                civ.deleteUnit(unit)
+            end
+        end
+        return
+    end
+    local richVillages = 0
+    for unit in tile.units do
+        if unit.type == object.uRichVillage then
+            richVillages = richVillages+1
+        end
+    end
+    if richVillages >= 3 then
+        local newUnit = civ.createUnit(object.uFortress,object.tMinorCities,tile)
+        newUnit.homeCity = nil
+        return
+    elseif richVillages >= 1 then
+        local newVillage = civ.createUnit(object.uRichVillage,object.tMinorCities,tile)
+        newVillage.homeCity = nil
+        local newVillage = civ.createUnit(object.uRichVillage,object.tMinorCities,tile)
+        newVillage.homeCity = nil
+        return
+    else
+        local newVillage = civ.createUnit(object.uRichVillage,object.tMinorCities,tile)
+        newVillage.homeCity = nil
+        return
+    end
+end
+
+-- the AI has a tendency to disband eastern fortresses, so this
+-- restores them each turn
+local function restoreEasternFortresses(turn)
+    local function restoreFortressIfAbsent(x,y,z)
+        if not gen.unitTypeOnTile(civ.getTile(x,y,z),object.uEasternFortress) then
+            civ.createUnit(object.uEasternFortress,object.tLydians,civ.getTile(x,y,z))
+        end
+    end
+    -- this is where the first Persian Invasion originates on turn 42
+    -- The city must be capturable to stop the invasion
+    if turn <= 44 then
+        -- Magnesia
+        restoreFortressIfAbsent(311,75,0)
+    else
+        for unit in civ.getTile(311,75,0) do
+            if unit.type == object.uEasternFortress then
+                civ.deleteUnit(unit)
+            end
+        end
+    end
+    --Thyatira
+    restoreFortressIfAbsent(315,71,0)
+    --Sardis
+    restoreFortressIfAbsent(318,78,0)
+    --Tralles
+    restoreFortressIfAbsent(316,94,0)
+    --Mylasa
+    restoreFortressIfAbsent(319,103,0)
+    --Xanthus
+    restoreFortressIfAbsent(348,114,0)
+    --Colossae
+    restoreFortressIfAbsent(352,98,0)
+    --Rhoas
+    restoreFortressIfAbsent(348,92,0)
+    --Celaenae
+    restoreFortressIfAbsent(356,88,0)
+    --Ipsus
+    restoreFortressIfAbsent(356,74,0)
+    --Dorylaeum
+    restoreFortressIfAbsent(344,64,0)
+end
+
+local function tribesWithTech(tech)
+    local count = 0
+    for i=1,7 do
+        if civ.getTribe(i):hasTech(tech) then
+            count = count+1
+        end
+    end
+    return count
+end
+
+-- allows tribe to receive technologies already
+-- discovered by other tribes
+local function techProliferation(tribe)
+    -- keep a list, so that a prerequisite and
+    -- a tech itself are not both learned the same turn
+    local techsToReceive = {}
+    for i = 0,99 do
+        local tech = civ.getTech(i)
+        
+        if (not tribe:hasTech(tech)) and
+            (tech.prereq1 == nil or tribe:hasTech(tech.prereq1)) and
+            (tech.prereq2 == nil or tribe:hasTech(tech.prereq2)) and
+            (not diplomacySettings.forbiddenTechTransfer[i]) then
+            if math.random() < tribesWithTech(tech)*param.techProliferationChance then
+                techsToReceive[#techsToReceive+1] = tech
+            end
+        end
+    end
+    for __,tech in pairs(techsToReceive) do
+        tribe:giveTech(tech)
+    end
+end
+
+
 -- Occurs when the first unit is activated after production
 -- If a tribe has no active unit after production, this
 -- event will not run.  If this is likely in your scenario,
@@ -111,6 +265,15 @@ local function doAfterProduction(turn,tribe)-->void
             unit.moveSpent = math.max(unit.moveSpent,1)
         end
     end
+    for tileID,name in pairs(cityNames) do
+        if math.random() < param.colonySiteUpgradeChance then
+            upgradeColonySite(gen.getTileFromID(tileID))
+        end
+    end
+    setUnitStats(tribe)
+    restoreEasternFortresses(turn)
+    techProliferation(tribe)
+
 end
 console.afterProduction = doAfterProduction
 
@@ -179,6 +342,7 @@ end
 -- are loaded
 local function doOnScenarioLoaded()-->void
     legacy.doScenarioLoadedEvents()
+    setUnitStats(civ.getCurrentTribe())
 
 end
 
@@ -190,15 +354,40 @@ end
 local function doOnCityTaken(city,defender) -->void
     legacy.doCityTakenEvents(city,defender)
     log.onCityTaken(city,defender)
+    gen.rehomeUnitsInCapturedCity(city,defender)
 
 end
 
 local function doOnCityDestroyed(city) --> void
     legacy.doCityDestroyedEvents(city)
     log.onCityDestroyed(city)
+    gen.rehomeUnitsInCapturedCity(city,city.owner)
 end
 
 local function doOnCityProduction(city,prod) -->void
+    -- if the master builder improvement is sold or otherwise lost somehow, the wonder
+    -- will not be completed.  This doesn't apply to the AI
+    if civ.isWonder(prod) and city.owner.isHuman and (not city:hasImprovement(object.iMasterBuilder)) then
+        prod.city = nil
+        text.simple(text.substitute("Without the supervision of a Master Builder, our %STRING1 in %STRING2 has collapsed!",{prod.name,city.name}),"Construction Disaster")
+        return
+    end
+    if civ.isWonder(prod) then
+        for otherCity in civ.iterateCities() do
+            if otherCity.owner == city.owner and otherCity:hasImprovement(object.iMasterBuilder) then
+                city:removeImprovement(object.iMasterBuilder)
+            end
+        end
+    end
+    if civ.isImprovement(prod) and prod == object.iMasterBuilder then
+        for otherCity in civ.iterateCities() do
+            if otherCity.owner == city.owner and otherCity:hasImprovement(object.iMasterBuilder)
+                and otherCity ~= city then
+                otherCity:removeImprovement(object.iMasterBuilder)
+                text.simple("Our Master Builder has relocated to "..city.name..".")
+            end
+        end
+    end
     legacy.doCityProductionEvents(city,prod)
 end
 
@@ -214,6 +403,9 @@ local function doOnActivateUnit(unit,source) --> void
     --    unit.attributes = 0
     --    --unit.attributes = gen.setBit0(unit.attributes,7)
     --end
+
+
+    
 end
 
 -- returns true if the unit is on a land tile, or is adjacent to one
@@ -332,10 +524,14 @@ local function doOnKeyPress(keyCode)
         munitions.doMunition(civ.getActiveUnit(),backspaceAttack,doOnActivateUnit)
         return
     end
+    if keyCode == keyboard.two then
+        local options = {forbidTileGiveaway = diplomacySettings.forbidTileGiveaway(civ.getCurrentTile()),giftTechNotTrade=diplomacySettings.giftTechNotTrade}
+        diplomacy.diplomacyMenu(options)
+        return
+    end
 end
 
 
-local cityNames = require("soaringCityNames")
 local function doOnCityFounded(city) --> void
     --civ.ui.text("City Location is "..tostring(city.location.x)..","..tostring(city.location.y))
     city.name = cityNames[gen.getTileID(city.location)] or "Do Not Build"
@@ -343,17 +539,18 @@ local function doOnCityFounded(city) --> void
         if city.owner.isHuman then
             text.simple("This colony will fail due to a poor choice of location.  Colonies can only be successfully founded by Colonist units on \'Colony Site\' terrain.","Game Concepts: Colony Sites")
         end
---        civ.deleteCity(city)
+        civ.deleteCity(city)
     end
     local activeUnitType = civ.getActiveUnit() and civ.getActiveUnit().type
     if activeUnitType and city.owner.isHuman and activeUnitType.role == 5 and activeUnitType ~= object.uColonist then
         text.simple("This colony will fail due to a lack of supplies.  Only colonist units carry enough supplies to successfully found cities on \'Colony Site\' terrain.","Game Concepts: Colonists")
         city.name = "Do Not Build"
-  --      civ.deleteCity(city)
+        civ.deleteCity(city)
     end
     civ.addImprovement(city,object.iCityWalls)
-
-
+    if city and not city.owner.isHuman then
+        city.name = cityNames[gen.getTileID(city.location)] or " "
+    end
 end
 
 -- if true, city can build item, if false, city can't build item
@@ -379,7 +576,7 @@ local function doOnResolveCombat(defaultResolutionFunction,defender,attacker)
         aggressorLocation = attacker.location
         victimVeteranStatusBeforeCombat = defender.veteran
         if gen.unitTypeOnTile(attacker.location,{object.uStrategos}) then
-            defender.damage = defender.damage+math.floor(defender.type.hitpoints*0.2)
+            defender.damage = defender.damage+math.floor(defender.type.hitpoints*param.strategosAttack)
         end
         if gen.unitTypeOnTile(defender.location,{object.uStrategos}) then
             defenderStratego = true
@@ -393,7 +590,7 @@ local function doOnResolveCombat(defaultResolutionFunction,defender,attacker)
         end
     end -- firstRoundOfCombat
     if defenderStratego and defender.hitpoints < attacker.type.firepower then
-        attacker.damage = attacker.damage + 2*defender.type.firepower
+        attacker.damage = attacker.damage + math.floor(param.strategosDefense*defender.type.firepower)
     end
     return defaultResolutionFunction(defender,attacker)
 end

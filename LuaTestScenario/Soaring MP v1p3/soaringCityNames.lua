@@ -1,5 +1,5 @@
-
-cityNamesByTileID = {}
+local gen = require("generalLibrary")
+local cityNamesByTileID = {}
 cityNamesByTileID[gen.getTileID(12,64)]="Tharrus"
 cityNamesByTileID[gen.getTileID(18,86)]="Nora"
 cityNamesByTileID[gen.getTileID(20,18)]="Urcinium"
@@ -75,6 +75,7 @@ cityNamesByTileID[gen.getTileID(258,36)]="Neapolis"
 cityNamesByTileID[gen.getTileID(258,96)]="Marathon"
 cityNamesByTileID[gen.getTileID(258,104)]="Sunium"
 cityNamesByTileID[gen.getTileID(264,96)]="Carystus"
+cityNamesByTileID[gen.getTileID(265,77)]="Skyros"
 cityNamesByTileID[gen.getTileID(269,35)]="Abdera"
 cityNamesByTileID[gen.getTileID(275,37)]="Maronea"
 cityNamesByTileID[gen.getTileID(276,44)]="Samothrace"

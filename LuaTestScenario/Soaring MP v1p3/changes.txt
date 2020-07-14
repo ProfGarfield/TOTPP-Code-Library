@@ -23,3 +23,13 @@ no player units or Persians!
 Colonists, Engineers, Citizens, and Helots are 'enslaved' (i.e. a slave unit is generated for the winner) when they are defeated.  Slaves are also captured.  A suitable message is generated.
 
 Added code so that only citizens and colonists can join cities.
+
+Every player turn, each colonySite has a 1/90 chance to "upgrade"
+If no richVillage on the tile, add a rich village,
+If 1 or 2 rich villages, add 2 more rich villages
+If 3 or more rich villages, add a fortress
+If a fortress, turn into a minor city.
+
+If an attacking unit has a strategos in the same square, it does 20% of the defender's HP in damage before the attack begins.  If the defending unit has a strategos in the square, and the unit can be killed in the next round of combat, do 2x that unit's firepower in damage to the attacker.  (This applies in every round of combat where the defender risks being killed.)
+
+Currency and Papyrus have been swapped in the tech tree, so currency is now Trade, and allows clicking on foreign cities to discover supply and demand, and allows the supply and demand window to be opened in the regular game.  Unfortunately, when building a caravan, the supply and demand window was opened, allowing easy circumvention of the mechanic.

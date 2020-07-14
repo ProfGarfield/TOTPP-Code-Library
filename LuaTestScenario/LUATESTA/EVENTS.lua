@@ -1,4 +1,5 @@
 --Attempt at minor scripts for Test Scenario
+--
 
 print "You should see this in lua console if this worked"
 
@@ -378,3 +379,6 @@ text.linkState(state.textTable)
  end)
 
  --civ.ui.text("Events.lua")
+ --
+ 
+ civ.scen.onBribeUnit(function(unit,previousOwner) civ.ui.text(unit.type.name) end)

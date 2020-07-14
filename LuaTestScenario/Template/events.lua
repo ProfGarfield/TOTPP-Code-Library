@@ -14,7 +14,7 @@ musicFolder= string.gsub(musicFolder,"events.lua","").."\\Music"
 console.musicFolder = musicFolder
 ]]
 
-local civlua = require "civlua"
+local civlua = require("civluaModified")
 local func = require "functions"
 local gen = require("generalLibrary")
 local flag = require("flag")

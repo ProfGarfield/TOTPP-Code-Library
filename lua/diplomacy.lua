@@ -313,7 +313,7 @@ end
 local function destroyUnitsIn(tile)
    units = {}
    for unit in tile.units do
-      units[#units+1] = { unittype = unit.type, veteran = unit.veteran, damage = unit.damage }
+      units[#units+1] = { unittype = unit.type, veteran = unit.veteran, damage = unit.damage, needsHome = (not not unit.homeCity) }
    end
    for unit in tile.units do
       civ.deleteUnit(unit)
@@ -332,10 +332,16 @@ end
 local function recreateUnitsIn(units, tile, tribe)
    allGood = true
    for i,unit in pairs(units) do
-      x = civlua.createUnit(unit.unittype, tribe, position)
+      x = civlua.createUnit(unit.unittype, tribe, position)[1]
       if x~=nil then
 	 x.veteran = unit.veteran
 	 x.damage = unit.damage
+     x.homeCity = nil
+     if unit.needsHome then
+         gen.homeToNearestCity(x)
+     end
+
+
       else
 	 allGood = false
       end
@@ -367,7 +373,9 @@ local function giftUnits(tribe, options)
    local function buildUnitsText(tile, maxcChar)
       local text = ""
       byType = {}
+      local unitCount = 0
       for unit in tile.units do
+          unitCount = unitCount+1
 	 if byType[unit.type.id] == nil then
 	    byType[unit.type.id] = 1
 	 else
@@ -386,8 +394,9 @@ local function giftUnits(tribe, options)
             unitsInText = unitsInText + v
 	 end
       end
-      if unitsInText < #tile.units then
-         text = text.." and "..tostring(#tile.units-unitsInText).." other units"
+      
+      if unitsInText < unitCount then
+         text = text.." and "..tostring(unitCount-unitsInText).." other units"
       end
       return text
    end
@@ -539,6 +548,7 @@ end
 --                 * giftCityText -> Text to be shown to ask for confirmation
 --                 * giftCityConfirmation -> Dialog to show after confirmation
 --                 * giftCityDestroyUnits -> Whether all units needs to be destroyed after the city is given out
+--                 * forbidTileGiveaway -> if true, the option to give away units/city on the tile is not available
 --
 --    
 --    You can use the following replacement parameters
@@ -557,6 +567,8 @@ end
 --    Offers that depend on city/units present on the cursor
 --                    * Unit
 --                    * City
+--
+--      
 local function diplomacyMenu(options)
    -- Returns if the city is capital
       local function isCapital(city)
@@ -567,7 +579,7 @@ local function diplomacyMenu(options)
 	 menuTable = {}
 	 menuTable[1] = "Gift money"
 	 menuTable[2] = "Gift technology"
-	 if tile.owner == civ.getCurrentTribe() then
+	 if (not options.forbidTileGiveaway) and tile.owner == civ.getCurrentTribe() then
 	    if tile.city == nil then
 	       count = 0
 	       for i in tile.units do

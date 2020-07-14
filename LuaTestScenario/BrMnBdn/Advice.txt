@@ -1,0 +1,334 @@
+;
+;   CIVILIZATION AUTO ADVICE
+;   Copyright (c) 1995 by MicroProse Software
+;
+;   Altering the contents of this file may cause the
+;   game to malfunction.
+;
+
+@MILITARY
+@width=225
+@title=Military Governor
+@x=5
+@y=5
+
+@DOMESTIC
+@width=225
+@title=Interior Minister
+@x=-5
+@y=5
+
+@SCIENCE0
+@width=250
+@title=Science Advisor
+@x=-5
+I recommend we develop %STRING0.
+
+@SCIENCE1
+@width=250
+@title=Science Advisor
+@x=-5
+I recommend we develop %STRING0 so
+that we can build:
+
+@SCIENCE2
+@width=250
+@title=Science Advisor
+@x=-5
+I recommend we develop %STRING0 so
+that we can someday learn:
+
+
+
+@
+@@Mission Station
+The natives are unsaved.
+We should build a %STRING0.
+
+@
+@@Mosque
+The natives grow restless.
+Let us appease them with a
+%STRING0.
+
+@
+@@Cathedral
+The people are discontent.
+Perhaps a %STRING0 will
+distract them.
+
+@
+@@Barracks
+Our soldiers lack discipline
+and proper training!
+We should build a %STRING0.
+
+@
+@@Port Facility
+We should build a %STRING0
+to train sailors and
+repair damaged ships quickly.
+
+@
+@@Airport
+We should build an %STRING0
+to produce crack air men
+and repair damaged planes quickly.
+
+@
+@@Granary
+We should build a %STRING0
+to store food for hard times.
+
+@
+@@Plantation
+Let us build a %STRING0 to grow cash crops!
+
+@
+@@Harbor
+The people grow hungry.  Let
+us build a %STRING0 to harvest
+the ocean's bounty.
+
+@
+@@Bazaar
+Our people are poor. Let us build a
+%STRING0 to attract merchants and
+traders.
+
+@
+@@Bank
+Our economy is stagnant.  We should
+build a %STRING0 to stimulate it.
+
+@
+@@Stock Exchange
+Let us build a %STRING0 and get
+rich quick!
+
+@
+@@Customs House
+Smugglers are bringing contraband
+into our colonies. We must
+build %STRING0 at once!
+
+@
+@@Public School House
+We should build a %STRING0
+to train the natives.
+
+@
+@@College
+In the long run, education is the key
+to greatness. Let us build a %STRING0 forthwith.
+
+@
+@@Library
+Oscar Wilde's wit is our greatest asset.
+Let us build a %STRING0 so that we
+can read his plays.
+
+@
+@@Courthouse
+We must not tolerate lawlessness and
+petty corruption!  I suggest we build
+a %STRING0 to punish scoff laws.
+
+@
+@@City Walls
+This city is utterly defenseless!
+We should build %STRING0 at once!
+
+@
+@@Coastal Fortress
+We should build a %STRING0
+to protect our city.
+
+@
+@@Aqueduct
+The water around here is filthy!
+We should build an %STRING0
+to let our city grow.
+
+@
+@@Sewer System
+The streets are covered with filth!
+We should build a %STRING0
+to let our city grow.
+
+@
+@@Factory
+Let us quickly build a %STRING0
+to take advantage of cheap labor.
+
+@
+@@Power Plant
+@@Hydro Plant
+Let us quickly build a %STRING0
+to power our factories.
+
+@
+@@Offshore Platform
+We must exploit the wealth of the seas!
+Let us build an %STRING0.
+
+@
+@@SDI Defense
+We should build an %STRING0, just in case.
+
+@
+@@SS Structural
+@@SS Component
+@@SS Module
+We should build a %STRING0
+to colonize other worlds.
+
+@
+@@Settler
+We should build a %STRING0
+to expand our empire.
+
+@
+@@Engineer
+We need an %STRING0 to modernize
+this backward continent.
+
+@
+@@Askari
+Our cities are vulnerable to attack.
+Let us build a %STRING0 and defend
+them.
+
+@
+@@Rifleman-I
+@@Schutztruppe
+@@Rifleman-F
+@@Rifleman-A
+@@Rifleman-O
+@@Chasseur
+@@Rifleman-B
+We need a %STRING0
+to defend our cities.
+
+@
+@@Fanatic
+We must recruit a %STRING0
+to defend our beliefs!
+
+@
+@@Sharp Shooter
+We need a %STRING0 to bushwhack our enemies.
+
+@
+@@Maxim Gun
+We need a %STRING0
+to mow down our enemies.
+
+@
+@@Cannon
+@@Artillery
+@@Howitzer
+We should build a %STRING0
+to blast our enemies to smithereens!
+
+@
+@@Bomber
+@@Zeppelin
+Let us build a %STRING0 to
+exterminate our enemies!
+
+@
+@@Desert Raider
+We should recruit %STRING0s to
+surprise our enemies!
+
+@
+@@Monplane
+@@Biplane
+We need a %STRING0 to
+defend our skies!
+
+@
+@@Dragoon
+We should recruit %STRING0s
+to defend our colony.
+
+@
+@@Cavalry
+We need %STRING0
+to trample our enemies.
+
+@
+@@Partisan
+Let us recruit %STRING0s and
+teach our enemies a lesson!
+
+@
+@@Dhow
+@@Galley
+We should build %STRING0s
+to explore the Seas.
+
+@
+@@Explorer
+We should build a %STRING0
+to explore the Dark Continent.
+
+@
+@@Ironclad
+@@Dhow
+@@Protected Cruiser
+@@Armoured Cruiser
+@@Battleship
+We should build %STRING0s
+to extend our sea power.
+
+@
+@@Steamer
+@@Transport
+@@Merchant Man
+We should build a %STRING0
+to expand our trade routes
+and transport soldiers.
+
+@
+@@Carrier
+@@Cruise Msl.
+@@Default
+We should build a %STRING0.
+
+@
+@@Nuclear Msl.
+Perhaps it's time for a nice %STRING0
+
+@
+@@Diplomat
+We should send a %STRING0
+to steal secrets from our enemies.
+
+@
+@@Envoy
+We should send a %STRING0
+to subvert our enemies.
+
+@
+@@Spy
+We should send a %STRING0
+to play dirty tricks on our
+enemies.
+
+@
+@@Caravan
+@@Freight
+We should build a %STRING0
+to establish trade routes
+with other civilizations.
+
+@
+@@Wonder
+Let us undertake a great project
+for the glory of our civilization,
+%STRING0!
+
+@
+

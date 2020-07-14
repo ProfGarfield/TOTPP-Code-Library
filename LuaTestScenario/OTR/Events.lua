@@ -266,8 +266,8 @@ specialNumbers.munitionFailureProbabilitySP = 0.25 -- probability that a munitio
 --specialNumbers.freighterBonus = 1000
 specialNumbers.maximumReactingUnits = 10 -- this is the number of units that can attack a trigger unit during a reaction
 specialNumbers.newAirfieldImprovementId = 17
-specialNumbers.defaultCarrierFlags = 128-- flags when AEGIS bonus given8320 -- carrier flags when the active unit can use the carrier
-specialNumbers.doNotCarryCarrierFlags = 0-- flags when AEGIS bonus given 8192 -- carrier flags for when unit activated can't be carried by carrier
+specialNumbers.defaultCarrierFlags = 8320 --128-- flags when AEGIS bonus given8320 -- carrier flags when the active unit can use the carrier
+specialNumbers.doNotCarryCarrierFlags = 8192 --0-- flags when AEGIS bonus given 8192 -- carrier flags for when unit activated can't be carried by carrier
 specialNumbers.primaryAttackKey = 75 -- 75 is key k
 specialNumbers.secondaryAttackKey = 214 -- 214 is backspace, 86 is v, if that is preferred
 specialNumbers.helpKeyID = 211 -- 211 is Tab
@@ -477,6 +477,10 @@ specialNumbers.alliedReinforcementDelay = 10
 specialNumbers.uBoatBonusThreshold = 3 -- if Germany below this many uBoats/Wolf Packs, they will get uboats with the Hamburg critical industry
 specialNumbers.uBoatBonusPerTurn = 1 -- Germany gets this many uBoat/Wolf Packs per turn, if they qualify for the bonus
 specialNumbers.uBoatDeployDamage = 5 -- Uboats take this much damage if they deploy to the Atlantic using the Blohm und Voss special function (with backspace)
+specialNumbers.convoySinkingVetChanceIncrement = 0.2 -- increase the chance that a new convoy is veteran by this much each time a convoy is sunk
+specialNumbers.convoyDockingVetChanceIncrement = -0.05 -- increase the chance that a new convoy is veteran by this amount each time a convoy docks successfully (should be negative)
+specialNumbers.minConvoyVetChance = 0 -- the accumulated convoy vet chance can't go below this number, if it is less than 0, convoys must be sunk to bring the chance back up to 0 before convoys start becoming veterans
+specialNumbers.maxConvoyVetChance = 3 -- the accumulated convoy vet chance can't exceed this number.  If it is greater than 1, docking convoys won't reduce the chance of veteran status until the ConvoyVetChance counter is reduced below 1
 specialNumbers.bonusME109 = 1 -- If the Regensburg critical industry is active, every ME109 produced gets this many extra 109s given at the same time (fractional parts are probability, e.g. .8 means 80% chance of extra 109, 1.2 means 1, and 20% chance of second bonus
 specialNumbers.fighterParity = 0.35 -- ME109s (best kind available) will be created for the Germans if their total fighter count is below this fraction of the Allied fighter count (certain planes may be excluded from the count)
 specialNumbers.messerschmidtAirbaseLocation = {341,117,0} -- location of airbase where 109s appear if germany falls below the fighter threshold vs the allies
@@ -617,6 +621,7 @@ local function initializeFlagsAndCounters()
     createCounter("EarliestAlliedInvasionDate",0) -- determines the earliest date allied task forces can carry units
     
     createCounter("GermanExtractionLevel",1) -- number of trains the Germans extract from France each turn
+    createCounter("ConvoyVetChance",0) -- keeps track of the chance that an Allied convoy will be generated as a veteran (and so be harder to kill)
 end
 
 initializeFlagsAndCounters()
@@ -1476,11 +1481,11 @@ end
 local artilleryUnitTypes = {
 --	["EarlyRadar"] = { unitType=civ.getUnitType(3), munitionCreated=civ.getUnitType(106), allowedTerrain={7, -121}, movementCostOfMunition=2, moneyCostOfMunition=0, displayText=nil },
 --	["WurzburgRadar"] = { unitType=civ.getUnitType(4), munitionCreated=civ.getUnitType(108), allowedTerrain={7, -121}, movementCostOfMunition=2, moneyCostOfMunition=0, displayText=nil },
-	["GermanFlak"] = { unitType=civ.getUnitType(10), munitionCreated=civ.getUnitType(104), allowedTerrain={0,7, -121, -128,6,4,8,9,12,13,14}, movementCostOfMunition=1, moneyCostOfMunition=0, displayText=nil, altMap = 1 },
-	["AlliedFlak"] = { unitType=civ.getUnitType(72), munitionCreated=civ.getUnitType(104), allowedTerrain={0,7, -121, -128,6,4,8,9,12,13,14}, movementCostOfMunition=1, moneyCostOfMunition=0, displayText=nil, altMap = 1 },
+	--["GermanFlak"] = { unitType=civ.getUnitType(10), munitionCreated=civ.getUnitType(104), allowedTerrain={0,7, -121, -128,6,4,8,9,12,13,14}, movementCostOfMunition=1, moneyCostOfMunition=0, displayText=nil, altMap = 1 },
+	--["AlliedFlak"] = { unitType=civ.getUnitType(72), munitionCreated=civ.getUnitType(104), allowedTerrain={0,7, -121, -128,6,4,8,9,12,13,14}, movementCostOfMunition=1, moneyCostOfMunition=0, displayText=nil, altMap = 1 },
 	["V1Launch"] = { unitType=civ.getUnitType(121), munitionCreated=civ.getUnitType(123), allowedTerrain={7, -121}, movementCostOfMunition=4, moneyCostOfMunition=50, displayText=nil, altMap = 2 },
 	["V2Launch"] = { unitType=civ.getUnitType(122), munitionCreated=civ.getUnitType(124), allowedTerrain={7, -121}, movementCostOfMunition=4, moneyCostOfMunition=75, displayText=nil, altMap = 2 },
-	["FlakTrain"] = { unitType=civ.getUnitType(11), munitionCreated=civ.getUnitType(104), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,  -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115 -114}, movementCostOfMunition=5, moneyCostOfMunition=0, displayText=nil, altMap = 1 },
+	--["FlakTrain"] = { unitType=civ.getUnitType(11), munitionCreated=civ.getUnitType(104), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,  -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115 -114}, movementCostOfMunition=5, moneyCostOfMunition=0, displayText=nil, altMap = 1 },
 	["Sdkfz"] = { unitType=civ.getUnitType(9), munitionCreated=civ.getUnitType(116), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,  -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115 -114}, movementCostOfMunition=4, moneyCostOfMunition=0, displayText=nil },
 	["Me109G6"] = { unitType=civ.getUnitType(12), munitionCreated=civ.getUnitType(95), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=10, moneyCostOfMunition=5, displayText=nil },
 	["Me109G14"] = { unitType=civ.getUnitType(13), munitionCreated=civ.getUnitType(95), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=11, moneyCostOfMunition=5, displayText=nil },
@@ -1489,8 +1494,8 @@ local artilleryUnitTypes = {
 	["Fw190A8"] = { unitType=civ.getUnitType(16), munitionCreated=civ.getUnitType(77), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=11, moneyCostOfMunition=5, displayText=nil },
 	["Fw190D9"] = { unitType=civ.getUnitType(17), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=12, moneyCostOfMunition=5, displayText=nil },
 	["Ta152"] = { unitType=civ.getUnitType(18), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=13, moneyCostOfMunition=5, displayText=nil },
-	["Me110"] = { unitType=civ.getUnitType(20), munitionCreated=civ.getUnitType(103), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=16, moneyCostOfMunition=5, displayText=nil, payload=true, },
-	["Me410"] = { unitType=civ.getUnitType(21), munitionCreated=civ.getUnitType(103), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=18, moneyCostOfMunition=5, displayText=nil,  quantity=2, payload=true, },
+	["Me110"] = { unitType=civ.getUnitType(20), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=8, moneyCostOfMunition=5, displayText=nil, },
+	["Me410"] = { unitType=civ.getUnitType(21), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=9, moneyCostOfMunition=5, displayText=nil,  quantity=1, },
 	["Ju88C"] = { unitType=civ.getUnitType(22), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=11, moneyCostOfMunition=10, displayText=nil },
 	["Ju88G"] = { unitType=civ.getUnitType(23), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=12, moneyCostOfMunition=10, displayText=nil },
 	["He219"] = { unitType=civ.getUnitType(24), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=14, moneyCostOfMunition=10, displayText=nil },
@@ -1543,9 +1548,9 @@ local artilleryUnitTypes = {
 	["Fw200"] = { unitType=civ.getUnitType(5), munitionCreated=civ.getUnitType(98), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=60, moneyCostOfMunition=20, displayText=nil, quantity=1, payload=true  },
 	["Sunderland"] = { unitType=civ.getUnitType(76), munitionCreated=civ.getUnitType(98), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=60, moneyCostOfMunition=10, displayText=nil, quantity=1, payload=true  },
 	--["Artillery2"] = { unitType=civ.getUnitType(77), munitionCreated=civ.getUnitType(112), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=4, moneyCostOfMunition=0, displayText=nil },
-	["UBoat"] = { unitType=civ.getUnitType(126), munitionCreated=civ.getUnitType(110), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=5, moneyCostOfMunition=0, displayText=nil },
-	["GermanTaskForce"] = { unitType=civ.getUnitType(81), munitionCreated=civ.getUnitType(114), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=6, moneyCostOfMunition=0, displayText=nil },
-	["AlliedTaskForce"] = { unitType=civ.getUnitType(82), munitionCreated=civ.getUnitType(114), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=6, moneyCostOfMunition=0, displayText=nil },
+	["UBoat"] = { unitType=civ.getUnitType(126), munitionCreated=civ.getUnitType(110), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=6, moneyCostOfMunition=0, displayText=nil },
+	--["GermanTaskForce"] = { unitType=civ.getUnitType(81), munitionCreated=civ.getUnitType(114), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=6, moneyCostOfMunition=0, displayText=nil },
+	--["AlliedTaskForce"] = { unitType=civ.getUnitType(82), munitionCreated=civ.getUnitType(114), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=6, moneyCostOfMunition=0, displayText=nil },
 	["RedTails"] = { unitType=civ.getUnitType(83), munitionCreated=civ.getUnitType(95), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=13, moneyCostOfMunition=5, displayText=nil },
 	["MedBombers"] = { unitType=civ.getUnitType(84), munitionCreated=civ.getUnitType(98), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=24, moneyCostOfMunition=20, displayText=nil, quantity=healthMunitionQuantity, payload=true, lowAltNoAttack=true   },
 	["GunBattery"] = { unitType=civ.getUnitType(94), munitionCreated=civ.getUnitType(114), allowedTerrain={0, 7, -128, -121}, movementCostOfMunition=2, moneyCostOfMunition=0, displayText=nil },
@@ -1597,8 +1602,10 @@ local artilleryUnitTypes = {
 local secondaryAttackUnitTypes = {
 --	["EarlyRadar"] = { unitType=civ.getUnitType(3), munitionCreated=unitAliases.Radar, allowedTerrain={7, -121}, movementCostOfMunition=2, moneyCostOfMunition=0, displayText=nil , altMap = 2},
 --	["WurzburgRadar"] = { unitType=civ.getUnitType(4), munitionCreated=unitAliases.Wurzburg, allowedTerrain={7, -121}, movementCostOfMunition=2, moneyCostOfMunition=0, displayText=nil, altMap=2  },
-	["GermanFlak"] = { unitType=civ.getUnitType(10), munitionCreated=unitAliases.Flak, allowedTerrain={0,7, -121, -128,6,4,8,9,12,13,14}, movementCostOfMunition=1, moneyCostOfMunition=0, displayText=nil, altMap = 2 },
-	["AlliedFlak"] = { unitType=civ.getUnitType(72), munitionCreated=unitAliases.Flak, allowedTerrain={0,7, -121, -128,6,4,8,9,12,13,14}, movementCostOfMunition=1, moneyCostOfMunition=0, displayText=nil,altMap = 2 },
+	--["GermanFlak"] = { unitType=civ.getUnitType(10), munitionCreated=unitAliases.Flak, allowedTerrain={0,7, -121, -128,6,4,8,9,12,13,14}, movementCostOfMunition=1, moneyCostOfMunition=0, displayText=nil, altMap = 2 },
+	--["AlliedFlak"] = { unitType=civ.getUnitType(72), munitionCreated=unitAliases.Flak, allowedTerrain={0,7, -121, -128,6,4,8,9,12,13,14}, movementCostOfMunition=1, moneyCostOfMunition=0, displayText=nil,altMap = 2 },
+	["Me110"] = { unitType=civ.getUnitType(20), munitionCreated=civ.getUnitType(103), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=16, moneyCostOfMunition=5, displayText=nil, payload=true,nightAltNoAttack = true },
+	["Me410"] = { unitType=civ.getUnitType(21), munitionCreated=civ.getUnitType(103), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=18, moneyCostOfMunition=5, displayText=nil,  quantity=2, payload=true,nightAltNoAttack=true },
 	["Fw190F"] = { unitType=civ.getUnitType(29), munitionCreated=civ.getUnitType(100), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=1, moneyCostOfMunition=5, displayText=nil, quantity=1, payload=true, highAltNoAttack=true, nightAltNoAttack=true,},
 	["Do335"] = { unitType=civ.getUnitType(30), munitionCreated=civ.getUnitType(100), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=1, moneyCostOfMunition=5, displayText=nil, quantity=2, payload=true, highAltNoAttack=true,nightAltNoAttack=true, },
 	["Typhoon"] = { unitType=civ.getUnitType(39), munitionCreated=civ.getUnitType(100), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=1, moneyCostOfMunition=5, displayText=nil, quantity=1, payload=true, highAltNoAttack=true, },
@@ -1622,7 +1629,7 @@ local secondaryAttackUnitTypes = {
 	["JosefPriller"] = { unitType=civ.getUnitType(79), munitionCreated=civ.getUnitType(103), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=0, moneyCostOfMunition=0, displayText=nil, payload=true },
 	["AdolfGalland"] = { unitType=civ.getUnitType(80), munitionCreated=civ.getUnitType(103), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=0, moneyCostOfMunition=25, displayText=nil, payload=true },
 	["hwSchnaufer"] = { unitType=civ.getUnitType(102), munitionCreated=civ.getUnitType(103), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=0, moneyCostOfMunition=10, displayText=nil, payload=true },
-	["FlakTrain"] = { unitType=civ.getUnitType(11), munitionCreated=civ.getUnitType(104), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,  -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115 -114}, movementCostOfMunition=5, moneyCostOfMunition=0, displayText=nil, altMap = 2 },
+	--["FlakTrain"] = { unitType=civ.getUnitType(11), munitionCreated=civ.getUnitType(104), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,  -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115 -114}, movementCostOfMunition=5, moneyCostOfMunition=0, displayText=nil, altMap = 2 },
 }
 
 
@@ -3304,7 +3311,11 @@ local function alliedConvoyBetweenTurns(turn)
                 moveToAdjacent(unit)
             end
         end
-        civ.createUnit(unitAliases.Convoy,tribeAliases.Allies,destination).homeCity = nil
+        local newConvoy = civ.createUnit(unitAliases.Convoy,tribeAliases.Allies,destination)
+        newConvoy.homeCity = nil
+        if math.random() < counterValue("ConvoyVetChance") then
+            newConvoy.veteran = true
+        end
     end
     if 3*(turn % 3) + 2 > germanPorts/3 then
         local CAB2 = specialNumbers.convoyArrivalBox2
@@ -3314,7 +3325,11 @@ local function alliedConvoyBetweenTurns(turn)
                 moveToAdjacent(unit)
             end
         end
-        civ.createUnit(unitAliases.Convoy,tribeAliases.Allies,destination).homeCity=nil
+        local newConvoy = civ.createUnit(unitAliases.Convoy,tribeAliases.Allies,destination)
+        newConvoy.homeCity = nil
+        if math.random() < counterValue("ConvoyVetChance") then
+            newConvoy.veteran = true
+        end
     end
     if 3*(turn % 3) + 3 > germanPorts/3 then
         local CAB3 = specialNumbers.convoyArrivalBox3
@@ -3324,7 +3339,11 @@ local function alliedConvoyBetweenTurns(turn)
                 moveToAdjacent(unit)
             end
         end
-        civ.createUnit(unitAliases.Convoy,tribeAliases.Allies,destination).homeCity=nil
+        local newConvoy = civ.createUnit(unitAliases.Convoy,tribeAliases.Allies,destination)
+        newConvoy.homeCity = nil
+        if math.random() < counterValue("ConvoyVetChance") then
+            newConvoy.veteran = true
+        end
     end
 end
 console.alliedConvoyBetweenTurns = alliedConvoyBetweenTurns
@@ -3373,6 +3392,10 @@ local function convoyKPress(unit)
             return
         else
             civ.deleteUnit(unit)
+            incrementCounter("ConvoyVetChance",specialNumbers.convoyDockingVetChanceIncrement)
+            if counterValue("ConvoyVetChance") < specialNumbers.minConvoyVetChance then
+                setCounter("ConvoyVetChance",specialNumbers.minConvoyVetChance)
+            end
             state.cityDockings[city.id] = state.cityDockings[city.id]+specialNumbers.trainsPerConvoy
             city.owner.money = city.owner.money+fuelBonus
             for i=1,specialNumbers.trainsPerConvoy do
@@ -3390,6 +3413,10 @@ local function convoyKPress(unit)
         end
     else -- enough capacity for full unload
         civ.deleteUnit(unit)
+        incrementCounter("ConvoyVetChance",specialNumbers.convoyDockingVetChanceIncrement)
+        if counterValue("ConvoyVetChance") < specialNumbers.minConvoyVetChance then
+            setCounter("ConvoyVetChance",specialNumbers.minConvoyVetChance)
+        end
         state.cityDockings[city.id] = state.cityDockings[city.id]+specialNumbers.trainsPerConvoy
         city.owner.money = city.owner.money+fuelBonus
         for i=1,specialNumbers.trainsPerConvoy do
@@ -6280,6 +6307,7 @@ local function displayScore()
     end
     local ct = civ.getTurn()
     scoreTable:addText(func.splitlines(text.substitute("\n^%STRING1 Allied convoys are expected to enter the Atlantic on turn %STRING2, %STRING3 on turn %STRING4, and %STRING5 on turn %STRING6.",{countAlliedConvoys(ct+1),ct+1,countAlliedConvoys(ct+2),ct+2,countAlliedConvoys(ct+3),ct+3})))
+    scoreTable:addText("The chance an Allied Convoy entering the Atlantic will be veteran is "..tostring(counterValue("ConvoyVetChance"))..".")
     scoreTable:show() 
 end
 
@@ -6464,10 +6492,7 @@ local function wildeSau(unit)
 		dialogBox:addText("This "..unit.type.name.." has been assigned to night operations.")
 		dialogBox:show()
 		civ.teleportUnit(unit,civ.getTile(unit.location.x,unit.location.y,2))
-        -- ME110 and ME410 don't have a movement penalty for switching operations
-        if unit.type ~= unitAliases.Me110 and unit.type ~= unitAliases.Me410 then
-		    unit.moveSpent = unit.type.move*totpp.movementMultipliers.aggregate
-        end
+		unit.moveSpent = unit.type.move*totpp.movementMultipliers.aggregate
 		return
 	else
 		local dialogBox = civ.ui.createDialog()
@@ -6475,9 +6500,7 @@ local function wildeSau(unit)
 		dialogBox:addText("This "..unit.type.name.." has been assigned to day operations.")
 		dialogBox:show()
 		civ.teleportUnit(unit,civ.getTile(unit.location.x,unit.location.y,0))
-        if unit.type ~= unitAliases.Me110 and unit.type ~= unitAliases.Me410 then
-		    unit.moveSpent = unit.type.move*totpp.movementMultipliers.aggregate
-        end
+		unit.moveSpent = unit.type.move*totpp.movementMultipliers.aggregate
 		return
 	end
 end
@@ -6571,6 +6594,30 @@ local function moveForbiddenDefenders(tile)
             end
         end
     end
+    local function isVengenceSite(unit)
+        return unit.type == unitAliases.V1Launch or unit.type == unitAliases.V2Launch
+    end
+    local canNotDefendVengenceSite = {
+        [unitAliases.Sdkfz.id]=true,
+        [unitAliases.GermanFlak.id] = true,
+        [unitAliases.FlakTrain.id] = true,
+        [unitAliases.GermanLightFlak.id]=true,
+        [unitAliases.AlliedLightFlak.id]=true,
+        [unitAliases.GermanArmyGroup.id] = true,
+        [unitAliases.GermanBatteredArmyGroup.id]=true,
+        [unitAliases.RedArmyGroup.id]=true,
+        [unitAliases.AlliedArmyGroup.id]=true,
+        [unitAliases.AlliedBatteredArmyGroup.id]=true,
+        [unitAliases.GunBattery.id]=true,
+
+    }
+    local function isBunkerLike(unit)
+        return canNotDefendVengenceSite[unit.type.id]
+    end
+    local function isProtectedTile(tileInQuestion)
+        return true
+    end
+    gen.unprotectTile(tile,isVengenceSite,isBunkerLike,isProtectedTile)
 end
 
  
@@ -7787,8 +7834,12 @@ civ.scen.onCityProduction(function(city, prod)
                     extraUnit.veteran = false
                 end
             end
+            if prod.type.domain == 2 then
+                -- this should stop sea units from gaining veteran status
+                civ.createUnit(prod.type,prod.owner,prod.location)
+                civ.deleteUnit(prod)
+            end
         end
-            
 		if civ.isImprovement(prod) then
 		
 			--[[ by Knighttime ]]
@@ -8744,6 +8795,85 @@ end)
 local currentUnit = civ.getActiveUnit()
 
 local cannotLandCityItalyRussia = {
+[unitAliases.Me109G6.id] = { forbiddenTerrain={15} },
+[unitAliases.Fw200.id] = { forbiddenTerrain={15} },
+[unitAliases.Me109G14.id] = { forbiddenTerrain={15} },
+[unitAliases.Me109K4.id] = { forbiddenTerrain={15} },
+[unitAliases.Fw190A5.id] = { forbiddenTerrain={15} },
+[unitAliases.Fw190A8.id] = { forbiddenTerrain={15} },
+[unitAliases.Fw190D9.id] = { forbiddenTerrain={15} },
+[unitAliases.Ta152.id] = { forbiddenTerrain={15} },
+[unitAliases.Me110.id] = { forbiddenTerrain={15} },
+[unitAliases.Me410.id] = { forbiddenTerrain={15} },
+[unitAliases.Ju88C.id] = { forbiddenTerrain={15} },
+[unitAliases.Ju88G.id] = { forbiddenTerrain={15} },
+[unitAliases.He219.id] = { forbiddenTerrain={15} },
+[unitAliases.He162.id] = { forbiddenTerrain={15} },
+[unitAliases.Me163.id] = { forbiddenTerrain={15} },
+[unitAliases.Me262.id] = { forbiddenTerrain={15} },
+[unitAliases.EgonMayer.id] = { forbiddenTerrain={15} },
+[unitAliases.HermannGraf.id] = { forbiddenTerrain={15} },
+[unitAliases.hwSchnaufer.id] = { forbiddenTerrain={15} },
+[unitAliases.Experten.id] = { forbiddenTerrain={15} },
+[unitAliases.AdolfGalland.id] = { forbiddenTerrain={15} },
+[unitAliases.JosefPriller.id] = { forbiddenTerrain={15} },
+[unitAliases.Ju87G.id] = { forbiddenTerrain={15} },
+[unitAliases.Fw190F.id] = { forbiddenTerrain={15} },
+[unitAliases.Do335.id] = { forbiddenTerrain={15} },
+[unitAliases.Do217.id] = { forbiddenTerrain={15} },
+[unitAliases.He277.id] = { forbiddenTerrain={15} },
+[unitAliases.Arado234.id] = { forbiddenTerrain={15} },
+[unitAliases.Go229.id] = { forbiddenTerrain={15} },
+[unitAliases.SpitfireIX	.id] = { forbiddenTerrain={15} },
+[unitAliases.SpitfireXII.id] = { forbiddenTerrain={15} },
+[unitAliases.SpitfireXIV.id] = { forbiddenTerrain={15} },
+[unitAliases.HurricaneIV.id] = { forbiddenTerrain={15} },
+[unitAliases.Typhoon.id] = { forbiddenTerrain={15} },
+[unitAliases.Tempest.id] = { forbiddenTerrain={15} },
+[unitAliases.Meteor.id] = { forbiddenTerrain={15} },
+[unitAliases.Beaufighter.id] = { forbiddenTerrain={15} },
+[unitAliases.MosquitoII.id] = { forbiddenTerrain={15} },
+[unitAliases.MosquitoXIII.id] = { forbiddenTerrain={15} },
+[unitAliases.P47D11.id] = { forbiddenTerrain={15} },
+[unitAliases.P47D25.id] = { forbiddenTerrain={15} },
+[unitAliases.P47D40.id] = { forbiddenTerrain={15} },
+[unitAliases.P38L.id] = { forbiddenTerrain={15} },
+[unitAliases.P38H.id] = { forbiddenTerrain={15} },
+[unitAliases.P38J.id] = { forbiddenTerrain={15} },
+[unitAliases.P51B.id] = { forbiddenTerrain={15} },
+[unitAliases.P51D.id] = { forbiddenTerrain={15} },
+[unitAliases.P80.id] = { forbiddenTerrain={15} },
+[unitAliases.Stirling.id] = { forbiddenTerrain={15} },
+[unitAliases.Halifax.id] = { forbiddenTerrain={15} },
+[unitAliases.Pathfinder.id] = { forbiddenTerrain={15} },
+[unitAliases.A20.id] = { forbiddenTerrain={15} },
+[unitAliases.B26.id] = { forbiddenTerrain={15} },
+[unitAliases.A26.id] = { forbiddenTerrain={15} },
+[unitAliases.B17F.id] = { forbiddenTerrain={15} },
+[unitAliases.B24J.id] = { forbiddenTerrain={15} },
+[unitAliases.B17G.id] = { forbiddenTerrain={15} },
+[unitAliases.RAFAce.id] = { forbiddenTerrain={15} },
+[unitAliases.USAAFAce.id] = { forbiddenTerrain={15} },
+[unitAliases.He111.id] = { forbiddenTerrain={15} },
+[unitAliases.Sunderland.id] = { forbiddenTerrain={15} },
+[unitAliases.Ju188.id] = { forbiddenTerrain={15} },
+[unitAliases.MossiePR.id] = { forbiddenTerrain={15} },
+[unitAliases.RedTails.id] = { forbiddenTerrain={0,9,} },
+[unitAliases.Yak3.id] = { forbiddenTerrain={0,9,} },
+[unitAliases.Il2.id] = { forbiddenTerrain={0,9,} },
+[unitAliases.MedBombers.id] = { forbiddenTerrain={0,9,} }, 
+--[unitAliases.Destroyer.id] = { forbiddenTerrain={9} },
+--[unitAliases.LightCruiser.id] = { forbiddenTerrain={9} },
+--[unitAliases.HeavyCruiser.id] = { forbiddenTerrain={9} },
+--[unitAliases.Battleship.id] = { forbiddenTerrain={9} },
+--[unitAliases.UBoat.id] = { forbiddenTerrain={9} },
+
+--Index unit types by their id number
+}
+-- old version from when landing in cities resulted in deletion instead 
+-- of a penalty
+--[[
+local cannotLandCityItalyRussia = {
 [unitAliases.Me109G6.id] = { forbiddenTerrain={0, 15, -128, -114} },
 [unitAliases.Fw200.id] = { forbiddenTerrain={0, 15, -128, -114} },
 [unitAliases.Me109G14.id] = { forbiddenTerrain={0, 15, -128, -114} },
@@ -8819,7 +8949,7 @@ local cannotLandCityItalyRussia = {
 
 --Index unit types by their id number
 }
-
+--]]
 
 function doThisBetweenTurns(turn)
    for unit in civ.iterateUnits() do
@@ -8831,10 +8961,26 @@ function doThisBetweenTurns(turn)
                    -- p.g. terrain check correction
                    if (unit.location.terrainType % 16) == cannotLand then
                        --print("Got here #3")
+                       local message = text.substitute("In Over the Reich, Allied aircraft operate from three different locations: England (and later mainland Europe), Italy, and Russia.  Aircraft from Italy and Russia can only use their respective airbases, and aircraft based in England can't land in Italy and Russia.  Our %STRING1 has been deleted for trying to operate from the wrong airfield.",{unit.type.name})
+                       text.displayNextOpportunity(unit.owner,message,"OTR Concepts: Air Operations Theatres","OTR Concepts: Air Operations Theatres")
+
                        civ.deleteUnit(unit)
                    end
                end
            end
+                   if unit and (unit.type == unitAliases.RedTails or unit.type == unitAliases.MedBombers) 
+                       and unit.location == civ.getTile(406,74,0) then
+                       local message = text.substitute("In Over the Reich, Allied aircraft operate from three different locations: England (and later mainland Europe), Italy, and Russia.  Aircraft from Italy and Russia can only use their respective airbases, and aircraft based in England can't land in Italy and Russia.  Our %STRING1 has been deleted for trying to operate from the wrong airfield.",{unit.type.name})
+                       text.displayNextOpportunity(unit.owner,message,"OTR Concepts: Air Operations Theatres","OTR Concepts: Air Operations Theatres")
+
+                       civ.deleteUnit(unit)
+                   elseif unit and (unit.type == unitAliases.Yak3 or unit.type == unitAliases.Il2) 
+                       and unit.location == civ.getTile(345,145,0) then
+                       local message = text.substitute("In Over the Reich, Allied aircraft operate from three different locations: England (and later mainland Europe), Italy, and Russia.  Aircraft from Italy and Russia can only use their respective airbases, and aircraft based in England can't land in Italy and Russia.  Our %STRING1 has been deleted for trying to operate from the wrong airfield.",{unit.type.name})
+                       text.displayNextOpportunity(unit.owner,message,"OTR Concepts: Air Operations Theatres","OTR Concepts: Air Operations Theatres")
+
+                       civ.deleteUnit(unit)
+                   end
        end
     end -- end the for loop over all units in the game
 end -- end function
@@ -10085,10 +10231,17 @@ local function afterProduction(turn,tribe)
     justOnce("ZeroMovementUnitVetStatusFix",function() for unit in civ.iterateUnits() do if unit.type.move == 0 then unit.veteran = true end end end)
     --local aptext = "It is turn "..tostring(turn).." and the tribe is "..tribe.name..".  This should appear only once per turn per tribe."
     --civ.ui.text(func.splitlines(aptext))
-    fortifyPassiveFlak()
+    --fortifyPassiveFlak()
     doScouting()
     overTwoHundred.alliedReinforcementsAfterProduction()
     overTwoHundred.engineFailure(tribe)
+    for unit in civ.iterateUnits() do
+        if unit.owner == tribe and unit.type.domain == 1 and unit.location.terrainType % 16 == 0 then
+            unit.moveSpent = math.max(unit.moveSpent,unit.type.move-1)
+            unit.damage = math.max(unit.damage,unit.hitpoints-1)
+            text.simple("In Over the Reich, there is a distinction between \"airfields\" and \"cities\" (although they are both cities in the Civilization II mechanics sense).  Aircraft are supposed to operate from airfields and not cities.  Since this "..unit.type.name.." has landed in a city, it has been damaged and had its movement points reduced as a penalty.","Over the Reich Concepts: Cities and Airfields")
+        end
+    end
     if tribe == tribeAliases.Allies then
         if turn == 1 then
         	civ.ui.text(func.splitlines(textAliases.firstTurn1))
@@ -11417,6 +11570,10 @@ local firstCombatRound = true
 	    
 	    if loser.type == unitAliases.Convoy then
 	    incrementCounter("GermanScore",specialNumbers.germanScoreIncrementSinkFreighter)
+        incrementCounter("ConvoyVetChance",specialNumbers.convoySinkingVetChanceIncrement)
+        if counterValue("ConvoyVetChance") > specialNumbers.maxConvoyVetChance then
+            setCounter("ConvoyVetChance",specialNumbers.maxConvoyVetChance)
+        end
 	    elseif loser.type == unitAliases.Refinery1 or loser.type == unitAliases.Refinery2 or loser.type == unitAliases.Refinery3 then
 				tribeAliases.Allies.money = math.min(tribeAliases.Allies.money,math.max(tribeAliases.Allies.money+specialNumbers.refineryKilledMoney,specialNumbers.moneySafeFromRefineryKill))
 	    elseif loser.type == unitAliases.B17F or loser.type == unitAliases.B17G then
@@ -11790,6 +11947,11 @@ doOnActivateUnit = function(unit,source)
     reHomePayloadUnit(unit)
     overTwoHundred.currentUnitGotoOrder = unit.gotoTile
     trainGoto.trainGotoOnActivate(unit)
+    if unit.type.domain == 1 and unit.location.terrainType % 16 == 0 then
+        unit.moveSpent = math.max(unit.moveSpent,unit.type.move-1)
+        unit.damage = math.max(unit.damage,unit.hitpoints-1)
+        text.simple("In Over the Reich, there is a distinction between \"airfields\" and \"cities\" (although they are both cities in the Civilization II mechanics sense).  Aircraft are supposed to operate from airfields and not cities.  Since this "..unit.type.name.." has landed in a city, it has been damaged and had its movement points reduced as a penalty.","Over the Reich Concepts: Cities and Airfields")
+    end
     state.formationTable = {}
     state.formationFlag = false
     if civ.isCity(overTwoHundred.cityToDelete) then
@@ -12019,6 +12181,94 @@ local function ineffectiveAAMunitionMessage(attacker,defender)
                 "Over the Reich Concepts: Ineffective Munitions")
 end
 
+overTwoHundred.rocketInvulnerableTable = {}
+
+overTwoHundred.rocketInvulnerableTable[unitAliases.Me109G6.id]				=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.Me109G14.id]		=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Me109K4.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Fw190A5.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Fw190A8.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Fw190D9.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Ta152.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Me110.id]				=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.Me410.id]				=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.Ju88C.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Ju88G.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.He219.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.He162.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Me163.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Me262.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Ju87G.id]				=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.Fw190F.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Do335.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Do217.id]				=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.He277.id]				=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.Arado234.id]			=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.Go229.id]				=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.SpitfireIX.id]			=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.SpitfireXII.id]			=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.SpitfireXIV.id]			=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.HurricaneIV.id]		=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Typhoon.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Tempest.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Meteor.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Beaufighter.id]		=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.MosquitoII.id]		=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.MosquitoXIII.id]	=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.P47D11.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.P47D25.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.P47D40.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.P38H.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.P38J.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.P38L.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.P51B.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.P51D.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.P80.id]				=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Stirling.id]			=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.Halifax.id]				=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.Lancaster.id]			=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.Pathfinder.id]			=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.A20.id]					=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.B26.id]					=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.A26.id]					=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.B17F.id]				=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.B24J.id]				=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.B17G.id]				=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.EgonMayer.id]			=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.AlliedFlak.id]			=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.He111.id]				=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.Sunderland.id]			=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.HermannGraf.id]			=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.JosefPriller.id]		=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.AdolfGalland.id]		=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.RAFAce.id]		=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.USAAFAce.id]		=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.GermanTaskForce.id]		=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.AlliedTaskForce.id]		=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.RedTails.id]		=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.MedBombers.id]			=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.FifteenthAF.id]         =false
+overTwoHundred.rocketInvulnerableTable[unitAliases.GunBattery.id]			=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.Yak3.id]			=true	
+overTwoHundred.rocketInvulnerableTable[unitAliases.Il2.id]					=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.Ju188.id]				=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.MossiePR.id]			=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.Freighter.id]			=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.Convoy.id]  			=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.GermanLightFlak.id]		=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.AlliedLightFlak.id]		=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.Carrier.id]				=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.damagedB17F.id]			=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.damagedB17G.id]			=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.UBoat.id]				=false
+overTwoHundred.rocketInvulnerableTable[unitAliases.hwSchnaufer.id]			=true
+overTwoHundred.rocketInvulnerableTable[unitAliases.Experten.id]			=true
+
+function overTwoHundred.rocketInvulnerableMessage(defender)
+    local message = "In Over the Reich, Air to Air Rockets are not effective against \"agile\" targets, such as fighters in flight.  Therefore, the %STRING1 unit cannot damage %STRING2 units in this scenario."
+    text.simple(text.substitute(message,{unitAliases.A2ARockets.name,defender.type.name}),"Over the Reich Concepts: Ineffective Munitions")
+end
+
 -- the maximum number of hitpoints a munition can do a defending unit in combat
 overTwoHundred.maxMunitionDamage = {}
 overTwoHundred.maxMunitionDamage[unitAliases.AlliedTaskForce.id] = 3
@@ -12031,8 +12281,8 @@ overTwoHundred.maxMunitionDamage[unitAliases.Carrier.id] = 3
 -- nil or false means 0 survival chance (i.e. ordinary combat rules apply)
 overTwoHundred.unitSurvivalChance = {}
 
-overTwoHundred.unitSurvivalChance[unitAliases.Fw190A8.id] = specialNumbers.defaultSurvivalChance
-overTwoHundred.unitSurvivalChance[unitAliases.Fw190F.id] = specialNumbers.defaultSurvivalChance
+--overTwoHundred.unitSurvivalChance[unitAliases.Fw190A8.id] = specialNumbers.defaultSurvivalChance
+--overTwoHundred.unitSurvivalChance[unitAliases.Fw190F.id] = specialNumbers.defaultSurvivalChance
 overTwoHundred.unitSurvivalChance[unitAliases.He111.id] = specialNumbers.defaultSurvivalChance
 overTwoHundred.unitSurvivalChance[unitAliases.Do217.id] = specialNumbers.defaultSurvivalChance
 overTwoHundred.unitSurvivalChance[unitAliases.He277.id] = specialNumbers.defaultSurvivalChance
@@ -12041,7 +12291,7 @@ overTwoHundred.unitSurvivalChance[unitAliases.Go229.id] = specialNumbers.default
 overTwoHundred.unitSurvivalChance[unitAliases.HermannGraf.id] = specialNumbers.defaultSurvivalChance
 overTwoHundred.unitSurvivalChance[unitAliases.JosefPriller.id] = specialNumbers.defaultSurvivalChance
 overTwoHundred.unitSurvivalChance[unitAliases.AdolfGalland.id] = specialNumbers.defaultSurvivalChance
-overTwoHundred.unitSurvivalChance[unitAliases.hwSchnaufer	.id] = specialNumbers.defaultSurvivalChance
+overTwoHundred.unitSurvivalChance[unitAliases.hwSchnaufer.id] = specialNumbers.defaultSurvivalChance
 overTwoHundred.unitSurvivalChance[unitAliases.Experten.id] = specialNumbers.defaultSurvivalChance
 overTwoHundred.unitSurvivalChance[unitAliases.EgonMayer.id] = specialNumbers.defaultSurvivalChance
 
@@ -12057,9 +12307,9 @@ overTwoHundred.unitSurvivalChance[unitAliases.B17F.id] = specialNumbers.defaultS
 overTwoHundred.unitSurvivalChance[unitAliases.B17G.id] = specialNumbers.defaultSurvivalChance
 overTwoHundred.unitSurvivalChance[unitAliases.MedBombers.id] = specialNumbers.defaultSurvivalChance
 
-overTwoHundred.unitSurvivalChance[unitAliases.P47D11.id] = specialNumbers.defaultSurvivalChance
-overTwoHundred.unitSurvivalChance[unitAliases.P47D25.id] = specialNumbers.defaultSurvivalChance
-overTwoHundred.unitSurvivalChance[unitAliases.P47D40.id] = specialNumbers.defaultSurvivalChance
+--overTwoHundred.unitSurvivalChance[unitAliases.P47D11.id] = specialNumbers.defaultSurvivalChance
+--overTwoHundred.unitSurvivalChance[unitAliases.P47D25.id] = specialNumbers.defaultSurvivalChance
+--overTwoHundred.unitSurvivalChance[unitAliases.P47D40.id] = specialNumbers.defaultSurvivalChance
 
 --by default, air units except munitions have this survival chance
 --for i=0,127 do
@@ -12097,6 +12347,10 @@ local function combatResolutionFunction(defaultResolutionFunction,defender,attac
         if AAMunitionsTable[attacker.type.id] and AAInvulnerableTable[defender.type.id] then
             attacker.damage = attacker.type.hitpoints
             ineffectiveAAMunitionMessage(attacker,defender)
+            return false
+        elseif attacker.type == unitAliases.A2ARockets and overTwoHundred.rocketInvulnerableTable[defender.type.id] and (not defender.location.city) then
+            attacker.damage = attacker.type.hitpoints
+            overTwoHundred.rocketInvulnerableMessage(defender)
             return false
         elseif not checkIfInOperatingRadius(defender) then
             -- units outside the operating radius don't defend themselves

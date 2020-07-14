@@ -277,6 +277,109 @@ local function upgradeWinner(loser,winner,aggressor,victim,aggressorLocation,
 end
 
 
+-- Demotion 
+
+-- unit demotion after defeat specification
+-- demotionSpecifics is indexed by unitType ID numbers
+-- demotionSpecifics[myUnitType.id] = demotionSpecification
+-- demotionSpecifics["default"] = demotionSpecification, used to provide default values for other specifications
+--
+--  .demotionUnitType = unitType
+--          If the unit is defeated in combat, a unit of this type will be created in its place
+--          nil means no unit is created upon defeat (unless the override provides one)
+--  .demotionUnitTypeOverride = table[winner.type.id] = unitType or false or nil
+--                              or function(loser,winner,aggressor,victim,aggressorLocation,victimVetStatus,aggressorVetStatus) --> unitType or false or nil
+--
+--          If a unit type is provided, that unit type is created instead of the one specified by demotionUnitType
+--          If false is returned, no replacement unit is created
+--          If nil is returned, use the unitType specified by demotionUnitType
+--
+--  .demoteOnlyIfVeteran = bool or nil
+--          If true, a demotion unit is created only if the loser is a veteran unit
+--
+--  .preserveVeteranStatus = bool or nil
+--          If true, a demoted unit retains its veteran status
+--          If false or nil, the new unit is not veteran
+--
+--  .aggressorOnlyDemotion = bool or nil
+--          if true, unitType can only upgrade if it was the aggressor
+--          false means unitType can upgrade either way
+--          nil means upgradeSpecifics["default"].aggressorOnlyUpgrade
+--          still nil means false
+--  .victimOnlyUpgrade = bool or nil
+--          if true, unitType can only upgrade if it was the victim
+--          false means unitType can upgrade either way
+--          nil means upgradeSpecifics["default"].victimOnlyUpgrade
+--          still nil means false
+--  .upgradeChance = number (between 0 and 1)
+--          probability of upgrade if the unit is successful in combat
+--          nil means upgradeSpecifics["default"].upgradeChance
+--          still nil means error (unless upgradeChanceFunction is specified)
+--  .upgradeChanceSunTzu = number (between 0 and 1)
+--          probability of upgrade if unit's owner has active Sun Tzu wonder
+--          nil means upgradeSpecifics["default"].upgradeChanceSunTzu
+--          still nil means use regular upgradeChance
+--  .upgradeChanceFunction = function(loser,winner,aggressor,victim,aggressorLocation,victimVetStatus,aggressorVetStatus)-->number (between 0 and 1)
+--          a function to give the upgrade chance instead of relying on built in functionality
+--          overrides upgradeChance and upgradeChanceSunTzu
+--          nil means no effect
+--  
+--  .preserveDamage = bool
+--          if true, upgrade unit has same damage as upgraded unit
+--          if false, upgrade unit has full hp
+--          nil means upgradeSpecifics["default"].preserveDamage
+--          still nil means false
+--  .preserveMoveSpent = bool
+--          if true, upgrade unit has same moveSpent as upgraded unit
+--          if false, upgrade unit is created with full movement
+--          nil means upgradeSpecifics["default"].preserveMoveSpent
+--          still nil means false
+--  .spendAllMove = bool
+--          happens after preserveMoveSpent
+--          if true, upgrade unit has all its movement points spent
+--          if false, it does not 
+--          nil means upgradeSpecifics["default"].preserveMoveSpent
+--          still nil means false
+--  .preserveVetStatus = bool
+--          if true, upgradeUnit is veteran if upgraded unit is already veteran
+--          false means unit not veteran (giveVetStatus applies below)
+--          nil means upgradeSpecifics["default"].preserveVetStatus
+--          still nil means false
+--  .giveVetStatus = bool
+--          if true, upgraded unit is automatically veteran
+--          false means refer to preserveVetStatus
+--          nil means upgradeSpecifics["default"].giveVetStatus
+--          still nil means false
+--  .clearHomeCity = bool
+--          if true, new unit has home city of NONE,
+--          false means keep home city of upgraded unit
+--          nil means upgradeSpecifics["default"].clearHomeCity
+--          still nil means false
+--  .clearAttributes = bool
+--          if true, unit.attributes are not copied to the new unit
+--          false means they are (except veteran status, which is handled separately)
+--          nil means upgradeSpecifics["default"].clearAttributes
+--          still nil means false
+--  .clearOrder = bool
+--          if true, unit.order is set to 0xFF (i.e. no order)
+--          false means the upgrade unit inherits the order of the upgraded unit
+--          nil means upgradeSpecifics["default"].clearOrder
+--          still nil means false
+--  .clearGotoTile = bool
+--          if true, the upgraded unit won't have a goto order
+--          false means the upgrade unit inherits the order of the upgraded unit
+--          nil means upgradeSpecifics["default"].clearGotoTile
+--          still nil means false
+--  .modifyNewUnitFunction = function(newUnit,loser,winner,aggressor,victim,aggressorLocation, victimVetStatus,aggressorVetStatus)
+--          allows modification of the new unit based on arbitrary criteria,
+--          happens after all other modifications
+--          nil means no effect
+--  .upgradeMessage = string or function(newUnit,loser,winner,aggressor,victim,aggressorLocation, victimVetStatus,aggressorVetStatus)-->string
+--          displays a message about the upgrade if the unit owner is the current player
+--          if function, the message is generated
+--          %STRING0 is replaced by the old unit type name, %STRING1 is replaced by the new unit type name
+--          nil means check upgradeSpecifics["default"].upgradeMessage
+--          still nil means no message
 
 
 

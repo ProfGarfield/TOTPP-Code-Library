@@ -135,10 +135,14 @@
 --#gen.inPolygon(tile,tableOfCoordinates)-->bool
 --#gen.cityCanSupportAnotherUnit(city)-->bool
 --#gen.rehomeUnitsInCapturedCity(city,defender) --> void
+--#gen.homeToNearestCity(unit)-->void
 --#gen.activate(unit)-->void
 --#gen.activateWithSource(unit,source)-->void
 --#gen.linkActivationFunction(function(unit,source)-->void)-->void
 --#gen.getTileID(tileObject or int,int or nil,int or nil)-->int (by Knighttime, converts a tile/coordinates to a single integer as an ID number)
+--#gen.getTileId(tileObject or int,int or nil,int or nil)-->int (by Knighttime, converts a tile/coordinates to a single integer as an ID number)
+-- gen.getTileFromID(tileID) --> tileObject -- undoes gen.getTileID
+-- gen.getTileFromId(tileID) --> tileObject -- undoes gen.getTileID
 --#gen.distance(tileUnitCityA,tileUnitCityB,zDist=0)-->integer
 --#gen.unitTypeOnTile(tile,unitTypeOrTableOfUnitType)-->bool
 --#gen.getAdjacentTiles(tile)-->tableOfTiles
@@ -148,6 +152,7 @@
 --#gen.clearAdjacentAirProtection(unit) -->void clears air protection for tiles adjacent to the unit that are not owned by the unit's owner
 --#gen.inTable(object,table)--> bool
 --#gen.copyTable(table)-->table
+--#gen.errorForNilKey(table,tableName)-->void
 
 --
 -- FUNCTION IMPLEMENTATIONS
@@ -1072,6 +1077,30 @@ function gen.rehomeUnitsInCapturedCity(city,defender)
 	end
 end
 
+--#gen.homeToNearestCity(unit)-->void
+--  finds the nearest city (of the same tribe) that can support another
+--  unit, and sets the unit's home city to that city
+--  if there is no suitable city, the unit's home city isn't changed
+function gen.homeToNearestCity(unit)
+    local bestDist = 1000000
+    local bestCity = nil
+    local function dist(unit,city)
+        return math.abs(unit.location.x-city.location.x)+math.abs(unit.location.y-city.location.y)
+    end
+    for city in civ.iterateCities() do
+        if city.owner == unit.owner and dist(unit,city) < bestDist and
+            gen.cityCanSupportAnotherUnit(city) then
+            bestCity = city
+            bestDist = dist(unit,city)
+        end
+    end
+    if bestCity then
+        unit.homeCity = bestCity
+    end
+end
+
+
+
 
 -- gen.selectNextActiveUnit(activeUnit,source,customWeightFn)-->void
 -- use as the first line inside the function given to
@@ -1229,7 +1258,23 @@ function gen.getTileID (tileORX,y,z)
 	local tileOffset = tile.x + (tile.y * mapWidth)
 	return mapOffset + tileOffset
 end
+gen.getTileId = gen.getTileID
 
+-- gen.getTileFromID(tileID) --> tileObject
+function gen.getTileFromID(ID)
+    local mapWidth, mapHeight, mapQuantity = civ.getMapDimensions()
+    local baseMapOffset = mapWidth*mapHeight
+    local z = math.floor(ID/baseMapOffset)
+    if z < 0 or z >3 then
+        print("getTileFromID: did not receive a valid ID")
+        return nil
+    end
+    local tileOffset = ID % baseMapOffset
+    local y = math.floor(tileOffset/mapWidth)
+    local x = tileOffset % mapWidth
+    return civ.getTile(x,y,z)
+end
+gen.getTileFromId = gen.getTileFromID
 
 -- distance(tileUnitCityA,tileUnitCityB)-->integer
 -- gen.distance(tileUnitCityA,tileUnitCityB)-->integer
@@ -1471,5 +1516,13 @@ end
 gen.copyTable = copyTable
 
 
+--#gen.errorForNilKey(table,tableName)-->void
+-- generates an error when a key with a nil
+-- value is accessed from the table
+-- useful for debugging in certain circumstances
+function gen.errorForNilKey(table,tableName)
+    setmetatable(table,{__index = function(myTable,key)
+        error("The "..tableName.." table doesn't have a value associated with "..tostring(key)..".") end})
+end
 
 return gen

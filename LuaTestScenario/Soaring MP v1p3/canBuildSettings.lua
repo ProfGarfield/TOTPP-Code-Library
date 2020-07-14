@@ -1,6 +1,7 @@
 
 local object = require("object")
 local canBuildFunctions = require("canBuild")
+local param = require("parameters")
 
 -- canBuildParameters
 --      Three tables, one for unitTypes, one for Improvements, one for Wonders
@@ -130,15 +131,99 @@ local canBuildFunctions = require("canBuild")
 --          use this (or overrideFunction) if you want to have more than one valid way to produce the item
 --          the 'table' format is important.  Unlike other parameters, you must enclose the value of 
 --          alternateParameters in a table, even if there is only one itemParameters as the value
---
+--      .computerOnly = bool or nil
+--          if true, item can only be built by computer controlled players
+--          if false or nil, either human or AI players can build
+--          (in conjunction with alternateParameters, this can be used to have different conditions for the
+--          ai and human players)
+--      .humanOnly = bool or nil
+--          if true, item can only be built by human controlled players
+--          if false or nil, either human or AI players can build
+--          (in conjunction with alternateParameters, this can be used to have different conditions for the
+--          ai and human players)
 --
 
 local unitTypeBuild = {}
 unitTypeBuild[object.uColonist.id]={minimumPopulation=6}
 
-local improvementBuild = {}
 
+local wonderListMB = {
+object.wBlackSeaGrainTrade,
+object.wGreatTempleofApollo,
+object.wColossus,
+object.wLighthouse,
+object.wGreatTempleofPoseidon,
+object.wLongWall,
+object.wGreatAcademy,
+object.wGrandMines,
+object.wGrandEmbassy,
+object.wGreatTempleofZeus,
+object.wGreatObservatory,
+object.wGreatVoyage,
+object.wGreatTempleofAthena,
+object.wGreatTempleofDionysis,
+object.wGreatCollege,
+object.wGreatAgora,
+--object.wEurekaMoment, -- doesn't depend on master builder conditions
+object.wStatueofZeus,
+object.wStatueofApollo,
+object.wGreatTempleofArtemis,
+object.wGreatForge,
+object.wGrandLeague,
+object.wGreatTempleofAphrodite,
+}
+
+local function masterBuilderCondition(defaultBuildFunction,selectingCity,item)
+    local wondersOwned = 0
+    local wondersBuilt = 0
+    for __,wonder in pairs(wonderListMB) do
+        if wonder.city then
+            wondersBuilt = wondersBuilt+1
+            if wonder.city.owner == selectingCity.owner then
+                wondersOwned = wondersOwned+1
+            end
+        end
+    end
+    if wondersOwned == 0 then
+        return true
+    elseif wondersOwned < param.wonderOwnershipThreshold*wondersBuilt then
+        return true
+    else
+        return false
+    end
+end
+
+local improvementBuild = {}
+improvementBuild[object.iMasterBuilder.id] = {conditionFunction = masterBuilderCondition}
+
+local wonderCondition = {allImprovements=object.iMasterBuilder, alternateParameters={{computerOnly=true}}}
 local wonderBuild = {}
+wonderBuild[object.wBlackSeaGrainTrade.id]=wonderCondition    
+wonderBuild[object.wGreatTempleofApollo.id]=wonderCondition   
+wonderBuild[object.wColossus.id]=wonderCondition              
+wonderBuild[object.wLighthouse.id]=wonderCondition            
+wonderBuild[object.wGreatTempleofPoseidon.id]=wonderCondition 
+wonderBuild[object.wLongWall.id]=wonderCondition              
+wonderBuild[object.wGreatAcademy.id]=wonderCondition          
+wonderBuild[object.wGrandMines.id]=wonderCondition            
+wonderBuild[object.wGrandEmbassy.id]=wonderCondition          
+wonderBuild[object.wGreatTempleofZeus.id]=wonderCondition     
+wonderBuild[object.wGreatObservatory.id]=wonderCondition      
+wonderBuild[object.wGreatVoyage.id]=wonderCondition           
+wonderBuild[object.wGreatTempleofAthena.id]=wonderCondition   
+wonderBuild[object.wGreatTempleofDionysis.id]=wonderCondition 
+wonderBuild[object.wGreatCollege.id]=wonderCondition          
+wonderBuild[object.wGreatAgora.id]=wonderCondition            
+--wonderBuild[object.wEurekaMoment.id]=wonderCondition  -- Eureka Moment doesn't depend on the master builder conditions
+wonderBuild[object.wStatueofZeus.id]=wonderCondition          
+wonderBuild[object.wStatueofApollo.id]=wonderCondition        
+wonderBuild[object.wGreatTempleofArtemis.id]=wonderCondition  
+wonderBuild[object.wGreatForge.id]=wonderCondition            
+wonderBuild[object.wGrandLeague.id]=wonderCondition           
+wonderBuild[object.wGreatTempleofAphrodite.id]=wonderCondition
+
+
+
 
 canBuildFunctions.supplyUnitTypeParameters(unitTypeBuild)
 canBuildFunctions.supplyImprovementParameters(improvementBuild)
