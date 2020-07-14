@@ -250,6 +250,32 @@ local function techProliferation(tribe)
     end
 end
 
+-- do afterProduction and when scenario loaded
+local function setCommunismStats()
+    -- Base palace distance 25
+    -- Dual monarchy improves with the availability of other, better
+    -- governments (empire, oligarchy, democracy)
+    -- the improvements are when ANYONE gets the tech, not the active player
+    -- War Council (empire) reduces palace distance by 5, increases
+    -- free support from 3 to 4
+    -- Oligarchy reduces Palace distance by 10
+    -- Democracy reduces Palace Distance by 10
+    local palaceDistance = 25
+    local freeSupport = 3
+    if object.aWarCouncil.researched then
+        freeSupport = freeSupport+1
+        palaceDistance = palaceDistance-5
+    end
+    if object.aOligarchy.researched then
+        palaceDistance = palaceDistance-10
+    end
+    if object.aDemocracy.researched then
+        palaceDistance = palaceDistance-10
+    end
+    civ.cosmic.supportCommunism = freeSupport
+    civ.cosmic.communismPalaceDistance = math.max(0,palaceDistance)
+end
+
 
 -- Occurs when the first unit is activated after production
 -- If a tribe has no active unit after production, this
@@ -273,6 +299,8 @@ local function doAfterProduction(turn,tribe)-->void
     setUnitStats(tribe)
     restoreEasternFortresses(turn)
     techProliferation(tribe)
+    setCommunismStats()
+    setCommunismStats()
 
 end
 console.afterProduction = doAfterProduction
@@ -343,6 +371,7 @@ end
 local function doOnScenarioLoaded()-->void
     legacy.doScenarioLoadedEvents()
     setUnitStats(civ.getCurrentTribe())
+    setCommunismStats()
 
 end
 
