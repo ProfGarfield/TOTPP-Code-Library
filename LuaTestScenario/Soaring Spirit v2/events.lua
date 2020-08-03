@@ -3,17 +3,13 @@ print "You should see this in lua console if this worked"
 
 local eventsPath = string.gsub(debug.getinfo(1).source, "@", "")
 local scenarioFolderPath = string.gsub(eventsPath, "events.lua", "?.lua")
+    package.path = scenarioFolderPath
 if string.find(package.path, scenarioFolderPath, 1, true) == nil then
-   package.path = package.path .. ";" .. scenarioFolderPath
+   --package.path = package.path .. ";" .. scenarioFolderPath
 end
 
 
 console={}
---[[
-musicFolder= string.gsub(eventsPath,civ.getToTDir(),"..")
-musicFolder= string.gsub(musicFolder,"events.lua","").."\\Music"
-console.musicFolder = musicFolder
-]]
 
 local civlua = require "civluaModified"
 local func = require "functions"
@@ -74,11 +70,19 @@ local function linkStateTableToModules()
     legacy.linkState(state.legacyState)
     state.logTable = state.logTable or {}
     log.linkState(state.logTable)
+    -- keeps track of squares where ships recharge their movement
+    -- to be used for a piracy mechanic where pirates are generated
+    -- where ships recharge their movement points
+    -- indexed by tileID
+    state.rechargeSquares = state.rechargeSquares or {}
+    -- keeps track of strategos and their retirement date
+    state.strategosRetirement = state.strategosRetirement or {}
 end
 linkStateTableToModules()
 
 local justOnce = function (key, f) civlua.justOnce(civlua.property(state.justOnce, key), f)
 end
+
 
 -- changes the stats of certain units so they are different for the
 -- AI and for Humans
@@ -88,7 +92,7 @@ local function setUnitStats(tribe)
     -- for the AI
     -- AI can't use the strategos attack bonus, so give it a powerful
     -- attack value, HP, and FP, and make it ignore walls 
-    -- the equivalent of the old stratego stats, except defense is still 0
+    -- the equivalent of the old strategos stats, except defense is still 0
     -- 
     if tribe.isHuman then
         object.uRichVillage.defense = 12
@@ -179,7 +183,7 @@ end
 -- restores them each turn
 local function restoreEasternFortresses(turn)
     local function restoreFortressIfAbsent(x,y,z)
-        if not gen.unitTypeOnTile(civ.getTile(x,y,z),object.uEasternFortress) then
+        if (not gen.unitTypeOnTile(civ.getTile(x,y,z),object.uEasternFortress)) and civ.getTile(x,y,z).owner == object.tLydians then
             civ.createUnit(object.uEasternFortress,object.tLydians,civ.getTile(x,y,z))
         end
     end
@@ -247,6 +251,9 @@ local function techProliferation(tribe)
     end
     for __,tech in pairs(techsToReceive) do
         tribe:giveTech(tech)
+        if tribe == civ.getPlayerTribe() then
+            text.simple("Travellers have explained to us the secret of "..tech.name..".","Science Adviser")
+        end
     end
 end
 
@@ -291,9 +298,11 @@ local function doAfterProduction(turn,tribe)-->void
             unit.moveSpent = math.max(unit.moveSpent,1)
         end
     end
-    for tileID,name in pairs(cityNames) do
-        if math.random() < param.colonySiteUpgradeChance then
-            upgradeColonySite(gen.getTileFromID(tileID))
+    if tribe.isHuman or param.upgradeColonySitesOnAITurns then
+        for tileID,name in pairs(cityNames) do
+            if math.random() < param.colonySiteUpgradeChance then
+                upgradeColonySite(gen.getTileFromID(tileID))
+            end
         end
     end
     setUnitStats(tribe)
@@ -301,9 +310,45 @@ local function doAfterProduction(turn,tribe)-->void
     techProliferation(tribe)
     setCommunismStats()
     setCommunismStats()
+    diplomacy.setWar(object.tAthenians,object.tLydians)
+    diplomacy.setWar(object.tCorinthians,object.tLydians)
+    diplomacy.setWar(object.tIonians,object.tLydians)
+    diplomacy.setWar(object.tSpartans,object.tLydians)
+    diplomacy.setWar(object.tPhoenicians,object.tLydians)
+    diplomacy.setWar(object.tEtruscans,object.tLydians)
+    if not tribe.isHuman then
+        tribe.researchProgress = tribe.researchCost+500
+    end
+    for unit in civ.iterateUnits() do
+        if unit.type == object.uStrategos and unit.owner == tribe
+            and state.strategosRetirement[unit.id] and state.strategosRetirement[unit.id] <= turn then
+            local locationName = ""
+            if unit.location.city then
+                locationName = unit.location.city.name
+            else
+                locationName = "("..unit.location.x..","..unit.location.y..")"
+            end
+            text.displayNextOpportunity(unit.owner,"Our Strategos at "..locationName.." has retired after "..tostring(param.strategosLife*param.yearIncrement).." years of service.","Strategos","Strategos")
+            local otherTribesTable = {}
+            for i=1,7 do
+                if i~=unit.owner.id then
+                    otherTribesTable[#otherTribesTable+1] = civ.getTribe(i)
+                end
+            end
+            text.displayNextOpportunity(otherTribesTable,text.substitute("A %STRING1 Strategos has retired after %STRING2 years of service.",{unit.owner.adjective,param.yearIncrement*param.strategosLife}),unit.owner.adjective.." Strategos Retires",unit.owner.adjective.." Strategos Retires")
+            civ.deleteUnit(unit)
+            for index,value in pairs(state.strategosRetirement) do
+                if (not civ.getUnit(index)) or (civ.getUnit(index).type ~= object.uStrategos) then
+                    state.strategosRetirement[index]=nil
+                end
+            end
+        end
+    end
+
+
 
 end
-console.afterProduction = doAfterProduction
+console.afterProduction = function () doAfterProduction(civ.getTurn(),civ.getCurrentTribe()) end
 
 
 
@@ -312,11 +357,24 @@ console.afterProduction = doAfterProduction
 -- note that if the aggressor loses, aggressor.location will not work
 local function doWhenUnitKilledInCombat(loser,winner,aggressor,victim,aggressorLocation,
     victimVetStatus,aggressorVetStatus)-->void
-    --promotion.unitKilledInCombat(loser,winner,aggressor,victim,aggressorLocation,
-    --victimVetStatus,aggressorVetStatus)
+    if loser.type == object.uStrategos then
+        local allTribes = {}
+        for i=1,7 do
+            allTribes[i] = civ.getTribe(i)
+        end
+        text.displayNextOpportunity(allTribes,"A Strategos in the service of the "..loser.owner.name.." has been killed in combat.","Strategos","Strategos")
+        for index,value in pairs(state.strategosRetirement) do
+            if (not civ.getUnit(index)) or (civ.getUnit(index).type ~= object.uStrategos) then
+                state.strategosRetirement[index]=nil
+            end
+        end
+    end
    if loser.type == object.uRichVillage then
-       civ.ui.text(text.substitute("The citizens are rounded up and enslaved, and %STRING1 %STRING2 of plunder makes its way to the %STRING3 treasury.  This looks like a perfect location to found a new colony!",{param.richVillagePlunder,param.currencyPlural,winner.owner.adjective}))
-       civ.createUnit(object.uSlave,winner.owner,winner.location)
+       if winner.owner == civ.getPlayerTribe() then
+        civ.ui.text(text.substitute("The citizens are rounded up and enslaved, and %STRING1 %STRING2 of plunder makes its way to the %STRING3 treasury.  This looks like a perfect location to found a new colony!",{param.richVillagePlunder,param.currencyPlural,winner.owner.adjective}))
+       end
+       local newSlave = civ.createUnit(object.uSlave,winner.owner,winner.location)
+       newSlave.homeCity = nil
        winner.owner.money=winner.owner.money+param.richVillagePlunder
        if not gen.unitTypeOnTile(winner.location,{object.uStrategos}) then
             winner.damage = winner.type.hitpoints-1
@@ -326,19 +384,27 @@ local function doWhenUnitKilledInCombat(loser,winner,aggressor,victim,aggressorL
        -- capture slaves
        if loser == victim then
            if loser.type == object.uSlave then
-               text.simple(text.substitute("We have captured some %STRING1 "..loser.type.name.."s.",{loser.owner.adjective}))
+               if winner.owner == civ.getPlayerTribe() then
+                    text.simple(text.substitute("We have captured some %STRING1 "..loser.type.name.."s.",{loser.owner.adjective}))
+                end
                local newSlave = civ.createUnit(object.uSlave,winner.owner,winner.location)
+
                newSlave.homeCity = nil
            elseif loser.type == object.uColonist or loser.type == object.uCitizen 
                or loser.type == object.uEngineer or loser.type == object.uHelot then
-               text.simple(text.substitute("We have captured and enslaved some %STRING1 %STRING2s",
-                {loser.owner.adjective,loser.type.name}))
+
+               if winner.owner == civ.getPlayerTribe() then
+                   text.simple(text.substitute("We have captured and enslaved some %STRING1 %STRING2s",
+                    {loser.owner.adjective,loser.type.name}))
+                end
                local newSlave = civ.createUnit(object.uSlave,winner.owner,winner.location)
                newSlave.homeCity = nil
            end
        elseif loser == aggressor then
-           text.simple(text.substitute("Our %STRING1s have been defeated and enslaved by the %STRING2.",
-           {loser.type.name,winner.owner.name}))
+           if aggressor.owner == civ.getPlayerTribe() then
+                text.simple(text.substitute("Our %STRING1s have been defeated and enslaved by the %STRING2.",
+                {loser.type.name,winner.owner.name}))
+            end
            local newSlave = civ.createUnit(object.uSlave,winner.owner,winner.location)
            newSlave.homeCity = nil
        end
@@ -420,18 +486,12 @@ local function doOnCityProduction(city,prod) -->void
     legacy.doCityProductionEvents(city,prod)
 end
 
+
 local function doOnActivateUnit(unit,source) --> void
-    -- recharge ship movement for AI
-    --local moveMult = totpp.movementMultipliers.aggregate
-    --local remainingCharges = (unit.type.move-unit.moveSpent)%moveMult
-    --print(unit.type.move-unit.moveSpent,2*moveMult,remainingCharges,unit.type.domain,gen.printBits(unit.attributes,16))
-    --if (not (unit.owner.isHuman)) and unit.type.domain == 2 and 
-    --    (unit.type.move-unit.moveSpent < 2*moveMult) and remainingCharges > 0 then
-    --    remainingCharges = remainingCharges - 1
-    --    unit.moveSpent =  moveMult - remainingCharges
-    --    unit.attributes = 0
-    --    --unit.attributes = gen.setBit0(unit.attributes,7)
-    --end
+    -- set the strategos retirement date
+    if unit.type == object.uStrategos then
+        state.strategosRetirement[unit.id] = state.strategosRetirement[unit.id] or (civ.getTurn()+param.strategosLife)
+    end
 
 
     
@@ -447,7 +507,7 @@ local function landAdjacent(unit)
     local center = unit.location
     for __,offset in pairs(offsets) do
         local t = civ.getTile(center.x+offset[1],center.y+offset[2],center.z)
-        if t.terrainType%16~=10 then
+        if t and t.terrainType%16~=10 then
             return true
         end
     end
@@ -469,7 +529,46 @@ local function nearbyEnemyShip(unit)
     end
     return false
 end
-        
+
+local pirateEnticingUnits  ={object.uTrader,object.uMerchant,object.uCitizen,object.uColonist,
+    object.uHelot,object.uSlave}
+
+-- generates pirates when ships recharge their movement
+local function checkForPirates(unit)
+    local function tileTriples(tileTable)
+        local triplesTable = {}
+        for index,tile in pairs(tileTable) do
+            triplesTable[index] = {tile.x,tile.y,tile.z}
+        end
+        return triplesTable
+    end
+    local function pirateProbability(location)
+        local count = state.rechargeSquares[gen.getTileID(location)] or 0
+        return count*param.pirateChanceIncrement+param.pirateChanceBase
+    end
+    local pirate = nil
+    if gen.unitTypeOnTile(unit.location,pirateEnticingUnits) and (not unit.location.city) then
+        if math.random() < pirateProbability(unit.location) then
+            pirate = civlua.createUnit(object.uLiburnae,object.tLydians,
+                            tileTriples(gen.getAdjacentTiles(unit.location)),{randomize=true,veteran=true,count=1})[1]
+            if pirate and unit.owner == civ.getPlayerTribe() then
+                text.simple("Pirates have appeared on the horizon!","Trade Minister")
+            end
+            if pirate then
+                -- a pirate has appeared, so reset the count
+                state.rechargeSquares[gen.getTileID(unit.location)]=nil
+            end
+        else
+            -- record unit recharges for piracy mechanic
+            state.rechargeSquares[gen.getTileID(unit.location)] = (state.rechargeSquares[gen.getTileID(unit.location)] or 0) +1
+        end
+
+    end
+    return pirate
+end
+
+
+
 
 
 local function rechargeShipMovement(unit)
@@ -480,9 +579,15 @@ local function rechargeShipMovement(unit)
         text.simple(text.substitute("Our %STRING1 cannot replenish its movement points due to the nearby %STRING2 %STRING3.  Ships can't replenish their movement points within %STRING4 squares of an enemy warship.",
         {unit.type.name,nearbyShip.owner.adjective,nearbyShip.type.name,tostring(param.shipInterceptionDistance)}),"Seafaring Rules: Movement Replenishment")
     elseif remainingCharges > 0 and landAdjacent(unit) then
-        remainingCharges = remainingCharges - 1
-        unit.moveSpent =  moveMult - remainingCharges
-        text.simple(text.substitute("Our %STRING1 has had its movement allowance replenished.",{unit.type.name}),"Movement Replenishment")
+        local pirate = checkForPirates(unit)
+        if pirate then
+            text.simple(text.substitute("Our %STRING1 cannot replenish its movement points due to the nearby %STRING2 %STRING3.  Ships can't replenish their movement points within %STRING4 squares of an enemy warship.",
+        {unit.type.name,pirate.owner.adjective,pirate.type.name,tostring(param.shipInterceptionDistance)}),"Seafaring Rules: Movement Replenishment")
+        else
+            remainingCharges = remainingCharges - 1
+            unit.moveSpent =  moveMult - remainingCharges
+            text.simple(text.substitute("Our %STRING1 has had its movement allowance replenished.",{unit.type.name}),"Movement Replenishment")
+        end
     elseif remainingCharges == 0 then
         text.simple(text.substitute("Our %STRING1 has used up its full allotment of movement replenishment for the current turn.  Only sea units with fractional movement points remaining can restore their movement allowance.",{unit.type.name}),"Seafaring Rules: Movement Replenishment")
 
@@ -497,13 +602,48 @@ local helpTextByUnitTypeID = {
 
 [object.uTransportShip.id]="Press K to restore movement when adjacent to land.",
 [object.uTransportGalley.id]="Press K to restore movement when adjacent to land.",
-[object.uTrireme.id]="Press K to restore movement (even if not adjacent to land).",
-[object.uPunicGalley.id]="Press K to restore movement when adjacent to land.",
+[object.uPunicGalley.id]="Press K to restore movement (even if not adjacent to land).",
+[object.uTrireme.id]="Press K to restore movement when adjacent to land.",
 [object.uBireme.id]="Press K to restore movement when adjacent to land.",
 [object.uLiburnae.id]="Press K to restore movement when adjacent to land.",
 [object.uPentreconter.id]="Press K to restore movement when adjacent to land.",
 }
-local function helpFunction(unit) return nil end
+local function helpFunction(unit) 
+    if unit.type == object.uStrategos then
+        state.strategosRetirement[unit.id] = state.strategosRetirement[unit.id] or (civ.getTurn()+param.strategosLife)
+        local lastServiceYear = civ.getGameYear() + param.yearIncrement*(state.strategosRetirement[unit.id]-civ.getTurn()-1)
+        local returnText = text.substitute("This Strategos will retire after the campaigning season of %STRING1 B.C.",{-lastServiceYear})
+        return returnText
+    else
+        return nil 
+    end
+end
+
+local function planningInformation()
+    local expectedScience = 0
+    local activeTribe = civ.getCurrentTribe()
+    for city in civ.iterateCities() do
+        if city.owner == activeTribe then
+            expectedScience = expectedScience+city.science
+        end
+    end
+    local planningDialog = civ.ui.createDialog()
+    planningDialog:addText(text.substitute("Our current science progress is %STRING1 out of %STRING2, and our cities are expected to produce %STRING3 research units in the upcoming turn.  Keep in mind that changes to power rankings, and being given additional technologies can change the total research cost.",{activeTribe.researchProgress,activeTribe.researchCost,expectedScience}))
+    local nextOedoTurn = 4 - (civ.getTurn() % 4)
+    local nextRevolutionTurn = nextOedoTurn-1
+    local nextOedoYear = civ.getGameYear()+nextOedoTurn*param.yearIncrement
+    local nextRevolutionYear = civ.getGameYear()+nextRevolutionTurn*param.yearIncrement
+    if nextRevolutionTurn == 0 then
+        planningDialog:addText(text.substitute("Next turn (%STRING1 B.C.) is an Oedo Year.  If you wish to change governments, hold a revolution now, or arrange to discover a new government technology next turn.",{-nextOedoYear}))
+    elseif nextRevolutionTurn == 1 then
+        planningDialog:addText(text.substitute("The next Oedo Year is %STRING1 B.C., two turns from now.  If you wish to change governments, hold a revolution next turn (%STRING2 B.C.), or arrange to discover a government technology the turn after.",{-nextOedoYear,-nextRevolutionYear}))
+    else
+        planningDialog:addText(text.substitute("The next Oedo Year is %STRING1 B.C., %STRING2 turns from now.  If you wish to change governments, hold a revolution in %STRING3 B.C. (%STRING4 turns from now) or arrange to discover a government technology the turn after.",{-nextOedoYear,nextOedoTurn,-nextRevolutionYear,nextRevolutionTurn}))
+    end
+    planningDialog:show()
+end
+
+
 
 local function doOnKeyPress(keyCode)
     --print(keyCode)
@@ -558,6 +698,11 @@ local function doOnKeyPress(keyCode)
         diplomacy.diplomacyMenu(options)
         return
     end
+    if keyCode == keyboard.three then
+        planningInformation()
+        return
+    end
+
 end
 
 
@@ -596,7 +741,7 @@ local firstRoundOfCombat = true
 local aggressorVeteranStatusBeforeCombat = false
 local aggressorLocation = nil -- if the aggressor dies, this information isn't available in onUnitKilled
 local victimVeteranStatusBeforeCombat = false
-local defenderStratego = false
+local defenderStrategos = false
 local function doOnResolveCombat(defaultResolutionFunction,defender,attacker)
     -- this if statement will only be executed once per combat
     if firstRoundOfCombat then
@@ -604,21 +749,27 @@ local function doOnResolveCombat(defaultResolutionFunction,defender,attacker)
         aggressorVeteranStatusBeforeCombat = attacker.veteran
         aggressorLocation = attacker.location
         victimVeteranStatusBeforeCombat = defender.veteran
+        if defender.type == object.uFortress and defender.damage == 0 then
+            for i=1,param.fortressMercenaries do
+                local newMerc = civ.createUnit(object.uMercenaryHoplite,defender.owner,defender.location)
+                newMerc.homeCity = nil
+            end
+        end
         if gen.unitTypeOnTile(attacker.location,{object.uStrategos}) then
             defender.damage = defender.damage+math.floor(defender.type.hitpoints*param.strategosAttack)
         end
         if gen.unitTypeOnTile(defender.location,{object.uStrategos}) then
-            defenderStratego = true
+            defenderStrategos = true
             -- this makes sure that if there is a stratego on both sides of the conflict, 
             -- the defender won't survive with negative hp
             if defender.damage >= defender.type.hitpoints then
                 defender.damage = defender.type.hitpoints -1
             end
         else
-            defenderStratego = false
+            defenderStrategos = false
         end
     end -- firstRoundOfCombat
-    if defenderStratego and defender.hitpoints < attacker.type.firepower then
+    if defenderStrategos and defender.hitpoints < attacker.type.firepower then
         attacker.damage = attacker.damage + math.floor(param.strategosDefense*defender.type.firepower)
     end
     return defaultResolutionFunction(defender,attacker)
@@ -638,6 +789,26 @@ civ.scen.onUnitKilled(function(loser,winner)
         aggressorVeteranStatusBeforeCombat)
     doOnUnitKilled(loser,winner)
     log.onUnitKilled(winner,loser)
+    if loser == victim and (loser.location.terrainType % 16 == 5 or loser.location.terrainType % 16 == 9) then
+        local count = 0
+        for stackKillUnit in loser.location.units do
+            count = count+1
+            if stackKillUnit.hitpoints > 0 then
+                -- the unit has positive health, so it wasn't the unit killed in combat
+                doWhenUnitKilledInCombat(stackKillUnit,winner,winner,stackKillUnit,aggressorLocation,
+                    stackKillUnit.veteran,aggressorVeteranStatusBeforeCombat)
+                doOnUnitKilled(stackKillUnit,winner)
+                log.onUnitKilled(winner,stackKillUnit)
+                civ.deleteUnit(stackKillUnit)
+            end
+        end
+        if count > 1 then
+            if aggressor.owner == civ.getPlayerTribe() or victim.owner == civ.getPlayerTribe() then
+                text.simple(tostring(count).." units destroyed.  Mountain and resource terrain squares are not stackable in this scenario.","War Minister")
+            end
+        end
+    end
+
 end)
 
 civ.scen.onCityTaken(doOnCityTaken)

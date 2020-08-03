@@ -151,7 +151,18 @@ GIVETECHNOLOGY
 TECHNOLOGY=93
 RECEIVER=Lydians
 TEXT
-The Persian Great King Cyrus resolves to subdue the rebelious Ionian Greeks.
+The Persian Great King Cyrus resolves to subdue the rebellious Ionian Greeks.
+ENDTEXT
+@ENDIF
+
+; New Event
+@IF
+TURN
+TURN=45
+@THEN
+TEXT
+The Persian Invasion can be defeated by capturing Magnesia.  The Eastern Fortress
+in the city will no longer be replaced each turn.
 ENDTEXT
 @ENDIF
 
@@ -1460,21 +1471,22 @@ locations
 endlocations
 @ENDIF
 
-@IF
-RANDOMTURN
-DENOMINATOR=8
-@THEN
-CREATEUNIT
-unit=Liburnae
-owner=Lydians
-veteran=yes
-homecity=NONE
-locations
-149,5
-180,30
-169,21
-endlocations
-@ENDIF
+; Pirates superceded by lua pirate events
+;@IF
+;RANDOMTURN
+;DENOMINATOR=8
+;@THEN
+;CREATEUNIT
+;unit=Liburnae
+;owner=Lydians
+;veteran=yes
+;homecity=NONE
+;locations
+;149,5
+;180,30
+;169,21
+;endlocations
+;@ENDIF
 
 @IF
 RANDOMTURN
