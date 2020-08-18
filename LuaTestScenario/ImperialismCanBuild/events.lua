@@ -4,7 +4,8 @@ print "You should see this in lua console if this worked"
 local eventsPath = string.gsub(debug.getinfo(1).source, "@", "")
 local scenarioFolderPath = string.gsub(eventsPath, "events.lua", "?.lua")
 if string.find(package.path, scenarioFolderPath, 1, true) == nil then
-   package.path = package.path .. ";" .. scenarioFolderPath
+   --package.path = package.path .. ";" .. scenarioFolderPath
+   package.path =scenarioFolderPath
 end
 
 --[[

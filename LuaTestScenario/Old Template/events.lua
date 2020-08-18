@@ -23,9 +23,9 @@ local text = require("text")
 local legacy = require("legacyEventEngine")
 local state = {}
 local object = require("object")
---local munitions = require("munitions")
---local kAttack = require("munitionsPrimaryAttack")
---local backspaceAttack = require("munitionsSecondaryAttack")
+local munitions = require("munitions")
+local kAttack = require("munitionsPrimaryAttack")
+local backspaceAttack = require("munitionsSecondaryAttack")
 local keyboard = require("keyboard")
 local canBuildFunctions = require("canBuild")
 local canBuildSettings = require("canBuildSettings")
@@ -71,6 +71,7 @@ local param = require("parameters")-- parameters.lua is a separate file to store
 local object = require("object") -- object.lua is a file with names for unitTypes, improvementTypes, tribes, etc.
 
 local function doOnTurn(turn)--> void
+    civ.ui.text("It is turn "..tostring(turn)..".")
     -- this makes doAfterProduction work
     for i=0,7 do
         flag.setTrue("tribe"..tostring(i).."AfterProductionNotDone")
@@ -86,6 +87,8 @@ end
 -- Perhaps create a unit for the next tribe in line, and then delete that unit
 -- when it is activated
 local function doAfterProduction(turn,tribe)-->void
+    civ.ui.text("After Production for tribe "..tribe.name..".")
+    munitions.afterProductionReArm(kAttack,backspaceAttack)
 
 end
 
@@ -145,6 +148,7 @@ local function doOnCityProduction(city,prod) -->void
 end
 
 local function doOnActivateUnit(unit,source) --> void
+    munitions.activationReArm(unit,kAttack,backspaceAttack)
 
 end
 
@@ -155,11 +159,11 @@ local function doOnKeyPress(keyCode)
     if keyCode == 73 --[[i]] then
     end
     if keyCode == keyboard.k --[[k]] and civ.getActiveUnit() then
-        --munitions.doMunition(civ.getActiveUnit(),kAttack,doOnActivateUnit)
+        munitions.doMunition(civ.getActiveUnit(),kAttack,doOnActivateUnit)
         return
     end
     if keyCode == keyboard.backspace and civ.getActiveUnit() then
-        --munitions.doMunition(civ.getActiveUnit(),backspaceAttack,doOnActivateUnit)
+        munitions.doMunition(civ.getActiveUnit(),backspaceAttack,doOnActivateUnit)
         return
     end
 end
@@ -255,6 +259,7 @@ end)
 civ.scen.onCentauriArrival(function (tribe) 
     legacy.doAlphaCentauriArrivalEvents(tribe)
 end)
+civ.scen.onTurn(doOnTurn)
 
 civ.scen.onGameEnds(function(reason)
     return legacy.endTheGame(reason)

@@ -19,11 +19,11 @@ local canBuildFunctions = require("canBuild")
 --          {xCoord,yCoord,zCoord} means the city must be located at those coordinates to build the object
 --          tileObject means the city must be located at that tile
 --          cityObject means the city must be that city
---          integer means city id must match the integer
 --          function means object can be built if function(city.location) returns true 
 --          (and all other conditions are met), and can't be built otherwise
 --          table of these things means that each entry in the table is checked, and if any one of them means the object can be built, then it can be built
 --          absent means the object can be built at any location
+--          (Note: Can't use integers to match city id, since code can't distinguish between several cities and a coordinate triple)
 --          A single entry not in a table will be 'wrapped' with a table in post processing
 --      .forbiddenLocation= {xCoord,yCoord} or {xCoord,yCoord,zCoord} or tileObject or cityObject or function(tileObject)-->boolean or table of these kinds of objects
 --              see location details, except that a match in forbidden location prevents the item from being buitl
@@ -149,7 +149,7 @@ local britishHomeCities = {--[[britain]]{287,35},{286,38},{283,39},{284,34},{285
 local frenchHomeCities = {civ.getTile(3,51,0),civ.getTile(3,47,0),civ.getTile(2,42,0),civ.getTile(6,44,0),
 civ.getTile(284,44,0),civ.getTile(286,46,0),civ.getTile(0,50,0),}
 
-local scotlandCities = {{283,25},{285,29}}
+local scotlandCities = {civ.getTile(283,25,0).city,civ.getTile(285,29,0).city}
 
 local nationalTroops = {object.uRiflemen1,object.uRiflemen2,object.uRiflemen3,object.uVoltigeurs,object.uInfantrie1, object.uInfantrie2,object.uImperialTroops,object.uImperialArmy1,object.uImperialArmy2,}
 

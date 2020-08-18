@@ -632,4 +632,260 @@ local function diplomacyMenu(options)
 end
 diplomacy.diplomacyMenu = diplomacyMenu
 
+--  an alternate diplomacy model menu used in a cold war scenario
+--      canGiveUnitFn(unit)-->bool
+--          determines if a unit can be given away as a single unit
+--      tribeCanReceiveUnitFn(unitBeforeGift,tribe)-->bool
+--          determines if a tribe can receive a unit as a gift (so that a tribe
+--          can be selected to receive a gift)
+--      cityCanReceiveUnitFn(unitBeforeGift,destinationCity)--> bool or number
+--          if false, city can't receive unit
+--          if number, city can receive unit, but giver must pay that cost
+--          if true, city can receive unit for free
+--      canGiveTileFn(tile,giver)
+--          if true, the tile and all its contents can be transferred to a new owner
+--          if false, it can't
+--      canReceiveTileFn(tile,giver,receiver)
+--          if true, the tribe can receive the tile
+--          if false, it can't
+--
+
+local function giftSingleUnit(canGiveUnitFn,tribeCanReceiveUnitFn,cityCanReceiveUnitFn)
+    -- choose unit to give
+    local unitToGive = nil
+    local menuTable = {}
+    local choiceOffset = 2
+    for unit in civ.getCurrentTile().units do
+        if canGiveUnitFn(unit) then
+            menuTable[unit.id+choiceOffset] = unit.type.name.." ("..((unit.homeCity and unit.homeCity.name) or "NONE")..((unit.veteran and ", Veteran)") or ")")
+        end
+    end
+    local choice = text.menu(menuTable,"Choose a unit to give away.","",true)
+    if choice == 0 then
+        return
+    else
+        unitToGive = civ.getUnit(choice - choiceOffset)
+    end
+    
+    local menuTable = {}
+    local choiceOffset = 2
+    local receiverTribe = nil
+    for i=0,7 do
+        if tribeCanReceiveUnitFn(unitToGive,civ.getTribe(i)) then
+            menuTable[i+choiceOffset] = civ.getTribe(i).name
+        end
+    end
+    local choice = text.menu(menuTable,"To whom shall we send our "..unitToGive.type.name.."?","",true)
+    if choice == 0 then
+        return
+    else
+        receiverTribe = civ.getTribe(choice-choiceOffset)
+    end
+    menuTable = {}
+    destination = nil
+    for city in civ.iterateCities() do
+        if city.owner == receiverTribe then
+            local transportCost = cityCanReceiveUnitFn(unitToGive,city)
+            if transportCost == true then
+                transportCost = 0
+            end
+            if transportCost then
+                menuTable[city.id+choiceOffset] = city.name.." ("..tostring(transportCost)..")"
+            end
+        end
+    end
+    choice = text.menu(menuTable,"Where shall we send our "..unitToGive.type.name.."?","",true)
+    if choice == 0 then
+        return
+    else
+        destination = civ.getCity(choice-choiceOffset)
+    end
+    local transportCost = cityCanReceiveUnitFn(unitToGive,destination)
+    if transportCost == true then
+        transportCost = 0
+    end
+    menuTable = {[1]="Yes.",[2]="No."}
+    local menuText = "Shall we send our "..unitToGive.type.name.." unit to "..destination.name
+    if transportCost > 0 then
+        menuText = menuText.." and pay "..tostring(transportCost).." in transportation costs?"
+    else
+        menuText = menuText.."?"
+    end
+    choice = text.menu(menuTable,menuText,"")
+    if choice == 2 then
+        return
+    end
+    if transportCost > unitToGive.owner.money then
+        text.simple("We can't afford to transport this unit.")
+        return
+    end
+    unitToGive.owner.money = unitToGive.owner.money - transportCost
+    unitToGive.owner = destination.owner
+    unitToGive:teleport(destination.location)
+    unitToGive.homeCity = destination
+
+    return
+end
+
+
+local function coldWarDiplomacyMenu(options,canGiveUnitFn,tribeCanReceiveUnitFn,cityCanReceiveUnitFn,canGiveTileFn,canReceiveTileFn)
+   -- Returns if the city is capital
+      local function isCapital(city)
+	 return city and city:hasImprovement(civ.getImprovement(1))
+      end
+      local function buildOptions()
+	 tile = civ.getCurrentTile()
+	 menuTable = {}
+	 menuTable[1] = "Gift money"
+	 menuTable[2] = "Gift technology"
+	 if canGiveTileFn(civ.getCurrentTile(),civ.getCurrentTribe()) and tile.owner == civ.getCurrentTribe() then
+	    if tile.city == nil then
+	       count = 0
+	       for i in tile.units do
+		  count = count + 1
+	       end
+	       if count > 0 then
+		  menuTable[3] = "Gift all units on tile"
+	       end
+	    else
+	       if not isCapital(tile.city) then
+		  menuTable[4] = "Gift city"
+	       end
+	    end
+	 end
+     menuTable[5] = "Give a unit on this tile"
+	 return menuTable
+      end
+
+      options = options or {}
+      mainDialogText = options.mainDialogText or "Choose your option"
+      menuTable = buildOptions()
+      gift = text.menu(menuTable, mainDialogText, mainDialogText, true)
+      if gift ~= 0 and gift ~= 5 then
+          menuTable = {}
+    	civSelectionText = options.civSelectionText or "Choose the civ to gift to"
+	    for i = 0, 7 do
+            if (gift == 3 or gift == 4) and not canReceiveTileFn(civ.getCurrentTile(),civ.getCurrentTribe(),civ.getTribe(i)) then
+            else
+	            menuTable[i+1] = civ.getTribe(i).name
+            end
+	    end
+	    tribeId = text.menu(menuTable, civSelectionText, civSelectionText, true)
+    elseif gift == 5 then
+           giftSingleUnit(canGiveUnitFn,tribeCanReceiveUnitFn,cityCanReceiveUnitFn)
+           return
+    elseif gift == 0 then
+        return
+    end
+      if tribeId~=0 and gift ~=0 then
+	 -- How I miss switch/case
+	 tribeId = tribeId -1
+	 tribe  = civ.getTribe(tribeId)
+	 player = civ.getCurrentTribe()
+	 if tribe.name ~= player.name
+	 then
+	    if gift == 1 then
+	       giftMoneyMenu(tribe, options)
+	    elseif gift == 2 then
+	       giftTechnology(tribe, options)
+	    elseif gift == 3 then
+	       giftUnits(tribe, options)
+	    elseif gift == 4 then
+	       giftCity(tribe, options)
+       elseif gift == 5 then
+	    end
+	 else
+	    errorMessage = options.sameCivPlayer or "You can't gift yourself!"
+	    civ.ui.text(errorMessage)
+	 end
+      end
+end
+diplomacy.coldWarDiplomacyMenu = coldWarDiplomacyMenu
+
+-- Some currently cancelled stuff, that might be used later
+--      unitForPurchaseFn(buyerTribe,unit)-->false or number
+--          determines if a unit can be bought, and if so, what the price is
+--          false means unit not for sale, number means it is for sale at that price
+--      cityCanReceivePurchaseFn(city,buyerTribe,unitBeforePurchase)-->bool or number
+--          determines if a city can receive a purchased unit (unit is still owned by seller tribe at this point)
+--          if true, unit can be received at that city, if number, add that number to purchase cost
+--          if false, the city can't receive the unit
+--          
+--          not complete
+local function purchaseUnit(unitForPurchaseFn,cityCanReceivePurchaseFn)
+    local buyer = civ.getCurrentTribe()
+    local deliveryCity = nil
+    local purchaseUnit = nil
+    local choice = nil
+    local function selectUnit(destCity)
+        local choiceOffset = 2
+        for unit in civ.iterateUnits() do
+            local price = unitForPurchaseFn(buyer,unit)
+            local transport = true
+            if destCity then
+                transport = cityCanReceivePurchaseFn(destCity,buyer,unit)
+            end
+            if transport then
+                local costText = nil
+                if transport == true then
+                    costText = "Price: "..tostring(price)
+                else
+                    costText = "Total: "..tostring(price+transport).." Price: "..tostring(price).." Shipping: "..tostring(transport)
+                end
+                
+                local description = unit.type.name.." ("..unit.owner.adjective
+
+            end
+        end
+
+
+
+    end
+    local function selectCity(boughtUnit)
+
+    end
+    while choice ~= 3 do
+        menuTable = {}
+
+        if purchaseUnit then
+            menuTable[1] = "Purchase a different unit."
+            menuTable[4] = "Clear unit purchase choice."
+        else
+            menuTable[1] = "Choose a unit to purchase."
+        end
+        if deliveryCity then
+            menuTable[2] = "Choose a different city to receive the purchase."
+            menuTable[5] = "Clear delivery city choice."
+        else
+            menuTable[2] = "Choose a city to receive your purchase."
+        end
+        if purchaseUnit and deliveryCity then
+            local unitCost = unitForPurchaseFn(buyer,purchaseUnit)
+            local deliveryCost = cityCanReceivePurchaseFn(city,buyer,purchaseUnit)
+            if deliveryCost == true then
+                deliveryCost = 0
+            end
+            if deliveryCost > 0 then
+                menuTable[3] = "Spend "..tostring(unitCost+deliveryCost).." ("..tostring(unitCost).."+"..tostring(deliveryCost)..") to have a "..purchaseUnit.type.name.." delivered to "..deliveryCity.name.."."
+            else
+                menuTable[3] = "Spend "..tostring(unitCost+deliveryCost).." to have a "..purchaseUnit.type.name.." delivered to "..deliveryCity.name.."."
+            end
+
+        end
+
+        choice = text.menu(menuTable,menuText,"",true)
+        if choice == 0 then
+            return
+        elseif choice == 1 then
+            purchaseUnit = selectUnit(deliveryCity)
+        elseif choice == 2 then
+            deliveryCity = selectCity(purchaseUnit)
+        elseif choice == 4 then
+            purchaseUnit = nil
+        elseif choice == 5 then
+            deliveryCity = nil
+        end
+    end
+
+end
 return diplomacy

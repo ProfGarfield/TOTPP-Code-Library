@@ -1,5 +1,4 @@
 local flag = require("flag")
-local gen = require("generalLibrary")
 
 -- This module provides some basic functionality for governing whether
 -- a city can build an item
@@ -21,11 +20,11 @@ local gen = require("generalLibrary")
 --          {xCoord,yCoord,zCoord} means the city must be located at those coordinates to build the object
 --          tileObject means the city must be located at that tile
 --          cityObject means the city must be that city
+--          integer means city id must match the integer
 --          function means object can be built if function(city.location) returns true 
 --          (and all other conditions are met), and can't be built otherwise
 --          table of these things means that each entry in the table is checked, and if any one of them means the object can be built, then it can be built
 --          absent means the object can be built at any location
---          (Note: Can't use integers to match city id, since code can't distinguish between several cities and a coordinate triple)
 --          A single entry not in a table will be 'wrapped' with a table in post processing
 --      .forbiddenLocation= {xCoord,yCoord} or {xCoord,yCoord,zCoord} or tileObject or cityObject or function(tileObject)-->boolean or table of these kinds of objects
 --              see location details, except that a match in forbidden location prevents the item from being buitl
@@ -142,49 +141,7 @@ local gen = require("generalLibrary")
 -- Changes table entries for easier programming below,
 -- in particular, puts single object entries inside tables,
 -- so that functions are simplified
---
--- Also creates a table indexed by tileId numbers for quicker
--- checking if a location is satisfied or not
--- all location values except functions are converted into a single table
--- indexed by tileID numbers, with a true value meaning it is in a table
--- city values are in a separate table indexed by city id numbers
 local function postProcessParameterTable(parameterTable)
-    local function makeNewLocationParameters(existingLocationTable)
-        local width,height,maps = civ.getMapDimensions()
-        local locationParametersTable = {}
-        local tiles = {}
-        local cities = {}
-        local functions = {}
-        local fIndex = 1
-        for __,locationDatum in pairs(existingLocationTable) do
-            if type(locationDatum) == "function" then
-                functions[fIndex] = locationDatum
-                fIndex = fIndex+1
-            elseif type(locationDatum) == "number" then
-                cities[locationDatum] = true
-            elseif civ.isCity(locationDatum) then
-                cities[locationDatum.id] = true
-            elseif civ.isTile(locationDatum) then
-                tiles[gen.getTileId(locationDatum)] = true
-            elseif type(locationDatum) == "table" then
-                if locationDatum[3] then
-                    tiles[gen.getTileId(locationDatum[1],locationDatum[2],locationDatum[3])] = true
-                else
-                    for z=0,(maps-1) do
-                        tiles[gen.getTileId(locationDatum[1],locationDatum[2],z)] = true
-                    end
-                end
-            else
-                error("There is data specifying a location that isn't a function, integer, city, tile, or table.")
-            end
-        end
-        locationParametersTable["tiles"] = tiles
-        locationParametersTable["cities"] = cities
-        locationParametersTable["functions"] = functions
-        return locationParametersTable
-    end
-
-
     local function postProcessParameters(parameters)
        if parameters.location then
            if type(parameters.location) ~= "table" or (type(parameters.location)=="table" and type(parameters.location[1])=="number") then
@@ -194,9 +151,6 @@ local function postProcessParameterTable(parameterTable)
                parameters.location = {parameters.location}
            end
        end
-       if parameters.location then
-            parameters.location = makeNewLocationParameters(parameters.location)
-        end
        if parameters.forbiddenLocation then
            if type(parameters.forbiddenLocation) ~= "table" or(type(parameters.forbiddenLocation)=="table" and type(parameters.forbiddenLocation[1])=="number") then
                -- if entry not a table, easy to tell it needs to be 'wrapped' with a table
@@ -205,9 +159,6 @@ local function postProcessParameterTable(parameterTable)
                parameters.forbiddenLocation = {parameters.forbiddenLocation}
            end
        end
-       if parameters.forbiddenlocation then
-       parameters.forbiddenLocation = makeNewLocationParameters(parameters.forbiddenLocation)
-        end
         -- these parameter keys should be wrapped in a table if necessary, but the parameter values won't be
         -- tables themselves
         local wrapKeyTable ={"allImprovements","someImprovements","forbiddenImprovements",
@@ -369,7 +320,6 @@ local function parametersSatisfied(defaultBuildFunction,city,item,itemParameters
     if itemParameters.humanOnly and (not city.owner.isHuman) then
         return false
     end
-    --[[
     local function cityInLocationList(city,tableOfLocationInfo)
         local cityLocation = city.location
         local cityX = cityLocation.x
@@ -392,7 +342,7 @@ local function parametersSatisfied(defaultBuildFunction,city,item,itemParameters
                 if city == locationDatum then
                     return true
                 end
-            elseif type(locationDatum) == "number" then
+            elseif type(locationDatum) == "integer" then
                 if city.id == locationDatum then 
                     return true
                 end
@@ -404,28 +354,13 @@ local function parametersSatisfied(defaultBuildFunction,city,item,itemParameters
         end
         return false
     end
-    --]]
-    local function cityInLocList(city,locInfo)
-        local cityLocation = city.location
-        if locInfo["cities"][city.id] or locInfo["tiles"][gen.getTileId(cityLocation)] then
-            return true
-        end
-        for __,locFunction in pairs(locInfo["functions"]) do
-            if locFunction(cityLocation) then
-                return true
-            end
-        end
-        return false
-    end
     if itemParameters.location then
-        --if not(cityInLocationList(city,itemParameters.location)) then
-        if not(cityInLocList(city,itemParameters.location)) then
+        if not(cityInLocationList(city,itemParameters.location)) then
             return false
         end
     end
     if itemParameters.forbiddenLocation then
-        --if cityInLocationList(city,itemParameters.forbiddenLocation) then
-        if cityInLocList(city,itemParameters.forbiddenLocation) then
+        if cityInLocationList(city,itemParameters.forbiddenLocation) then
             return false
         end
     end

@@ -31,219 +31,104 @@
 --gen.hasIrrigation(tile)-->boolean
 --gen.placeIrrigation(tile)-->void
 --gen.removeIrrigation(tile)-->void
---#gen.hasMine(tile)-->boolean
---#gen.placeMine(tile)-->void
---#gen.placeMineUnderCity(tile)-->void
---#gen.removeMine(tile)-->void
---#gen.removeMineUnderCity(tile)-->void
---#gen.hasFarmland(tile)-->boolean
---#gen.placeFarmland(tile)-->void
---#gen.removeFarmland(tile)-->void
---#gen.hasAgriculture(tile)--> boolean
---#gen.improveAgriculture(tile) --> void
---#gen.degradeAgriculture(tile) --> void
---#gen.removeAgriculture(tile)--> void
---#gen.hasRoad(tile)-->boolean
---#gen.placeRoad(tile)-->void
---#gen.removeRoad(tile)-->void
---#gen.hasRailroad(tile)-->boolean
---#gen.placeRailroad(tile)-->void
---#gen.removeRailroad(tile)-->void
---#gen.hasTransportation(tile) --> boolean
---#gen.upgradeTransportation(tile) --> void
---#gen.degradeTransportation(tile) --> void
---#gen.removeTransportation(tile) -->void
---#gen.hasFortress(tile)-->boolean
---#gen.placeFortress(tile)-->void
---#gen.placeFortressForce(tile)-->void
---#gen.removeFortress(tile)-->void
---#gen.hasAirbase(tile)-->boolean
---#gen.placeAirbase(tile)-->void
---#gen.placeAirbaseForce(tile)-->void
---#gen.removeAirbase(tile)-->void
---#gen.hasPollution(tile)-->boolean
---#gen.placePollution(tile)-->void
---#gen.removePollution(tile)-->void
---#gen.removePollutionForce(tile)-->void
---#gen.hasTransporter(tile)-->boolean
---# NOTE: Can't placeTransporter
---#gen.removeTransporter(tile)-->void
---#gen.isFortifying(unit)-->boolean
---#gen.setToFortifying(unit)-->void
---#gen.isFortified(unit)-->boolean
---#gen.setToFortified(unit)-->void
---#gen.isSleeping(unit)-->boolean
---#gen.setToSleeping(unit)-->void
---#gen.isBuildingFortress(unit) --> boolean
---#gen.setToBuildingFortress(unit)-->void
---#gen.isBuildingRoad(unit) --> boolean
---#gen.setToBuildingRoad(unit)-->void
---#gen.isIrrigating(unit)-->boolean
---#gen.setToIrrigating(unit)-->void
---#gen.isMining(unit)-->boolean
---#gen.setToMining(unit)-->void
---#gen.isTransformingTerrain(unit)-->boolean
---#gen.setToTransformingTerrain(unit)-->void
---#gen.isBuildingAirbase(unit)-->boolean
---#gen.setToBuildingAirbase(unit)-->void
---#gen.isBuildingTransporter(unit)-->boolean
---#gen.setToBuildingTransporter(unit)-->void
---#gen.isGoingTo(unit)-->boolean
---#gen.setToGoingTo(unit,tile)-->void
---#gen.isNoOrder(unit)-->boolean
---#gen.setToNoOrders(unit)-->void
---#gen.isWaiting(unit)-->bool
---#gen.setToWaiting(unit)-->void
---#gen.clearWaiting(unit)-->void
---#gen.isParadropped(unit)-->void
---#gen.setParadropped(unit)-->void
---#gen.clearParadropped(unit)-->void
---#gen.isMoved(unit)-->boolean
---#gen.setMoved(unit)-->void
---#gen.clearMoved(unit)-->void
---#gen.isSeeTwoSpaces(unitType)-->boolean
---#gen.giveSeeTwoSpaces(unitType)-->void
---#gen.removeSeeTowSpaces(unitType)-->void
---#gen.isIgnoreZOC(unitType)-->boolean
---#gen.giveIgnoreZOC(unitType)-->void
---#gen.removeIgnoreZOC(unitType)-->void
---#gen.isAmphibious(unitType)-->boolean
---#gen.giveAmpibious(unitType)-->void
---#gen.removeAmphibious(unitType)-->void
---#gen.isSubmarine(unitType)-->boolean
---#gen.giveSubmarine(unitType)-->void
---#gen.removeSubmarine(unitType)-->void
---#gen.isAttackAir(unitType)-->boolean
---#gen.giveAttackAir(unitType)-->void
---#gen.removeAttackAir(unitType)-->void
+--*gen.hasMine(tile)-->boolean
+--*gen.placeMine(tile)-->void
+--*gen.removeMine(tile)-->void
+--*gen.hasFarmland(tile)-->boolean
+--*gen.placeFarmland(tile)-->void
+--*gen.removeFarmland(tile)-->void
+--*gen.hasRoad(tile)-->boolean
+--*gen.placeRoad(tile)-->void
+--*gen.removeRoad(tile)-->void
+--*gen.hasRailroad(tile)-->boolean
+--*gen.placeRailroad(tile)-->void
+--*gen.removeRailroad(tile)-->void
+--*gen.hasFortress(tile)-->boolean
+--*gen.placeFortress(tile)-->void
+--*gen.removeFortress(tile)-->void
+--*gen.hasAirbase(tile)-->boolean
+--*gen.placeAirbase(tile)-->void
+--*gen.removeAirbase(tile)-->void
+--*gen.hasPollution(tile)-->boolean
+--*gen.placePollution(tile)-->void
+--*gen.removePollution(tile)-->void
+--*gen.hasTransporter(tile)-->boolean
+--*gen.placeTransporter(tile)-->void
+--*gen.removeTransporter(tile)-->void
+--*gen.isFortifying(unit)-->boolean
+--*gen.setToFortifying(unit)-->void
+--*gen.isFortified(unit)-->boolean
+--*gen.setToFortified(unit)-->void
+--*gen.isSleeping(unit)-->boolean
+--*gen.setToSleeping(unit)-->void
+--*gen.isIrrigating(unit)-->boolean
+--*gen.setToIrrigating(unit)-->void
+--*gen.isMining(unit)-->boolean
+--*gen.setToMining(unit)-->void
+--*gen.isTransformingTerrain(unit)-->boolean
+--*gen.setToTransformingTerrain(unit)-->void
+--*gen.isBuildingAirbase(unit)-->boolean
+--*gen.setToBuildingAirbase(unit)-->void
+--*gen.isBuildingTransporter(unit)-->boolean
+--*gen.setToBuildingTransporter(unit)-->void
+--*gen.isGoingTo(unit)-->boolean
+--*gen.setToGoingTo(unit,tile)-->void
+--*gen.isNoOrder(unit)-->boolean
+--*gen.setToNoOrders(unit)-->void
+-- gen.isWaiting(unit)-->bool
+-- gen.setToWaiting(unit)-->void
+-- gen.clearWaiting(unit)-->void
+-- gen.isParadropped(unit)-->void
+-- gen.setParadropped(unit)-->void
+-- gen.clearParadropped(unit)-->void
+-- gen.isMoved(unit)-->boolean
+-- gen.setMoved(unit)-->void
+-- gen.clearMoved(unit)-->void
+--*gen.isSeeTwoSpaces(unitType)-->boolean
+--*gen.giveSeeTwoSpaces(unitType)-->void
+--*gen.removeSeeTowSpaces(unitType)-->void
+--*gen.isIgnoreZOC(unitType)-->boolean
+--*gen.giveIgnoreZOC(unitType)-->void
+--*gen.removeIgnoreZOC(unitType)-->void
+--*gen.isAmphibious(unitType)-->boolean
+--*gen.giveAmpibious(unitType)-->void
+--*gen.removeAmphibious(unitType)-->void
+--*gen.isSubmarine(unitType)-->boolean
+--*gen.giveSubmarine(unitType)-->void
+--*gen.removeSubmarine(unitType)-->void
+--*gen.isAttackAir(unitType)-->boolean
+--*gen.giveAttackAir(unitType)-->void
+--*gen.removeAttackAir(unitType)-->void
 --#gen.isCoastal(unitType)-->boolean
---#gen.giveCoastal(unitType)-->void
---#gen.removeCoastal(unitType)-->void
---#gen.isIgnoreWalls(unitType)-->boolean
---#gen.giveIngoreWalls(unitType)-->void
---#gen.removeIgnoreWalls(unitType)-->void
---#gen.isCarryAir(unitType)-->boolean
---#gen.giveCarryAir(unitType)-->void
---#gen.removeCarryAir(unitType)-->void
---#gen.isParadrop(unitType)-->boolean
---#gen.giveParadrop(unitType)-->void
---#gen.removeParadrop(unitType)-->void
---#gen.isAlpine(unitType)-->boolean
---#gen.giveAlpine(unitType)-->void
---#gen.removeAlpine(unitType)-->void
---#gen.isBonusAgainstHorse(unitType)-->boolean
---#gen.giveBonusAgainstHorse(unitType)-->void
---#gen.removeBonusAgainstHorse(unitType)-->void
---#gen.isFreeSupportUnderFundamentalism(unitType)-->boolean
---#gen.giveFreeSupportUnderFundamentalism(unitType)-->void
---#gen.removeFreeSupportUnderFundamentalism(unitType)-->void
---#gen.isDestroyedAfterAttacking(unitType)-->boolean
---#gen.giveDestroyedAfterAttacking(unitType)-->void
---#gen.removeDestroyedAfterAttacking(unitType)-->void
---#gen.isBonusAgainstAir(unitType)-->boolean
---#gen.giveBonusAgainstAir(unitType)-->void
---#gen.removeBonusAgainstAir(unitType)-->void
---#gen.isSpotSubmarines(unitType)-->boolean
---#gen.giveSpotSubmarines(unitType)-->void
---#gen.removeSpotSubmarines(unitType)-->void
---
---#gen.isCivilDisorder(city)-->boolean
---#gen.setCivilDisorder(city)-->void
---#gen.clearCivilDisorder(city)-->void
---#gen.isWeLoveTheKing(city)-->boolean
---#gen.setWeLoveTheKing(city)-->void
---#gen.clearWeLoveTheKing(city)-->void
---#gen.isImprovementSold(city)-->boolean
---#gen.setImprovementSold(city)-->void
---#gen.clearImprovementSold(city)-->void
---#gen.isTechnologyStolen(city)-->boolean
---#gen.setTechnologyStolen(city)-->void
---#gen.clearTechnologyStolen(city)-->void
---#gen.isAutoBuild(city)-->boolean
---#gen.setAutoBuild(city)-->void
---#gen.clearAutoBuild(city)-->void
---#gen.isAttribute6(city)-->boolean
---#gen.setAttribute6(city)-->void
---#gen.clearAttribute6(city)-->void
---#gen.isAttribute7(city)-->boolean
---#gen.setAttribute7(city)-->void
---#gen.clearAttribute7(city)-->void
---#gen.isBuildCoastal(city)-->boolean
---#gen.setBuildCoastal(city)-->void
---#gen.clearBuildCoastal(city)-->void
---#gen.isAttribute9(city)-->boolean
---#gen.setAttribute9(city)-->void
---#gen.clearAttribute9(city)-->void
---#gen.isAttribute10(city)-->boolean
---#gen.setAttribute10(city)-->void
---#gen.clearAttribute10(city)-->void
---#gen.isAttribute11(city)-->boolean
---#gen.setAttribute11(city)-->void
---#gen.clearAttribute11(city)-->void
---#gen.isBuildHydroPlant(city)-->boolean
---#gen.setBuildHydroPlant(city)-->void
---#gen.clearBuildHydroPlant(city)-->void
---#gen.isAttribute13(city)-->boolean
---#gen.setAttribute13(city)-->void
---#gen.clearAttribute13(city)-->void
---#gen.isAttribute14(city)-->boolean
---#gen.setAttribute14(city)-->void
---#gen.clearAttribute14(city)-->void
---#gen.isAttribute15(city)-->boolean
---#gen.setAttribute15(city)-->void
---#gen.clearAttribute15(city)-->void
---#gen.isAttribute16(city)-->boolean
---#gen.setAttribute16(city)-->void
---#gen.clearAttribute16(city)-->void
---#gen.isAttribute17(city)-->boolean
---#gen.setAttribute17(city)-->void
---#gen.clearAttribute17(city)-->void
---#gen.isAttribute18(city)-->boolean
---#gen.setAttribute18(city)-->void
---#gen.clearAttribute18(city)-->void
---#gen.isAttribute19(city)-->boolean
---#gen.setAttribute19(city)-->void
---#gen.clearAttribute19(city)-->void
---#gen.isAttribute20(city)-->boolean
---#gen.setAttribute20(city)-->void
---#gen.clearAttribute20(city)-->void
---#gen.isAttribute21(city)-->boolean
---#gen.setAttribute21(city)-->void
---#gen.clearAttribute21(city)-->void
---#gen.isBuildShips(city)-->boolean
---#gen.setBuildShips(city)-->void
---#gen.clearBuildShips(city)-->void
---#gen.isAttribute23(city)-->boolean
---#gen.setAttribute23(city)-->void
---#gen.clearAttribute23(city)-->void
---#gen.isAttribute24(city)-->boolean
---#gen.setAttribute24(city)-->void
---#gen.clearAttribute24(city)-->void
---#gen.isMilitaryAutoBuild(city)-->boolean
---#gen.setMilitaryAutoBuild(city)-->void
---#gen.clearMilitaryAutoBuild(city)-->void
---#gen.isDomesticAutoBuild(city)-->boolean
---#gen.setDomesticAutoBuild(city)-->void
---#gen.clearDomesticAutoBuild(city)-->void
---#gen.isObjective(city)-->boolean
---#gen.setObjective(city)-->void
---#gen.clearObjective(city)-->void
---#gen.isAttribute28(city)-->boolean
---#gen.setAttribute28(city)-->void
---#gen.clearAttribute28(city)-->void
---#gen.isMajorObjective(city)-->boolean
---#gen.setMajorObjective(city)-->void
---#gen.clearMajorObjective(city)-->void
---#gen.isAttribute30(city)-->boolean
---#gen.setAttribute30(city)-->void
---#gen.clearAttribute30(city)-->void
---#gen.isAttribute31(city)-->boolean
---#gen.setAttribute31(city)-->void
---#gen.clearAttribute31(city)-->void
---#gen.isAttribute32(city)-->boolean
---#gen.setAttribute32(city)-->void
---#gen.clearAttribute32(city)-->void
---
+--*gen.giveCoastal(unitType)-->void
+--*gen.removeCoastal(unitType)-->void
+--*gen.isIgnoreWalls(unitType)-->boolean
+--*gen.giveIngoreWalls(unitType)-->void
+--*gen.removeIgnoreWalls(unitType)-->void
+--*gen.isCarryAir(unitType)-->boolean
+--*gen.giveCarryAir(unitType)-->void
+--*gen.removeCarryAir(unitType)-->void
+--*gen.isParadrop(unitType)-->boolean
+--*gen.giveParadrop(unitType)-->void
+--*gen.removeParadrop(unitType)-->void
+--*gen.isAlpine(unitType)-->boolean
+--*gen.giveAlpine(unitType)-->void
+--*gen.removeAlpine(unitType)-->void
+--*gen.isBonusAgainstHorse(unitType)-->boolean
+--*gen.giveBonusAgainstHorse(unitType)-->void
+--*gen.removeBonusAgainstHorse(unitType)-->void
+--*gen.isFreeSupportUnderFundamentalism(unitType)-->boolean
+--*gen.giveFreeSupportUnderFundamentalism(unitType)-->void
+--*gen.removeFreeSupportUnderFundamentalism(unitType)-->void
+--*gen.isDestroyedAfterAttacking(unitType)-->boolean
+--*gen.giveDestroyedAfterAttacking(unitType)-->void
+--*gen.removeDestroyedAfterAttacking(unitType)-->void
+--*gen.isBonusAgainstAir(unitType)-->boolean
+--*gen.giveBonusAgainstAir(unitType)-->void
+--*gen.removeBonusAgainstAir(unitType)-->void
+--*gen.isSpotSubmarines(unitType)-->boolean
+--*gen.giveSpotSubmarines(unitType)-->void
+--*gen.removeSpotSubmarines(unitType)-->void
 --#gen.wonderModifiedMoves(unit)-->integer
 --#gen.maxMoves(unit) --> integer
 --#gen.moveRemaining(unit) --> integer
@@ -499,7 +384,11 @@ function gen.hasIrrigation(tile)
     tile = toTile(tile)
     local improvements = tile.improvements
     -- irrigation, but no mining, so not farmland
-    return improvements & 0x04 == 0x04 and improvements & 0x08 == 0 
+    if improvements & 0x04 == 0x04 and improvements & 0x08 == 0 then
+        return true
+    else
+        return false
+    end
 end
 
 -- gen.placeIrrigation(tile)-->void
@@ -532,256 +421,40 @@ function gen.removeIrrigation(tile)
 end
 
 -- gen.hasMine(tile)-->boolean
-function gen.hasMine(tile) 
-    tile = toTile(tile)
-    local improvements = tile.improvements
-    -- mining, but no irrigation, so not farmland
-    return improvements & 0x08 == 0x08 and improvements & 0x04 == 0 
-end
+-- function gen.hasMine(tile) end
 
 -- gen.placeMine(tile)-->void
--- places mines on the tile provided
--- removes irrigation and farmland if present
--- does nothing if tile has city
-function gen.placeMine(tile) 
-    tile = toTile(tile)
-    if tile.city then
-        return
-    end
-    -- set mining bit to 1
-    tile.improvements = tile.improvements | 0x08
-    -- set irrigation bit to 0
-    tile.improvements = tile.improvements & ~0x04
-end
-
--- gen.placeMineUnderCity(tile) --> void
--- places mine on a tile, even if a city is present
--- removes irrigation and farmland if present
-function gen.placeMineUnderCity(tile)
-    tile = toTile(tile)
-    -- set mining bit to 1
-    tile.improvements = tile.improvements | 0x08
-    -- set irrigation bit to 0
-    tile.improvements = tile.improvements & ~0x04
-end
+-- function gen.placeMine(tile) end
 
 -- gen.removeMine(tile)-->void
--- if tile has mining but no farmland, removes mines
--- does nothing to farmland
--- does nothing if tile has a city
-function gen.removeMine(tile) 
-    tile = toTile(tile)
-    -- if tile has a city or farmland, do nothing
-    if tile.city or tile.improvements & 0x0C == 0x0C then
-        return
-    end
-    -- set irrigation bit to 0
-    tile.improvements = tile.improvements & ~0x08
-end
+-- function gen.removeMine end
 
--- gen.removeMineUnderCity(tile)-->void
--- if tile has mining but no farmland, removes mines
--- does nothing to farmland
-function gen.removeMineUnderCity(tile) 
-    tile = toTile(tile)
-    -- if tile has a city or farmland, do nothing
-    if tile.improvements & 0x0C == 0x0C then
-        return
-    end
-    -- set mining bit to 0
-    tile.improvements = tile.improvements & ~0x08
-
-end
 -- gen.hasFarmland(tile)-->boolean
-function gen.hasFarmland(tile)
-    tile = toTile(tile)
-    return tile.improvements & 0x0C == 0x0C
-end
+-- function gen.hasFarmland(tile) end
 
 -- gen.placeFarmland(tile)-->void
--- places farmland on a tile (removing mining)
--- does nothing if a city is present
-function gen.placeFarmland(tile) 
-    tile = toTile(tile)
-    if tile.city then
-        return
-    end
-    tile.improvements = tile.improvements | 0x0C
-end
+-- function gen.placeFarmland(tile) end
 
 -- gen.removeFarmland(tile)-->void
--- removes farmland if present
--- does nothing to irrigation or mining
--- does nothing if city present
-function gen.removeFarmland(tile) 
-    tile = toTile(tile)
-    if (not tile.city) and (tile.improvements & 0x0C == 0x0C) then
-        tile.improvements = tile.improvements & ~0x0C
-    end
-end
-
--- gen.hasAgriculture(tile)-->bool
--- returns true if tile has irrigation or farmland
-function gen.hasAgriculture(tile)
-    tile = toTile(tile)
-    return tile.improvements & 0x04 == 0x04
-end
-
--- gen.improveAgriculture(tile) --> void
--- if tile has no irrigation, place irrigation (even if mining present)
--- if tile has irrigation, place farmland
--- if city do nothing
-function gen.improveAgriculture(tile)
-    tile = toTile(tile)
-    if tile.city then
-        return
-    elseif gen.hasIrrigation(tile) then
-        gen.placeFarmland(tile)
-        return
-    else
-        gen.placeIrrigation(tile)
-        return
-    end
-end
-
--- gen.degradeAgriculture(tile) --> void
--- if tile has farmland, reduce to irrigation
--- if tile has irrigation, remove
--- does nothing if city present
-function gen.degradeAgriculture(tile)
-    tile = toTile(tile)
-    if tile.city then
-        return
-    elseif gen.hasFarmland(tile) then
-        gen.placeIrrigation(tile)
-        return
-    else
-        gen.removeIrrigation(tile)
-    end
-end
-
--- gen.removeAgriculture(tile) --> void
--- remove farmland and irrigation if present
--- do nothing to mining
--- do nothing if city present
-function gen.removeAgriculture(tile)
-    tile = toTile(tile)
-    if (not tile.city) and gen.hasAgriculture(tile) then
-        tile.improvements = tile.improvements & ~0x0C
-    end
-end
-
+-- function gen.removeFarmland(tile) end
 
 -- gen.hasRoad(tile)-->boolean
--- returns true if tile has a road
-function gen.hasRoad(tile) 
-    tile = toTile(tile)
-    return tile.improvements & 0x10 == 0x10 
-end
+-- function gen.hasRoad(tile) end
 
 -- gen.placeRoad(tile)-->void
--- places a road on the tile
--- does nothing if city present
-function gen.placeRoad(tile) 
-    tile=toTile(tile)
-    if tile.city then 
-        return
-    end
-    tile.improvements = tile.improvements | 0x10
-end
+-- function gen.placeRoad(tile) end
 
 -- gen.removeRoad(tile)-->void
--- removes a road if there is a road but no rail
--- doesn't touch rail or cities
-function gen.removeRoad(tile)
-    tile = toTile(tile)
-    if tile.city or (tile.improvements & 0x30 == 0x30) then
-        return
-    end
-    tile.improvements = tile.improvements & ~0x10
-end
+-- function gen.removeRoad(tile) end
 
 -- gen.hasRailroad(tile)-->boolean
--- returns true if a tile has a railroad (and road)
-function gen.hasRailroad(tile) 
-    tile = toTile(tile)
-    return tile.improvements & 0x30 == 0x30 
-
-end
+-- function gen.hasRailroad(tile) end
 
 -- gen.placeRailroad(tile)-->void
--- places a railroad (and road) on a tile
--- does nothing if city is present
-function gen.placeRailroad(tile) 
-    tile = toTile(tile)
-    if tile.city then
-        return
-    end
-    tile.improvements = tile.improvements | 0x30
-end
+-- function gen.placeRailroad(tile) end
 
 -- gen.removeRailroad(tile)-->void
--- removes railroad from a tile if it exits,
--- leaving road intact (if there is already road there)
--- does nothing if a city is present
-function gen.removeRailroad(tile) 
-    tile = toTile(tile)
-    if (tile.improvements & 0x30 == 0x30) and (not tile.city) then
-        tile.improvements = tile.improvements & ~0x20
-    end
-end
--- gen.hasTransportation(tile) --> boolean
--- returns true if tile has road or rail 
--- (but not if city, unless an event has placed a road)
-function gen.hasTransportation(tile)
-    tile = toTile(tile)
-    return tile.improvements & 0x10 == 0x10 
-end
-
-
--- gen.upgradeTransportation(tile) --> void
--- places railroad if road exists, otherwise places road
--- does nothing if city present
-function gen.upgradeTransportation(tile)
-    tile = toTile(tile)
-    if tile.city then
-        return
-    elseif gen.hasRoad(tile) then
-        gen.placeRailroad(tile)
-        return
-    else
-        gen.placeRoad(tile)
-        return
-    end
-end
-
--- gen.degradeTransportation(tile) --> void
--- reduces railroad to road, if rail exists
--- if no rail but road, removes road
--- if no transportation, does nothing
--- if city does nothing
-function gen.degradeTransportation(tile)
-    tile = toTile(tile)
-    if tile.city then
-        return
-    elseif gen.hasRailroad(tile) then
-        gen.removeRailroad(tile)
-    else
-        gen.removeRoad(tile)
-    end
-end
-
--- gen.removeTransportation(tile) -->void
--- removes road and rail, if it exists
--- does nothing if city present
-function gen.removeTransportation(tile)
-    tile = toTile(tile)
-    if tile.city then
-        return
-    else
-        tile.improvements = tile.improvements & ~0x30
-    end
-end
+-- function gen.removeRailroad(tile) end
 
 -- gen.hasFortress(tile)-->boolean
 function gen.hasFortress(tile)
@@ -790,21 +463,11 @@ function gen.hasFortress(tile)
     return checkBits(tile.improvements,"x1xxxx0x")
 end
 
--- gen.placeFortress(tile)-->void
--- places a fortress on a square, unless
--- there is already a city, transporter, or airbase on the tile
-function gen.placeFortress(tile)
-    tile = toTile(tile)
-    if tile.city or isBit1(tile.improvements,2) then
-        return
-    end
-    tile.improvements = setBits(tile.improvements,"x1xxxx0x")
-end
 
--- gen.placeFortressForce(tile)-->void
+-- gen.placeFortress(tile)-->void
 -- places fortress (replacing airbase/transporter if necessary)
 -- If city on tile, nothing happens
-function gen.placeFortressForce(tile) 
+function gen.placeFortress(tile) 
     tile = toTile(tile)
     if tile.city then
         return
@@ -829,244 +492,89 @@ function gen.hasAirbase(tile)
     return checkBits(tile.improvements,"x1xxxx1x")
 end
 
--- gen.placeAirbase(tile)--> void
--- places an airbase on a tile as long as there is not already
--- pollution, fortress, or transporter on the tile
--- does nothing if city present
-function gen.placeAirbase(tile)
-    tile = toTile(tile)
-    local tileImprovements = tile.improvements
-    if tile.city or isBit1(tileImprovements,7) or isBit1(tileImprovements,8) then
-        return
-    end
-    tile.improvements = setBits(tile.improvements,"x1xxxx1x")
-end
-
--- gen.placeAirbaseForce(tile)-->void
--- places airbase, removing fortress/transporter/pollution if necessary
--- if city on tile, nothing happens
-function gen.placeAirbaseForce(tile) 
-    tile = toTile(tile)
-    if tile.city then
-        return
-    end
-    tile.improvements = setBits(tile.improvements,"01xxxx1x")
-end
+-- gen.placeAirbase(tile)-->void
+-- function gen.placeAirbase(tile) end
 
 -- gen.removeAirbase(tile)-->void
--- removes airbase, if one is on tile
--- (so that something else doesn't get removed)
--- nothing happens if tile is a city
-function gen.removeAirbase(tile) 
-    tile = toTile(tile)
-    if checkBits(tile.improvements,"x1xxxx1x") and (not tile.city) then
-        tile.improvements = setBits(tile.improvements,"00xxxx0x")
-    end
-end
+-- function gen.removeAirbase(tile) end
 
 -- gen.hasPollution(tile)-->boolean
-function gen.hasPollution(tile) 
-    tile = toTile(tile)
-    return checkBits(tile.improvements,"1xxxxx0x")
-
-end
+-- function gen.hasPollution(tile) end
 
 -- gen.placePollution(tile)-->void
--- places pollution, unless the tile has a city, airbase
--- or transporter already on the tile
-function gen.placePollution(tile) 
-    tile = toTile(tile)
-    if tile.city or isBit1(tile.improvements,2) then
-        return
-    end
-    tile.improvements = setBits(tile.improvements,"1xxxxx0x")
-end
+-- function gen.placePollution(tile) end
 
--- gen.placePollutionForce(tile)-->void
--- places pollution, unless the tile has a city, 
--- transporters and airbases are removed
-function gen.placePollution(tile) 
-    tile = toTile(tile)
-    if tile.city then
-        return
-    end
-    if gen.hasFortress(tile) then
-        tile.improvements = setBits(tile.improvements,"11xxxx0x")
-    else
-        tile.improvements = setBits(tile.improvements,"1xxxxx0x")
-    end
-end
 -- gen.removePollution(tile)-->void
--- checks if tile has pollution, and if so, removes it
-function gen.removePollution(tile) 
-    tile = toTile(tile)
-    if checkBits(tile.improvements,"1xxxxx0x") then
-        tile.improvements = setBit0(tile.improvements,8)
-    end
-end
+-- function gen.removePollution(tile) end
 
 -- gen.hasTransporter(tile)-->boolean
-function gen.hasTransporter(tile) 
-    tile = toTile(tile)
-    return checkBits(tile.improvements,"1xxxxx1x")
-end
+-- function gen.hasTransporter(tile) end
 
--- placing transporters doesn't work
---
+-- gen.placeTransporter(tile)-->void
+-- function gen.placeTransporter(tile) end
 
 -- gen.removeTransporter(tile)-->void
-function gen.removeTransporter(tile) 
-    tile = toTile(tile)
-    if (not tile.city) and checkBits(tile.improvements,"1xxxxx1x") then
-        tile.improvements = setBits(tile.improvements,"0xxxxx0x")
-        return
-    end
-end
+-- function gen.removeTransporter(tile) end
 --
 -- gen.isFortifying(unit)-->boolean
-function gen.isFortifying(unit) 
-    return unit.order == 0x01
-end
+-- function gen.isFortifying(unit) end
 
 -- gen.setToFortifying(unit)-->void
-function gen.setToFortifying(unit) 
-    unit.order = 0x01
-end
+-- function gen.setToFortifying(unit) end
 
 -- gen.isFortified(unit)-->boolean
-function gen.isFortified(unit) 
-    return unit.order == 0x02
-end
+-- function gen.isFortified(unit) end
 
 -- gen.setToFortified(unit)-->void
-function gen.setToFortified(unit) 
-    unit.order = 0x02
-end
+-- function gen.setToFortified(unit) end
 
 -- gen.isSleeping(unit)-->boolean
-function gen.isSleeping(unit) 
-    return unit.order == 0x03
-end
+-- function gen.isSleeping(unit) end
 
 -- gen.setToSleeping(unit)-->void
-function gen.setToSleeping(unit) 
-    unit.order = 0x03
-end
---
--- gen.isBuildingFortress(unit) --> boolean
-function gen.isBuildingFortress(unit)
-    return unit.order == 0x04
-end
-
-
--- gen.setToBuildingFortress(unit)-->void
-function gen.setToBuildingFortress(unit) 
-    unit.order = 0x04
-end
---
--- gen.isBuildingRoad(unit) --> boolean
-function gen.isBuildingRoad(unit)
-    return unit.order == 0x05
-end
-
--- gen.setToBuildingRoad(unit)-->void
-function gen.setToBuildingRoad(unit) 
-    unit.order = 0x05
-end
-
+-- function gen.setToSleeping(unit) end
 
 -- gen.isIrrigating(unit)-->boolean
-function gen.isIrrigating(unit) 
-    return unit.order == 0x06
-end
+-- function gen.isIrrigating(unit) end
 
 -- gen.setToIrrigating(unit)-->void
-function gen.setToIrrigating(unit) 
-    unit.order = 0x06
-end
+-- function gen.setToIrrigating(unit) end
 
 -- gen.isMining(unit)-->boolean
-function gen.isMining(unit) 
-    return unit.order == 0x07
-end
+-- function gen.isMining(unit) end
 
 -- gen.setToMining(unit)-->void
-function gen.setToMining(unit) 
-    unit.order = 0x07
-end
+-- function gen.setToMining(unit) end
 
 -- gen.isTransformingTerrain(unit)-->boolean
-function gen.isTransformingTerrain(unit) 
-    return unit.order == 0x08
-end
+-- function gen.isTransformingTerrain(unit) end
 
 -- gen.setToTransformingTerrain(unit)-->void
-function gen.setToTransformingTerrain(unit) 
-    unit.order = 0x08
-end
+-- function gen.setToTransformingTerrain(unit) end
 
--- gen.isCleaningPollution(unit)-->boolean
-function gen.isCleaningPollution(unit) 
-    return unit.order == 0x09
-end
-
--- gen.setToCleaningPollution(unit)-->void
-function gen.setToCleaningPollution(unit) 
-    unit.order = 0x09
-end
 -- gen.isBuildingAirbase(unit)-->boolean
-function gen.isBuildingAirbase(unit) 
-    return unit.order == 0x0A
-end
+-- function gen.isBuildingAirbase(unit) end
 
 -- gen.setToBuildingAirbase(unit)-->void
-function gen.setToBuildingAirbase(unit) 
-    unit.order = 0x0a
-end
+-- function gen.setToBuildingAirbase(unit) end
 
 -- gen.isBuildingTransporter(unit)-->boolean
-function gen.isBuildingTransporter(unit) 
-    return unit.order == 0x0B
-end
+-- function gen.isBuildingTransporter(unit) end
 
 -- gen.setToBuildingTransporter(unit)-->void
-function gen.setToBuildingTransporter(unit) 
-    unit.order = 0x0B
-end
+-- function gen.setToBuildingTransporter(unit) end
 
 -- gen.isGoingTo(unit)-->boolean
-function gen.isGoingTo(unit)
-    return not not unit.gotoTile
-end
+-- function gen.isGoingTo(unit) end
 
--- gen.setToGoingTo(unit,tile or nil)-->void
--- gives the unit a goto order for the tile
--- if nil is submitted, and the unit already
--- has a goto order, the unit will be changed to no orders
--- (unit.gotoTile=nil results in an error)
--- if the unit has some other order, it will keep that order
--- note: this also accepts a table of coordinates as a tile
--- (just as all other tile functions do here)
-function gen.setToGoingTo(unit,tile) 
-    if tile == nil and unit.gotoTile then
-        unit.order = 0xFF
-        return
-    elseif tile == nil then
-        return
-    end
-    tile = toTile(tile)
-    unit.gotoTile = tile
-end
+-- gen.setToGoingTo(unit,tile)-->void
+-- function gen.setToGoingTo(unit,tile) end
 
 -- gen.isNoOrder(unit)-->boolean
-function gen.isNoOrder(unit) 
-    return unit.order == 0xFF
-end
+-- function gen.isNoOrder(unit) end
 
 -- gen.setToNoOrders(unit)-->void
-function gen.setToNoOrders(unit) 
-    unit.order = 0xFF
-end
+-- function gen.setToNoOrders(unit) end
 
 -- gen.isWaiting(unit)-->bool
 function gen.isWaiting(unit)
@@ -1108,54 +616,35 @@ function gen.clearMoved(unit)
 end
 --
 -- gen.isSeeTwoSpaces(unitType)-->boolean
-function gen.isSeeTwoSpaces(unitType) 
-    return isBit1(unitType.flags,1)
-end
+--
+-- function gen.isSeeTwoSpaces(unitType) end
 
 -- gen.giveSeeTwoSpaces(unitType)-->void
-function gen.giveSeeTwoSpaces(unitType) 
-    unitType.flags = setBit1(unitType.flags,1)
-end
+-- function gen.giveSeeTwoSpaces(unitType) end
 
 -- gen.removeSeeTowSpaces(unitType)-->void
-function gen.removeSeeTowSpaces(unitType) 
-    unitType.flags = setBit0(unitType.flags,1)
-end
+-- function gen.removeSeeTowSpaces(unitType) end
 
 -- gen.isIgnoreZOC(unitType)-->boolean
-function gen.isIgnoreZOC(unitType) 
-    return isBit1(unitType.flags,2)
-end
+-- function gen.isIgnoreZOC(unitType) end
 
 -- gen.giveIgnoreZOC(unitType)-->void
-function gen.giveIgnoreZOC(unitType) 
-    unitType.flags = setBit1(unitType.flags,2)
-end
+-- function gen.giveIgnoreZOC(unitType) end
 
 -- gen.removeIgnoreZOC(unitType)-->void
-function gen.removeIgnoreZOC(unitType) 
-    unitType.flags = setBit0(unitType.flags,2)
-end
+-- function gen.removeIgnoreZOC(unitType) end
 
 -- gen.isAmphibious(unitType)-->boolean
-function gen.isAmphibious(unitType) 
-    return isBit1(unitType.flags,3)
-end
+-- function gen.isAmphibious(unitType) end
 
 -- gen.giveAmpibious(unitType)-->void
-function gen.giveAmpibious(unitType) 
-    unitType.flags = setBit1(unitType.flags,3)
-end
+-- function gen.giveAmpibious(unitType) end
 
 -- gen.removeAmphibious(unitType)-->void
-function gen.removeAmphibious(unitType) 
-    unitType.flags = setBit0(unitType.flags,3)
-end
+-- function gen.removeAmphibious(unitType) end
 
 -- gen.isSubmarine(unitType)-->boolean
-function gen.isSubmarine(unitType) 
-    return isBit1(unitType.flags,4)
-end
+-- function gen.isSubmarine(unitType) end
 
 -- gen.giveSubmarine(unitType)-->void
 function gen.giveSubmarine(unitType)
@@ -1168,49 +657,33 @@ function gen.removeSubmarine(unitType)
 end
 
 -- gen.isAttackAir(unitType)-->boolean
-function gen.isAttackAir(unitType) 
-    return isBit1(unitType.flags,5)
-end
+-- function gen.isAttackAir(unitType) end
 
 -- gen.giveAttackAir(unitType)-->void
-function gen.giveAttackAir(unitType) 
-    unitType.flags = setBit1(unitType.flags,5)
-end
+-- function gen.giveAttackAir(unitType) end
 
 -- gen.removeAttackAir(unitType)-->void
-function gen.removeAttackAir(unitType) 
-    unitType.flags = setBit0(unitType.flags,5)
-end
+-- function gen.removeAttackAir(unitType) end
 
 -- gen.isCoastal(unitType)-->boolean
-function gen.isCoastal(unitType) 
+function gen.isCoastal(unitType)
     return isBit1(unitType.flags,6)
 end
 
 -- gen.giveCoastal(unitType)-->void
-function gen.giveCoastal(unitType) 
-    unitType.flags = setBit1(unitType.flags,6)
-end
+-- function gen.giveCoastal(unitType) end
 
 -- gen.removeCoastal(unitType)-->void
-function gen.removeCoastal(unitType) 
-    unitType.flags = setBit0(unitType.flags,6)
-end
+-- function gen.removeCoastal(unitType) end
 
 -- gen.isIgnoreWalls(unitType)-->boolean
-function gen.isIgnoreWalls(unitType) 
-    return isBit1(unitType.flags,7)
-end
+-- function gen.isIgnoreWalls(unitType) end
 
 -- gen.giveIngoreWalls(unitType)-->void
-function gen.giveIngoreWalls(unitType) 
-    unitType.flags = setBit1(unitType.flags,7)
-end
+-- function gen.giveIngoreWalls(unitType) end
 
 -- gen.removeIgnoreWalls(unitType)-->void
-function gen.removeIgnoreWalls(unitType) 
-    unitType.flags = setBit0(unitType.flags,7)
-end
+-- function gen.removeIgnoreWalls(unitType) end
 
 -- gen.isCarryAir(unitType)-->boolean
  function gen.isCarryAir(unitType) 
@@ -1218,607 +691,73 @@ end
 end
 
 -- gen.giveCarryAir(unitType)-->void
-function gen.giveCarryAir(unitType) 
-    unitType.flags = setBit1(unitType.flags,8)
-end
+-- function gen.giveCarryAir(unitType) end
 
 -- gen.removeCarryAir(unitType)-->void
-function gen.removeCarryAir(unitType) 
-    unitType.flags = setBit0(unitType.flags,8)
-end
+-- function gen.removeCarryAir(unitType) end
 
 -- gen.isParadrop(unitType)-->boolean
-function gen.isParadrop(unitType) 
-    return isBit1(unitType.flags,9)
-end
+-- function gen.isParadrop(unitType) end
 
 -- gen.giveParadrop(unitType)-->void
-function gen.giveParadrop(unitType) 
-    unitType.flags = setBit1(unitType.flags,9)
-end
+-- function gen.giveParadrop(unitType) end
 
 -- gen.removeParadrop(unitType)-->void
-function gen.removeParadrop(unitType) 
-    unitType.flags = setBit0(unitType.flags,9)
-end
+-- function gen.removeParadrop(unitType) end
 
 -- gen.isAlpine(unitType)-->boolean
-function gen.isAlpine(unitType) 
-    return isBit1(unitType.flags,10)
-end
+-- function gen.isAlpine(unitType) end
 
 -- gen.giveAlpine(unitType)-->void
-function gen.giveAlpine(unitType) 
-    unitType.flags = setBit1(unitType.flags,10)
-end
+-- function gen.giveAlpine(unitType) end
 
 -- gen.removeAlpine(unitType)-->void
-function gen.removeAlpine(unitType) 
-    unitType.flags = setBit0(unitType.flags,10)
-end
+-- function gen.removeAlpine(unitType) end
 
 -- gen.isBonusAgainstHorse(unitType)-->boolean
-function gen.isBonusAgainstHorse(unitType) 
-    return isBit1(unitType.flags,11)
-end
+-- function gen.isBonusAgainstHorse(unitType) end
 
 -- gen.giveBonusAgainstHorse(unitType)-->void
-function gen.giveBonusAgainstHorse(unitType) 
-    unitType.flags = setBit1(unitType.flags,11)
-end
+-- function gen.giveBonusAgainstHorse(unitType) end
 
 -- gen.removeBonusAgainstHorse(unitType)-->void
-function gen.removeBonusAgainstHorse(unitType) 
-    unitType.flags = setBit0(unitType.flags,11)
-end
+-- function gen.removeBonusAgainstHorse(unitType) end
 
 -- gen.isFreeSupportUnderFundamentalism(unitType)-->boolean
-function gen.isFreeSupportUnderFundamentalism(unitType) 
-    return isBit1(unitType.flags,12)
-end
+-- function gen.isFreeSupportUnderFundamentalism(unitType) end
 
 -- gen.giveFreeSupportUnderFundamentalism(unitType)-->void
-function gen.giveFreeSupportUnderFundamentalism(unitType) 
-    unitType.flags = setBit1(unitType.flags,12)
-end
+-- function gen.giveFreeSupportUnderFundamentalism(unitType) end
 
 -- gen.removeFreeSupportUnderFundamentalism(unitType)-->void
-function gen.removeFreeSupportUnderFundamentalism(unitType) 
-    unitType.flags = setBit0(unitType.flags,12)
-end
+-- function gen.removeFreeSupportUnderFundamentalism(unitType) end
 
 -- gen.isDestroyedAfterAttacking(unitType)-->boolean
-function gen.isDestroyedAfterAttacking(unitType) 
-    return isBit1(unitType.flags,13)
-end
+-- function gen.isDestroyedAfterAttacking(unitType) end
 
 -- gen.giveDestroyedAfterAttacking(unitType)-->void
-function gen.giveDestroyedAfterAttacking(unitType) 
-    unitType.flags = setBit1(unitType.flags,13)
-end
+-- function gen.giveDestroyedAfterAttacking(unitType) end
 
 -- gen.removeDestroyedAfterAttacking(unitType)-->void
-function gen.removeDestroyedAfterAttacking(unitType) 
-    unitType.flags = setBit0(unitType.flags,13)
-end
+-- function gen.removeDestroyedAfterAttacking(unitType) end
 
 -- gen.isBonusAgainstAir(unitType)-->boolean
-function gen.isBonusAgainstAir(unitType) 
-    return isBit1(unitType.flags,14)
-end
+-- function gen.isBonusAgainstAir(unitType) end
 
 -- gen.giveBonusAgainstAir(unitType)-->void
-function gen.giveBonusAgainstAir(unitType) 
-    unitType.flags = setBit1(unitType.flags,14)
-end
+-- function gen.giveBonusAgainstAir(unitType) end
 
 -- gen.removeBonusAgainstAir(unitType)-->void
-function gen.removeBonusAgainstAir(unitType) 
-    unitType.flags = setBit0(unitType.flags,14)
-end
+-- function gen.removeBonusAgainstAir(unitType) end
 
 -- gen.isSpotSubmarines(unitType)-->boolean
-function gen.isSpotSubmarines(unitType) 
-    return isBit1(unitType.flags,15)
-end
+-- function gen.isSpotSubmarines(unitType) end
 
 -- gen.giveSpotSubmarines(unitType)-->void
-function gen.giveSpotSubmarines(unitType) 
-    unitType.flags = setBit1(unitType.flags,15)
-end
+-- function gen.giveSpotSubmarines(unitType) end
 
 -- gen.removeSpotSubmarines(unitType)-->void
-function gen.removeSpotSubmarines(unitType) 
-    unitType.flags = setBit0(unitType.flags,15)
-end
-
-
--- gen.isCivilDisorder(city)-->boolean
-function gen.isCivilDisorder(city)
-	return isBit1(city.attributes,1)
-end
-
--- gen.setCivilDisorder(city)-->void
-function gen.setCivilDisorder(city)
-	 city.attributes = setBit1(city.attributes,1)
-end
-
--- gen.clearCivilDisorder(city)-->void
-function gen.clearCivilDisorder(city)
-	 city.attributes = setBit0(city.attributes,1)
-end
-
--- gen.isWeLoveTheKing(city)-->boolean
-function gen.isWeLoveTheKing(city)
-	return isBit1(city.attributes,2)
-end
-
--- gen.setWeLoveTheKing(city)-->void
-function gen.setWeLoveTheKing(city)
-	 city.attributes = setBit1(city.attributes,2)
-end
-
--- gen.clearWeLoveTheKing(city)-->void
-function gen.clearWeLoveTheKing(city)
-	 city.attributes = setBit0(city.attributes,2)
-end
-
--- gen.isImprovementSold(city)-->boolean
-function gen.isImprovementSold(city)
-	return isBit1(city.attributes,3)
-end
-
--- gen.setImprovementSold(city)-->void
-function gen.setImprovementSold(city)
-	 city.attributes = setBit1(city.attributes,3)
-end
-
--- gen.clearImprovementSold(city)-->void
-function gen.clearImprovementSold(city)
-	 city.attributes = setBit0(city.attributes,3)
-end
-
--- gen.isTechnologyStolen(city)-->boolean
-function gen.isTechnologyStolen(city)
-	return isBit1(city.attributes,4)
-end
-
--- gen.setTechnologyStolen(city)-->void
-function gen.setTechnologyStolen(city)
-	 city.attributes = setBit1(city.attributes,4)
-end
-
--- gen.clearTechnologyStolen(city)-->void
-function gen.clearTechnologyStolen(city)
-	 city.attributes = setBit0(city.attributes,4)
-end
-
--- gen.isAutoBuild(city)-->boolean
-function gen.isAutoBuild(city)
-	return isBit1(city.attributes,5)
-end
-
--- gen.setAutoBuild(city)-->void
-function gen.setAutoBuild(city)
-	 city.attributes = setBit1(city.attributes,5)
-end
-
--- gen.clearAutoBuild(city)-->void
-function gen.clearAutoBuild(city)
-	 city.attributes = setBit0(city.attributes,5)
-end
-
--- gen.isAttribute6(city)-->boolean
-function gen.isAttribute6(city)
-	return isBit1(city.attributes,6)
-end
-
--- gen.setAttribute6(city)-->void
-function gen.setAttribute6(city)
-	 city.attributes = setBit1(city.attributes,6)
-end
-
--- gen.clearAttribute6(city)-->void
-function gen.clearAttribute6(city)
-	 city.attributes = setBit0(city.attributes,6)
-end
-
--- gen.isAttribute7(city)-->boolean
-function gen.isAttribute7(city)
-	return isBit1(city.attributes,7)
-end
-
--- gen.setAttribute7(city)-->void
-function gen.setAttribute7(city)
-	 city.attributes = setBit1(city.attributes,7)
-end
-
--- gen.clearAttribute7(city)-->void
-function gen.clearAttribute7(city)
-	 city.attributes = setBit0(city.attributes,7)
-end
-
--- gen.isBuildCoastal(city)-->boolean
-function gen.isBuildCoastal(city)
-	return isBit1(city.attributes,8)
-end
-
--- gen.setBuildCoastal(city)-->void
-function gen.setBuildCoastal(city)
-	 city.attributes = setBit1(city.attributes,8)
-end
-
--- gen.clearBuildCoastal(city)-->void
-function gen.clearBuildCoastal(city)
-	 city.attributes = setBit0(city.attributes,8)
-end
-
--- gen.isAttribute9(city)-->boolean
-function gen.isAttribute9(city)
-	return isBit1(city.attributes,9)
-end
-
--- gen.setAttribute9(city)-->void
-function gen.setAttribute9(city)
-	 city.attributes = setBit1(city.attributes,9)
-end
-
--- gen.clearAttribute9(city)-->void
-function gen.clearAttribute9(city)
-	 city.attributes = setBit0(city.attributes,9)
-end
-
--- gen.isAttribute10(city)-->boolean
-function gen.isAttribute10(city)
-	return isBit1(city.attributes,10)
-end
-
--- gen.setAttribute10(city)-->void
-function gen.setAttribute10(city)
-	 city.attributes = setBit1(city.attributes,10)
-end
-
--- gen.clearAttribute10(city)-->void
-function gen.clearAttribute10(city)
-	 city.attributes = setBit0(city.attributes,10)
-end
-
--- gen.isAttribute11(city)-->boolean
-function gen.isAttribute11(city)
-	return isBit1(city.attributes,11)
-end
-
--- gen.setAttribute11(city)-->void
-function gen.setAttribute11(city)
-	 city.attributes = setBit1(city.attributes,11)
-end
-
--- gen.clearAttribute11(city)-->void
-function gen.clearAttribute11(city)
-	 city.attributes = setBit0(city.attributes,11)
-end
-
--- gen.isBuildHydroPlant(city)-->boolean
-function gen.isBuildHydroPlant(city)
-	return isBit1(city.attributes,12)
-end
-
--- gen.setBuildHydroPlant(city)-->void
-function gen.setBuildHydroPlant(city)
-	 city.attributes = setBit1(city.attributes,12)
-end
-
--- gen.clearBuildHydroPlant(city)-->void
-function gen.clearBuildHydroPlant(city)
-	 city.attributes = setBit0(city.attributes,12)
-end
-
--- gen.isAttribute13(city)-->boolean
-function gen.isAttribute13(city)
-	return isBit1(city.attributes,13)
-end
-
--- gen.setAttribute13(city)-->void
-function gen.setAttribute13(city)
-	 city.attributes = setBit1(city.attributes,13)
-end
-
--- gen.clearAttribute13(city)-->void
-function gen.clearAttribute13(city)
-	 city.attributes = setBit0(city.attributes,13)
-end
-
--- gen.isAttribute14(city)-->boolean
-function gen.isAttribute14(city)
-	return isBit1(city.attributes,14)
-end
-
--- gen.setAttribute14(city)-->void
-function gen.setAttribute14(city)
-	 city.attributes = setBit1(city.attributes,14)
-end
-
--- gen.clearAttribute14(city)-->void
-function gen.clearAttribute14(city)
-	 city.attributes = setBit0(city.attributes,14)
-end
-
--- gen.isAttribute15(city)-->boolean
-function gen.isAttribute15(city)
-	return isBit1(city.attributes,15)
-end
-
--- gen.setAttribute15(city)-->void
-function gen.setAttribute15(city)
-	 city.attributes = setBit1(city.attributes,15)
-end
-
--- gen.clearAttribute15(city)-->void
-function gen.clearAttribute15(city)
-	 city.attributes = setBit0(city.attributes,15)
-end
-
--- gen.isAttribute16(city)-->boolean
-function gen.isAttribute16(city)
-	return isBit1(city.attributes,16)
-end
-
--- gen.setAttribute16(city)-->void
-function gen.setAttribute16(city)
-	 city.attributes = setBit1(city.attributes,16)
-end
-
--- gen.clearAttribute16(city)-->void
-function gen.clearAttribute16(city)
-	 city.attributes = setBit0(city.attributes,16)
-end
-
--- gen.isAttribute17(city)-->boolean
-function gen.isAttribute17(city)
-	return isBit1(city.attributes,17)
-end
-
--- gen.setAttribute17(city)-->void
-function gen.setAttribute17(city)
-	 city.attributes = setBit1(city.attributes,17)
-end
-
--- gen.clearAttribute17(city)-->void
-function gen.clearAttribute17(city)
-	 city.attributes = setBit0(city.attributes,17)
-end
-
--- gen.isAttribute18(city)-->boolean
-function gen.isAttribute18(city)
-	return isBit1(city.attributes,18)
-end
-
--- gen.setAttribute18(city)-->void
-function gen.setAttribute18(city)
-	 city.attributes = setBit1(city.attributes,18)
-end
-
--- gen.clearAttribute18(city)-->void
-function gen.clearAttribute18(city)
-	 city.attributes = setBit0(city.attributes,18)
-end
-
--- gen.isAttribute19(city)-->boolean
-function gen.isAttribute19(city)
-	return isBit1(city.attributes,19)
-end
-
--- gen.setAttribute19(city)-->void
-function gen.setAttribute19(city)
-	 city.attributes = setBit1(city.attributes,19)
-end
-
--- gen.clearAttribute19(city)-->void
-function gen.clearAttribute19(city)
-	 city.attributes = setBit0(city.attributes,19)
-end
-
--- gen.isAttribute20(city)-->boolean
-function gen.isAttribute20(city)
-	return isBit1(city.attributes,20)
-end
-
--- gen.setAttribute20(city)-->void
-function gen.setAttribute20(city)
-	 city.attributes = setBit1(city.attributes,20)
-end
-
--- gen.clearAttribute20(city)-->void
-function gen.clearAttribute20(city)
-	 city.attributes = setBit0(city.attributes,20)
-end
-
--- gen.isAttribute21(city)-->boolean
-function gen.isAttribute21(city)
-	return isBit1(city.attributes,21)
-end
-
--- gen.setAttribute21(city)-->void
-function gen.setAttribute21(city)
-	 city.attributes = setBit1(city.attributes,21)
-end
-
--- gen.clearAttribute21(city)-->void
-function gen.clearAttribute21(city)
-	 city.attributes = setBit0(city.attributes,21)
-end
-
--- gen.isBuildShips(city)-->boolean
-function gen.isBuildShips(city)
-	return isBit1(city.attributes,22)
-end
-
--- gen.setBuildShips(city)-->void
-function gen.setBuildShips(city)
-	 city.attributes = setBit1(city.attributes,22)
-end
-
--- gen.clearBuildShips(city)-->void
-function gen.clearBuildShips(city)
-	 city.attributes = setBit0(city.attributes,22)
-end
-
--- gen.isAttribute23(city)-->boolean
-function gen.isAttribute23(city)
-	return isBit1(city.attributes,23)
-end
-
--- gen.setAttribute23(city)-->void
-function gen.setAttribute23(city)
-	 city.attributes = setBit1(city.attributes,23)
-end
-
--- gen.clearAttribute23(city)-->void
-function gen.clearAttribute23(city)
-	 city.attributes = setBit0(city.attributes,23)
-end
-
--- gen.isAttribute24(city)-->boolean
-function gen.isAttribute24(city)
-	return isBit1(city.attributes,24)
-end
-
--- gen.setAttribute24(city)-->void
-function gen.setAttribute24(city)
-	 city.attributes = setBit1(city.attributes,24)
-end
-
--- gen.clearAttribute24(city)-->void
-function gen.clearAttribute24(city)
-	 city.attributes = setBit0(city.attributes,24)
-end
-
--- gen.isMilitaryAutoBuild(city)-->boolean
-function gen.isMilitaryAutoBuild(city)
-	return isBit1(city.attributes,25)
-end
-
--- gen.setMilitaryAutoBuild(city)-->void
-function gen.setMilitaryAutoBuild(city)
-	 city.attributes = setBit1(city.attributes,25)
-end
-
--- gen.clearMilitaryAutoBuild(city)-->void
-function gen.clearMilitaryAutoBuild(city)
-	 city.attributes = setBit0(city.attributes,25)
-end
-
--- gen.isDomesticAutoBuild(city)-->boolean
-function gen.isDomesticAutoBuild(city)
-	return isBit1(city.attributes,26)
-end
-
--- gen.setDomesticAutoBuild(city)-->void
-function gen.setDomesticAutoBuild(city)
-	 city.attributes = setBit1(city.attributes,26)
-end
-
--- gen.clearDomesticAutoBuild(city)-->void
-function gen.clearDomesticAutoBuild(city)
-	 city.attributes = setBit0(city.attributes,26)
-end
-
--- gen.isObjective(city)-->boolean
-function gen.isObjective(city)
-	return isBit1(city.attributes,27)
-end
-
--- gen.setObjective(city)-->void
-function gen.setObjective(city)
-	 city.attributes = setBit1(city.attributes,27)
-     -- objective flag overrides major objective flag, so 
-     -- remove major objective flag if it exists
-     city.attributes = setBit0(city.attributes,29)
-end
-
--- gen.clearObjective(city)-->void
-function gen.clearObjective(city)
-	 city.attributes = setBit0(city.attributes,27)
-end
-
--- gen.isAttribute28(city)-->boolean
-function gen.isAttribute28(city)
-	return isBit1(city.attributes,28)
-end
-
--- gen.setAttribute28(city)-->void
-function gen.setAttribute28(city)
-	 city.attributes = setBit1(city.attributes,28)
-end
-
--- gen.clearAttribute28(city)-->void
-function gen.clearAttribute28(city)
-	 city.attributes = setBit0(city.attributes,28)
-end
-
--- gen.isMajorObjective(city)-->boolean
-function gen.isMajorObjective(city)
-	return isBit1(city.attributes,29)
-end
-
--- gen.setMajorObjective(city)-->void
-function gen.setMajorObjective(city)
-	 city.attributes = setBit1(city.attributes,29)
-     -- objective flag overrides major objective flag, so 
-     -- remove it
-     city.attributes = setBit0(city.attributes,27)
-end
-
--- gen.clearMajorObjective(city)-->void
-function gen.clearMajorObjective(city)
-	 city.attributes = setBit0(city.attributes,29)
-end
-
--- gen.isAttribute30(city)-->boolean
-function gen.isAttribute30(city)
-	return isBit1(city.attributes,30)
-end
-
--- gen.setAttribute30(city)-->void
-function gen.setAttribute30(city)
-	 city.attributes = setBit1(city.attributes,30)
-end
-
--- gen.clearAttribute30(city)-->void
-function gen.clearAttribute30(city)
-	 city.attributes = setBit0(city.attributes,30)
-end
-
--- gen.isAttribute31(city)-->boolean
-function gen.isAttribute31(city)
-	return isBit1(city.attributes,31)
-end
-
--- gen.setAttribute31(city)-->void
-function gen.setAttribute31(city)
-	 city.attributes = setBit1(city.attributes,31)
-end
-
--- gen.clearAttribute31(city)-->void
-function gen.clearAttribute31(city)
-	 city.attributes = setBit0(city.attributes,31)
-end
-
--- gen.isAttribute32(city)-->boolean
-function gen.isAttribute32(city)
-	return isBit1(city.attributes,32)
-end
-
--- gen.setAttribute32(city)-->void
-function gen.setAttribute32(city)
-	 city.attributes = setBit1(city.attributes,32)
-end
-
--- gen.clearAttribute32(city)-->void
-function gen.clearAttribute32(city)
-	 city.attributes = setBit0(city.attributes,32)
-end
-
+-- function gen.removeSpotSubmarines(unitType) end
 --
 --
 -- gen.wonderModifiedMoves(unit)-->integer
@@ -1868,12 +807,13 @@ function maxMoves(unit)
     if moveAllowance % moveMult > 0 then
         moveAllowance = moveAllowance - moveAllowance % moveMult + moveMult
     end
-    if unit.type.domain == 0 or unit.type.domain >= 3 then
+    if unit.type.domain == 0 then
         return math.min(math.max( moveAllowance,moveMult),fullHpMove)
     elseif unit.type.domain == 1 then
         return fullHpMove
     elseif unit.type.domain == 2 then
         return math.min(math.max( moveAllowance,2*moveMult),fullHpMove)
+    else
     end
 end
 gen.maxMoves = maxMoves

@@ -123,6 +123,21 @@ end
 --      nil means no restriction
 -- payloadRestrictionMessage = nil or string
 --      message to show if a unit fails the payloadRestrictionCheck
+-- reArmingTileFunction = nil or function(tile)--> city or false
+--      if function returns false for the tile the unit is on, the unit will not re-arm
+--      if the function returns a city, the unit will rearm using that city as the home city
+--      nil means it will attempt to re-arm in any city, and use that city as the home
+--      as long as the city has extra support available
+--      no effect if not a payload unit
+-- noPayloadActivationMessage = nil or function(unit)-->string or nil
+--      If this unit is activated without a home city, determine if a
+--      message should be shown to warn the player.
+--      No message will be shown if a unit is not a payload unit
+--      Default is message shown when activated in a city
+--      If you don't want a message under any circumstances, provide a function 
+--      function(unit) return nil end
+--      
+--
 
 -- canGenerateFunction = nil or function(unit)-->boolean 
 --      This function applied to the generating unit must return true in order
@@ -371,11 +386,102 @@ local function onProdPayloadRestrictionCheck(carryingUnit,specificationTable)
     end
 end
 
+local function defaultReArmingTileFunction(tile)
+    if tile.city and gen.cityCanSupportAnotherUnit(tile.city) then
+        return tile.city
+    else
+        return false
+    end
+end
+local function automaticReArming(unit,primarySpecificationTable,secondarySpecificationTable)
+    if unit.homeCity then
+        return
+    end
+    primarySpecificationTable = primarySpecificationTable or {}
+    secondarySpecificationTable = secondarySpecificationTable or {}
+    if primarySpecificationTable[unit.type.id] and primarySpecificationTable[unit.type.id].payload then
+        local reArmFn = primarySpecificationTable[unit.type.id].reArmingTileFunction or defaultReArmingTileFunction
+        local reArmResult = reArmFn(unit.location)
+        if civ.isCity(reArmResult) then
+            unit.homeCity = reArmResult
+            if primarySpecificationTable[unit.type.id].payloadRestrictionCheck then
+                if not (primarySpecificationTable[unit.type.id].payloadRestrictionCheck(unit)) then
+                    unit.homeCity = nil
+                end
+            end
+        end
+    end
+    if secondarySpecificationTable[unit.type.id] and secondarySpecificationTable[unit.type.id].payload then
+        local reArmFn = secondarySpecificationTable[unit.type.id].reArmingTileFunction or defaultReArmingTileFunction
+        local reArmResult = reArmFn(unit.location)
+        if civ.isCity(reArmResult) then
+            unit.homeCity = reArmResult
+            if secondarySpecificationTable[unit.type.id].payloadRestrictionCheck then
+                if not (secondarySpecificationTable[unit.type.id].payloadRestrictionCheck(unit)) then
+                    unit.homeCity = nil
+                end
+            end
+        end
+    end
+end
+
+local function defaultNoPayloadPrimaryMessage(unit)
+    if unit.location.city and (not unit.homeCity) then
+        return "Our "..unit.type.name.." unit has no home city.  It will be unable to use its primary munition attack until it is given a home city."
+    else
+        return nil
+    end
+end
+local function defaultNoPayloadSecondaryMessage(unit)
+    if unit.location.city and (not unit.homeCity) then
+        return "Our "..unit.type.name.." unit has no home city.  It will be unable to use its secondary munition attack until it is given a home city."
+    else
+        return nil
+    end
+end
+
+local function afterProductionReArm(primarySpecificationTable,secondarySpecificationTable)
+    local activeTribe = civ.getCurrentTribe()
+    for unit in civ.iterateUnits() do
+        if unit.owner == activeTribe then
+            automaticReArming(unit,primarySpecificationTable,secondarySpecificationTable)
+        end
+    end
+end
+
+local function activationReArm(unit,primarySpecificationTable,secondarySpecificationTable)
+    automaticReArming(unit,primarySpecificationTable,secondarySpecificationTable)
+    if unit.homeCity then
+        return
+    end
+    primarySpecificationTable = primarySpecificationTable or {}
+    secondarySpecificationTable = secondarySpecificationTable or {}
+    if  primarySpecificationTable[unit.type.id] and primarySpecificationTable[unit.type.id].payload then
+        local messageFn = primarySpecificationTable[unit.type.id].noPayloadActivationMessage or defaultNoPayloadPrimaryMessage
+        local message = messageFn(unit)
+        if message then
+            civ.ui.text(message)
+            return
+        end
+    end
+    if  secondarySpecificationTable[unit.type.id] and secondarySpecificationTable[unit.type.id].payload then
+        local messageFn = secondarySpecificationTable[unit.type.id].noPayloadActivationMessage or defaultNoPayloadSecondaryMessage
+        local message = messageFn(unit)
+        if message then
+            civ.ui.text(message)
+            return
+        end
+    end
+
+end
 return {
     spawnUnit=spawnUnit,
     doMunition=spawnUnit,
     payloadRestrictionCheck=payloadRestrictionCheck,
     onProdPayloadRestrictionCheck = onProdPayloadRestrictionCheck,
+    afterProductionReArm = afterProductionReArm,
+    activationReArm = activationReArm,
+
 }
 
 
