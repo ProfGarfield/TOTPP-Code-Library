@@ -27,6 +27,14 @@ local kw = require("killWarrior")
 local text = require("text")
 local customMusic = require("customMusic")
 
+
+civ.ui.text(text.money(200))
+civ.ui.text(text.money(10000))
+civ.ui.text(text.groupDigits(12345678.9))
+text.setMoney("$%STRING1,000")
+civ.ui.text(text.money(5000).." was paid.")
+text.setMoney("%STRING1,000 Dollars")
+civ.ui.text(text.money(50000).." was delivered.")
 --local tribeEvents = nil
 --if civ.getTribe(1).isHuman or civ.getTribe(2).isHuman or civ.getTribe(3).isHuman then
 --    tribeEvents = require("tribeA")

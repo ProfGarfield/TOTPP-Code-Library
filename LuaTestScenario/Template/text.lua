@@ -1103,12 +1103,17 @@ local digitGroupSeparator = ","
 --  separator to split the integer, ie
 --  12345 becomes 12,345
 local function groupDigits(amount)
-    local function addSeparator(numString,group)
-        group = group or string.len(numString)//3
-        if group <= 0 then
+    amount = math.floor(amount)
+    local numString = tostring(amount)
+    
+    local function addSeparator(numString)
+        local digits = string.len(numString)
+        if digits <= 3 then
             return numString
+        elseif digits % 3 > 0 then
+            return numString:sub(1,digits % 3)..digitGroupSeparator..addSeparator(numString:sub(digits%3 +1))
         else
-            return addSeparator(numString:sub(1,-3*group+1)..digitGroupSeparator..numString:sub(-3*group,-1),group-1)
+            return numString:sub(1,3)..digitGroupSeparator..addSeparator(numString:sub(4))
         end
     end
     return addSeparator(tostring(amount))
@@ -1154,6 +1159,7 @@ local function setMoney(convertString)
     moneyConvert = convertString
 end
 
+text.setMoney = setMoney
 
 
 
