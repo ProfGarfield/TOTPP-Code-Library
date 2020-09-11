@@ -1,4 +1,4 @@
-flag = require "flags"
+local flag = require "flags"
 
 flag.define("warriorKilled",false,"killWarrior.lua")
 

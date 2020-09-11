@@ -1,0 +1,113 @@
+12,64 - Tharrus
+18,86 - Nora
+20,18 - Urcinium
+21,29 - Pauca
+21,79 - Carales
+29,31 - Palla
+29,45 - Olbia
+29,61 - Sulci
+30,20 - Aleria
+32,12 - Mariana
+65,129 - Cossyra
+72,30 - Ostia
+73,113 - Lilybaeum
+79,117 - Selinus
+88,104 - Panormus
+91,123 - Acragas
+94,56 - Pithecusae
+96,54 - Procida
+96,108 - Himera
+99,49 - Cumae
+101,127 - Gela
+102,50 - Neapolis
+103,43 - Capua
+105,105 - Calacte
+105,151 - Melite
+108,132 - Camarina
+113,123 - Leontini
+114,94 - Lipara
+115,57 - Posidonia
+115,117 - Catana
+115,131 - Helorus
+116,64 - Elea
+118,102 - Mylae
+122,104 - Zancle
+123,65 - Pyxus
+127,105 - Rhegium
+129,95 - Medma
+133,87 - Tempsa
+134,102 - Locri
+137,73 - Sybaris
+139,61 - Heraclea
+142,58 - Metapontum
+159,65 - Callipolis
+161,13 - Epidaurus
+183,37 - Epidamnus
+183,57 - Oricus
+184,48 - Apollonia
+204,78 - Anactorium
+205,71 - Ambracia
+209,77 - Amphilochicum
+211,81 - Stratus
+221,123 - Methone
+226,40 - Pella
+228,112 - Magalopolis
+228,124 - Asine
+229,51 - Methone
+231,55 - Pydna
+234,110 - Mantinea
+236,130 - Teuthrone
+237,47 - Therma
+237,71 - Pegasae
+238,126 - Gytheum
+243,55 - Potidaea
+243,79 - Histiaea
+243,127 - Asopus
+244,46 - Apollo Mygdonia
+244,52 - Olynthus
+246,96 - Pagae
+249,47 - Acanthus
+251,55 - Torone
+255,31 - Crenides
+258,36 - Neapolis
+258,96 - Marathon
+258,104 - Sunium
+264,96 - Carystus
+269,35 - Abdera
+275,37 - Maronea
+276,44 - Samothrace
+277,103 - Tenos
+277,149 - Rhithymna
+290,42 - Cardia
+292,116 - Amorgos
+296,60 - Antandrus
+310,30 - Perinthus
+315,25 - Selymbria
+319,139 - Carpathos
+324,24 - Byzantium
+327,25 - Chalcedon
+336,36 - Helicore
+338,26 - Astacus
+
+Total = 90
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,200 @@
+@SCENARIO
+@width=500
+@title=A SOARING SPIRIT
+
+^^A SOARING SPIRIT MULTIPLAYER 
+^
+After the Dark Age that extinguished the light of the Bronze Age
+Mycenean Kingdoms, the Hellenes (as the Ancient Greeks called 
+themselves) began to recover in around 750 B.C. Colonists from
+the major City-States travelled throughout the Mediterranean and 
+founded new cities.
+^
+^^USE CIV2 UNLIMITED!
+^
+@listbox12
+@options
+THE NATIONS:
+_________________________________________
+%
+THE ATHENIANS
+%
+The city of Athens during classical antiquity was a notable polis 
+(city-state) of Attica, Greece, leading the Delian League in the 
+Peloponnesian War against Sparta and the Peloponnesian League. 
+Athenian democracy was established in 510 BC under Cleisthenes 
+following the tyranny of Hippias. This system remained remarkably 
+stable, and with a few brief interruptions remained in place for 
+170 years, until Alexander the Great conquered Athens in 338 BC. 
+The peak of Athenian hegemony was achieved in the 440s to 430s BC, 
+known as the Age of Pericles.
+%
+In the classical period, Athens was a center for the arts, learning 
+and philosophy, home of Plato's Akademia and Aristotle's Lyceum, 
+Athens was also the birthplace of Socrates, Pericles, Sophocles, 
+and its many other prominent philosophers, writers and politicians 
+of the ancient world. It is widely referred to as the cradle of 
+Western Civilization, and the birthplace of democracy, largely due 
+to the impact of its cultural and political achievements during the 
+5th and 4th centuries BC on the rest of the then known European 
+continent.
+%
+_________________________________________
+%
+THE SPARTANS
+%
+Sparta was a city-state in ancient Greece, situated on the River 
+Eurotas in the southern part of the Peloponnese. From c. 650 BC it 
+rose to become the dominant military power in the region and as such 
+was recognized as the overall leader of the combined Greek forces 
+during the Greco-Persian Wars.[2] Helots were the majority inhabitants 
+of Sparta (over 80% of the population according to Herodotus). 
+They were ritually humiliated and during the Crypteia they could be 
+legally killed by Spartan citizens.[4][5][6] Between 431 and 404 BC 
+Sparta was the principal enemy of Athens during the Peloponnesian War. 
+By 362 BC Sparta's role as the dominant military power in Greece was 
+over. Sparta continues to fascinate Western culture; an admiration of 
+Sparta is called laconophilia.
+%
+_________________________________________
+%
+THE CORINTHIANS
+%
+In classical times, Corinth rivaled Athens and Thebes in wealth, 
+based on the Isthmian traffic and trade. Until the mid-6th century 
+Corinth was a major exporter of black-figure pottery to cities around 
+the Greek world. Athenian potters later came to dominate the market. 
+Corinth's great temple on its ancient acropolis was dedicated to the 
+goddess Aphrodite. According to most sources, there were more than 
+one thousand temple prostitutes employed at the Temple of Aphrodite. 
+Corinth was also the host of the Isthmian Games.
+%
+The city had two main ports, one in the Corinthian Gulf and one in the 
+Saronic Gulf, serving the trade routes of the western and eastern 
+Mediterranean, respectively. In the Corinthian Gulf lay Lechaion, which 
+connected the city to its western colonies and Magna Graecia, while in 
+the Saronic Gulf the port of Kenchreai served the ships coming from 
+Athens, Ionia, Cyprus and the rest of the Levant. Both ports had docks 
+for the large war fleet of the city-state.
+%
+_________________________________________
+%
+THE IONIANS
+%
+The Ionians were one of the three populations into which the ancient 
+Greeks considered the population of Hellenes to have been divided.
+
+"Ionian" with reference to populations had two senses in Classical 
+Greece. In a narrow sense they were linked by their use of the Ionic 
+dialect spoken in settlements that were located principally on some of 
+the Islands between Greece and Anatolia, but who resided on the coast 
+of Anatolia as well, giving rise to the eponymously named region of 
+Ionia there. All the Greeks understood that the population of Ionia 
+were descendants of migrants from the Peloponnesus and had ceded their 
+native land to the Dorians. After a residence in Athens they and some 
+Athenians emigrated to Anatolia and the islands. In a broader sense 
+Ionian meant all the speakers of Ionian, Attic (the language spoken 
+at Athens) and any other dialects of the group called East Greek today.
+% 
+The location of ancient Ionia on the coast of modern-day Turkey. 
+The other two language/cultural groups of the classical period were 
+the Dorians and the Aeolians. All three groups were known collectively 
+as Hellenes. The Ionians were located around the shores of the Aegean 
+Sea and in most of the Aegean islands. The Aeolians resided in Boeotia, 
+Lesbos with a few other islands and the coast of Anatolia. Dorians were 
+to be found in Macedon, Peloponnesus, Crete, Rhodes and the islands of 
+the Dorian Hexapolis, as well as on the coast of Anatolia. Thrace was 
+home to Greek colonists of Ionian descent and the French city of 
+Marseille was founded by Ionians from Phocaea in Ionia.
+%
+According to semi-historical Greek legend, Ionia was colonised by 
+refugees from mainland Greece expelled by the invading Dorians in the 
+Heroic Age. According to myth, the Ionians were descended from the 
+hero Ion, son of Xuthus, son of Hellen (the mythical progenitor of 
+all the Hellenes, whose other two sons were Aeolus and Dorus).
+%
+_________________________________________
+%
+THE PHOENICIANS
+%
+The Phoenicians were amongst the greatest traders of their time and owed 
+a great deal of their prosperity to trade. The Phoenicians' initial 
+trading partners were the Greeks, with whom they used to trade wood, 
+slaves, glass and a Tyrian Purple powder. This powder was used by the 
+Greek elite to color clothes and other garments and was not available 
+anywhere else. Without trade with the Greeks they would not be known as 
+Phoenicians, as the word for Phoenician is derived from the Ancient 
+Greek word phoinikèia meaning "purple".
+%
+In the centuries following 1200 BC, the Phoenicians formed the major 
+naval and trading power of the region. Phoenician trade was founded on 
+Tyrian Purple, a violet-purple dye derived from the Murex sea-snail's 
+shell, once profusely available in coastal waters of the eastern 
+Mediterranean Sea but exploited to local extinction. Brilliant 
+textiles were a part of Phoenician wealth, and Phoenician glass was 
+another export ware. 
+%
+The Phoenicians established commercial outposts throughout the 
+Mediterranean, the most strategically important being Carthage in North 
+Africa, directly across the narrow straits. However, ancient Gaelic 
+mythologies of origin attribute a Phoenician/Scythian influx to Ireland 
+by a leader called Fenius Farsa. Others also sailed south along the coast 
+of Africa. A Carthaginian expedition led by Hanno the Navigator explored 
+and colonized the Atlantic coast of Africa as far as the Gulf of Guinea; 
+and according to Herodotus, a Phoenician expedition sent down the Red 
+Sea by pharaoh Necho II of Egypt (c. 600 BC) even circumnavigated Africa 
+and returned through the Pillars of Hercules in three years.
+%
+_________________________________________
+%
+THE ETRUSCANS
+%
+Etruscan civilization is the modern English name given to the culture 
+and way of life of a people of ancient Italy and Corsica whom the ancient 
+Romans called Etrusci or Tusci. The Attic Greek word for them was 
+Tyrrhenioi from which Latin also drew the names Tyrrheni (Etruscans), 
+Tyrrhenia (Etruria) and Mare Tyrrhenum (Tyrrhenian Sea). The Etruscans 
+themselves used the term Rasenna, which was syncopated to Rasna or Rasna.
+%
+As distinguished by its own language, the civilization endured from an 
+unknown prehistoric time prior to the founding of Rome until its complete 
+assimilation to Italic Rome in the Roman Republic. At its maximum extent 
+during the foundation period of Rome and the Roman kingdom, it flourished 
+in three confederacies of cities: of Etruria, of the Po valley with the 
+eastern Alps, and of Latium and Campania. Rome was sited in Etruscan 
+territory. There is considerable evidence that early Rome was dominated 
+by Etruscans until the Romans sacked Veii in 396 BC.
+%
+Culture that is identifiably and certainly Etruscan developed in Italy 
+after about 800 BC approximately over the range of the preceding Iron Age 
+Villanovan culture. The latter gave way in the seventh century to a 
+culture that was influenced by Greek traders and Greek neighbours in 
+Magna Graecia, the Hellenic civilization of southern Italy. After 500 BC 
+the political destiny of Italy passed out of Etruscan hands.
+%
+_________________________________________
+%
+THE LYDIANS / PERSIANS (AI ONLY)
+%
+Lydia was an Iron Age kingdom of western Asia Minor located generally 
+east of ancient Ionia in the modern Turkish provinces of Manisa and 
+inland Izmir. Its population spoke an Anatolian language known as Lydian.
+%
+At its greatest extent, the Kingdom of Lydia covered all of western 
+Anatolia. Lydia was later the name for a Roman province. Coins were 
+invented in Lydia around 610 BC.
+%
+In 546 BC, the Achaemenid king Cyrus II the Great captured Sardis and 
+Lydia became his satrapy.
+%
+For the first part of this scenario this nation represents the wealthy 
+Lydian Kingdom. As the game goes on the Lydian Kingdom is incorporated
+into the Persian Empire which will launch the invasions of Cyrus and 
+Xerxes
+%
+_________________________________________
+%
+Contact info:
+drew.shortis@ntlworld.com
+%
+@end -- this line must be here!

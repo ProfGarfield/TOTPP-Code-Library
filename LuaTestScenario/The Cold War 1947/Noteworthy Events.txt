@@ -1,0 +1,31 @@
+
+1968 - Martin Luther King Jr. assassinated
+1970 - The Beatles break up
+1973 - Pink Floyd's The Dark Side of the Moon is released
+1973 - Watergate scandal
+1976 - First outbreak of Ebola Virus
+1977 - First mass produced computers
+1978 - John Paul II becomes Pope
+1979 - Smallpox eradicated
+1980 - John Lennon assassinated 
+1981 - Assassination attempt on Ronald Reagan
+1982 - Michael Jackson releases Thriller
+1984 - HIV/AIDS
+1984 -Indira Gandhi assassinated
+1984 - A certain scenario designer is born!
+1986 - Challenger Disaster
+1986 - Cherynobyl Disaster
+1987 - Stock market crash of 1987
+1990 - Intergovernmental Panel on Climate Change releases its first assessment report
+
+
+		civ.createUnit(object.uM26Pershing, object.tUSA,object.lTaiwanInvasionPoint1)
+		civ.createUnit(object.uM26Pershing, object.tUSA,object.lTaiwanInvasionPoint1 )
+		civ.createUnit(object.uUSInf, object.tUSA,object.lTaiwanInvasionPoint1 )
+		civ.createUnit(object.uUSInf, object.tUSA,object.lTaiwanInvasionPoint1 )
+		civ.createUnit(object.uUSInf, object.tUSA,object.lTaiwanInvasionPoint1 )
+		civ.createUnit(object.uUSMarines, object.tUSA,object.lTaiwanInvasionPoint1 )
+		civ.createUnit(object.uUSMarines, object.tUSA,object.lTaiwanInvasionPoint1 )
+		civ.createUnit(object.uFieldArtillery, object.tUSA,object.lTaiwanInvasionPoint1 )
+		civ.createUnit(object.uFreighter, object.tUSA,object.lTaiwanInvasionPoint1 )
+		civ.createUnit(object.uDestroyer, object.tUSA,object.lTaiwanInvasionPoint1 )

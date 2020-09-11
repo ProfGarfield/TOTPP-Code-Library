@@ -1,0 +1,87 @@
+Changes to events.lua
+
+after:
+local civluaModified = require("civluaModified")
+
+add:
+local weaponSales = require("weaponSales")
+
+after (two places):
+state.textTable = state.textTable or {}
+text.linkState(state.textTable)
+
+add:
+gen.linkState(state)
+
+
+after (not necessarily directly after, but in that function):
+civ.scen.onKeyPress(function(keyID)
+
+add:
+if keyID == keyboard.five then
+    weaponSales.equipmentPurchaseMenu(civ.getCurrentTribe())
+end
+if keyID == keyboard.six then
+    weaponSales.equipmentOfferMenu(civ.getCurrentTribe())
+end
+
+after (not necessarily directly after, but in that function):
+local function afterProduction(turn,tribe)
+
+add:
+weaponSales.verifyOffers(tribe)
+
+
+
+How to use:
+
+This file contains everything needed for these events, rather than being split into two files like many other modules.  (The main reason is that I wasn't attempting to make this a reusable module.)
+
+
+canSellTo (table)
+
+This table determines if a given tribe can sell weapons to another tribe.  If false, they won't get an option to make changes to the stuff offered for sale.
+
+categoryList (table)
+
+This is the table of category names to sort units into when choosing what unit to buy.
+
+unitSalesCategory (table)
+
+This table determines what category each unit is in, for determining what to display when buying units.
+
+canSell (table)
+
+This table could be used to determine what units each tribe can sell to other tribes.  This is only referenced in the priceOptions function, so if you don't need it, you can get rid of it or ignore it.
+
+priceOptions (function)
+
+This function determines whether a seller can sell a unit type to a particular buyer, and if so, gives options of how much to charge for the unit.  Perhaps the price options given can vary over time, or with other equipment available.
+
+productionCost(function)
+
+Determines how much a unit costs to produce (so the seller gets the difference between that and the price).  You could use a table to get a fixed schedule, or you could have it vary over time as well.  Make sure any unit that is available to be purchased has a production cost.
+
+cityCanReceivePurchasedUnit (function)
+
+Determines if a city can receive a unit type that has been purchased, and, if so, if there is any supplemental transportation cost for delivery.
+
+changeSellingStatus (function)
+
+Allows you to change via event the sales offers made between tribes.  There is no need to set a price equal to one of the prices in the price options (so, for example, you can have AI tribes vary the prices they charge for units more fluidly if you like).
+
+This is global, so you can access it from the console if necessary.
+
+resetSellingStatus (function)
+
+Allows you to script initial settings for weapons sales.  Global variable, so you can run it from the console, before you save the scenario.  Running it again will erase all existing settings for armament sales.
+
+buyEquipment (function)
+
+Function for buying equipment.  Could be useful so that the AI buys units via event.
+
+verifyOffers (function)
+
+You don't need to change this, but it checks to make sure that any outstanding offers of sale actually can be made, by checking that priceOptions returns a table instead of false/nil.  It doesn't force prices to be one of the listed options, however.
+
+

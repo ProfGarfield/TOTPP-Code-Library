@@ -642,6 +642,8 @@ diplomacy.diplomacyMenu = diplomacyMenu
 --          if false, city can't receive unit
 --          if number, city can receive unit, but giver must pay that cost
 --          if true, city can receive unit for free
+--      afterUnitTransferFn(sourceCity,destinationCity,unitAfterTransfer)-->void
+--          performs actions after a unit is transferred
 --      canGiveTileFn(tile,giver)
 --          if true, the tile and all its contents can be transferred to a new owner
 --          if false, it can't
@@ -650,7 +652,7 @@ diplomacy.diplomacyMenu = diplomacyMenu
 --          if false, it can't
 --
 
-local function giftSingleUnit(canGiveUnitFn,tribeCanReceiveUnitFn,cityCanReceiveUnitFn)
+local function giftSingleUnit(canGiveUnitFn,tribeCanReceiveUnitFn,cityCanReceiveUnitFn,afterUnitTransferFn)
     -- choose unit to give
     local unitToGive = nil
     local menuTable = {}
@@ -719,16 +721,18 @@ local function giftSingleUnit(canGiveUnitFn,tribeCanReceiveUnitFn,cityCanReceive
         text.simple("We can't afford to transport this unit.")
         return
     end
+    local sourceCity = unitToGive.homeCity
     unitToGive.owner.money = unitToGive.owner.money - transportCost
     unitToGive.owner = destination.owner
     unitToGive:teleport(destination.location)
     unitToGive.homeCity = destination
+    afterUnitTransferFn(sourceCity,destination,unitToGive)
 
     return
 end
 
 
-local function coldWarDiplomacyMenu(options,canGiveUnitFn,tribeCanReceiveUnitFn,cityCanReceiveUnitFn,canGiveTileFn,canReceiveTileFn)
+local function coldWarDiplomacyMenu(options,canGiveUnitFn,tribeCanReceiveUnitFn,cityCanReceiveUnitFn,afterUnitTransferFn,canGiveTileFn,canReceiveTileFn)
    -- Returns if the city is capital
       local function isCapital(city)
 	 return city and city:hasImprovement(civ.getImprovement(1))
@@ -772,7 +776,7 @@ local function coldWarDiplomacyMenu(options,canGiveUnitFn,tribeCanReceiveUnitFn,
 	    end
 	    tribeId = text.menu(menuTable, civSelectionText, civSelectionText, true)
     elseif gift == 5 then
-           giftSingleUnit(canGiveUnitFn,tribeCanReceiveUnitFn,cityCanReceiveUnitFn)
+           giftSingleUnit(canGiveUnitFn,tribeCanReceiveUnitFn,cityCanReceiveUnitFn,afterUnitTransferFn)
            return
     elseif gift == 0 then
         return

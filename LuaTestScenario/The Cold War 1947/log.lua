@@ -71,6 +71,7 @@ local citiesCapturedAndDestroyedLog = "logState not linked"
 local eventLog = "logState not linked"
 local eventCounter = "logState not linked"
 local casualtyCounter = "logState not linked"
+local hideUnitInCasualtyReport = "logState not linked"
 
 local function linkState(tableInStateTable)
     if type(tableInStateTable) == "table" then
@@ -88,9 +89,13 @@ local function linkState(tableInStateTable)
         end
         logState.casualtyCounter = logState.casualtyCounter or {}
         casualtyCounter = logState.casualtyCounter
+        logState.hideUnitInCasualtyReport = logState.hideUnitInCasualtyReport or {}
+        hideUnitInCasualtyReport = logState.hideUnitInCasualtyReport
         for i=0,7 do
             casualtyCounter[i] = casualtyCounter[i] or {}
+            hideUnitInCasualtyReport[i] = hideUnitInCasualtyReport[i] or {}
         end
+        
     else
         error("linkState: linkState takes a table as an argument.")
     end
@@ -195,7 +200,7 @@ local function purgeCasualtyInfo(tribe)
     local turn = civ.getTurn()
     local function combatRecordOld(combatRecord)
         return combatRecord.victimTribeID == tribeID and
-                    ((turn - combatRecord.turn) > 1 or 
+                    (((turn - combatRecord.turn) > 1) or 
                     (((turn-combatRecord.turn) == 1) and combatRecord.aggressorTribeID <= tribeID))
     end
     if type(combatLog) ~= "table" then
@@ -238,8 +243,9 @@ local function gatherAggressorCombatInfo(tribe)
     local tribeID = tribe.id
     local tribeCombatTable = {}
     local tribeCTIndex = 1
+    local turn = civ.getTurn()
     for index,combatRecord in pairs(combatLog) do
-        if combatRecord.aggressorTribeID == tribeID then
+        if combatRecord.aggressorTribeID == tribeID and combatRecord.turn == turn then
             tribeCombatTable[tribeCTIndex] = combatRecord
             tribeCTIndex=tribeCTIndex+1
         end
@@ -274,14 +280,15 @@ end
 local function makeWinLossTable(unitTypeLosses,unitTypeSurvival)
     -- if ith tribe has units involved in combat, then tribeNeedsColumn[i]=true
     local tribeNeedsColumn = {}
-    local dataTable = {[1]={["unitType"]="Unit Type"},[2]={["unitType"]="Dead-Survived"},
+    local dataTable = {[1]={["unitType"]="Unit Type"},[2]={["unitType"]="Dead-Engagements"},
             [3]={["unitType"]="All Units"}}
     local dataTableIndex = 4
     local totalSurvived = {[0]=0,0,0,0,0,0,0,0,}
     local totalDead = {[0]=0,0,0,0,0,0,0,0,}
     local unitTypeID = 0
     for unitTypeID=0,127 do
-        if unitTypeLosses[unitTypeID] or unitTypeSurvival[unitTypeID] then
+        if (not hideUnitInCasualtyReport[civ.getCurrentTribe().id][unitTypeID]) and (
+            unitTypeLosses[unitTypeID] or unitTypeSurvival[unitTypeID]) then
             unitTypeLosses[unitTypeID] = unitTypeLosses[unitTypeID] or {}
             unitTypeSurvival[unitTypeID] = unitTypeSurvival[unitTypeID] or {}
 
@@ -292,7 +299,7 @@ local function makeWinLossTable(unitTypeLosses,unitTypeSurvival)
                 local die = unitTypeLosses[unitTypeID][i] or 0
                 local live = unitTypeSurvival[unitTypeID][i] or 0
                 tribeNeedsColumn[i] = tribeNeedsColumn[i] or die>0 or live>0
-                dataTable[dataTableIndex]["tribe"..tostring(i)]=tostring(die).."-"..tostring(live)
+                dataTable[dataTableIndex]["tribe"..tostring(i)]=tostring(die).."-"..tostring(live+die)
                 totalSurvived[i]=totalSurvived[i]+live
                 totalDead[i]=totalDead[i]+die
             end
@@ -301,8 +308,8 @@ local function makeWinLossTable(unitTypeLosses,unitTypeSurvival)
     end
     for i=0,7 do
         dataTable[1]["tribe"..tostring(i)] = tribeShortNameTable[i] or civ.getTribe(i).name
-        dataTable[2]["tribe"..tostring(i)] = "D-S"
-        dataTable[3]["tribe"..tostring(i)] = tostring(totalDead[i]).."-"..tostring(totalSurvived[i])
+        dataTable[2]["tribe"..tostring(i)] = "D-E"
+        dataTable[3]["tribe"..tostring(i)] = tostring(totalDead[i]).."-"..tostring(totalSurvived[i]+totalDead[i])
     end
     local columnTable = {
         {column="unitType",allign = "center"},
@@ -417,7 +424,7 @@ local function bestRegion(tile,geoTable)
     for regionName,value in pairs(geoTable) do
         if type(value) == "function" and value(tile) then
             return regionName
-        elseif betterDistance(value) then
+        elseif type(value) ~= "function" and betterDistance(value) then
             bestLandmark = regionName
         end
     end
@@ -574,6 +581,19 @@ local combatReportFunction = nil
 local automaticallyShowMap = false
 local justAutomaticallyClosed = false
 
+local function setHiddenUnitTypes()
+    local checkboxNameTable = {}
+    for i=0,127 do
+        if civ.getUnitType(i) then
+            checkboxNameTable[i] = civ.getUnitType(i).name
+        end
+    end
+    local checkboxStatusTable = hideUnitInCasualtyReport[civ.getCurrentTribe().id]
+    local menuText = "Select all units that should NOT appear in the combat report."
+    local menuTitle = "Customize Combat Report"
+    text.checkboxMenu(checkboxNameTable,checkboxStatusTable,menuText,menuTitle)
+end
+
 
 local function openReportFunction()
     local menuTable = {}
@@ -593,10 +613,22 @@ local function openReportFunction()
         menuTable[3] = "Review list of captured cities."
     end
 
-    menuTable[5] = "Close Report"
+    menuTable[10] = "Close Report"
+    menuTable[13] = "Hide certain units in the combat report"
+    menuTable[16] = "Increase lines per window to "..tostring(text.getLinesPerWindow()+1).."."
+    menuTable[17] = "Decrease lines per window to "..tostring(text.getLinesPerWindow()-1).."."
     local choice = text.menu(menuTable,"","Combat Reporting",false)
-    if choice == 5 then
+    if choice == 17 then
+        text.setLinesPerWindow(text.getLinesPerWindow()-1)
+        return openReportFunction()
+    elseif choice == 16 then
+        text.setLinesPerWindow(text.getLinesPerWindow()+1)
+        return openReportFunction()
+    elseif choice == 10 then
         return
+    elseif choice == 13 then
+        setHiddenUnitTypes()
+        return openReportFunction()
     elseif choice == 4 then
         automaticallyShowMap = not automaticallyShowMap
         return openReportFunction()

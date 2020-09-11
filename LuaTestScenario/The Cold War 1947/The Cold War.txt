@@ -1,0 +1,16 @@
+@SCENARIO
+@width=750
+@title=The Cold War: 1947-1991
+
+^^"It is clear that the main element of any United States policy toward the Soviet Union must be 
+^^ that of long-term, patient but firm and vigilant containment of Russian expansive tendencies."
+^^-George F. Kennan
+^
+Please note that The Cold War features many exciting Lua events that dramatically impact how the game is played.  This is not your typical Civ2 experience, and certain concepts (such as spawning rebels) are critical to enjoying the scenario to its fullest.  Please read the readme for further details.
+^
+I have endeavored to make this scenario playable as both a single player and multi player scenario. There is a batch file that will make some minor event changes in the single player version (specifically, it changes when certain text is displayed, so you only see it once, and it also boosts the AI's ability to contest civil wars, as they wouldn't normally know how to use the rebel spawn device).  
+
+@end -- this line must be here!
+
+
+

@@ -28,6 +28,12 @@
 --gen.makeThresholdTable(table or nil)-->thresholdTable
 --#applyWonderBonus(wonderObject or integer,tribeObject or integer)-->boolean
 --#gen.toTile(tile or table)-->tile
+--#gen.isMapFlat()-->boolean
+--#gen.isMapRound()-->boolean
+--#gen.declareMapFlat()-->void
+--#gen.declareMapRound()-->void
+--#gen.tileDist(locA,locB,zDist=0)-->integer
+--#gen.distance(tileUnitCityA,tileUnitCityB,zDist=0)-->integer
 --gen.hasIrrigation(tile)-->boolean
 --gen.placeIrrigation(tile)-->void
 --gen.removeIrrigation(tile)-->void
@@ -68,6 +74,7 @@
 --#gen.hasTransporter(tile)-->boolean
 --# NOTE: Can't placeTransporter
 --#gen.removeTransporter(tile)-->void
+--#gen.setTerrainType(tile,terrain)-->void
 --#gen.isFortifying(unit)-->boolean
 --#gen.setToFortifying(unit)-->void
 --#gen.isFortified(unit)-->boolean
@@ -195,9 +202,9 @@
 --#gen.isAttribute16(city)-->boolean
 --#gen.setAttribute16(city)-->void
 --#gen.clearAttribute16(city)-->void
---#gen.isAttribute17(city)-->boolean
---#gen.setAttribute17(city)-->void
---#gen.clearAttribute17(city)-->void
+--#gen.isUsedAirport(city)-->boolean
+--#gen.setUsedAirport(city)-->void
+--#gen.clearUsedAirport(city)-->void
 --#gen.isAttribute18(city)-->boolean
 --#gen.setAttribute18(city)-->void
 --#gen.clearAttribute18(city)-->void
@@ -213,9 +220,9 @@
 --#gen.isBuildShips(city)-->boolean
 --#gen.setBuildShips(city)-->void
 --#gen.clearBuildShips(city)-->void
---#gen.isAttribute23(city)-->boolean
---#gen.setAttribute23(city)-->void
---#gen.clearAttribute23(city)-->void
+--#gen.isCityInvestigated(city)-->boolean
+--#gen.setCityInvestigated(city)-->void
+--#gen.clearCityInvestigated(city)-->void
 --#gen.isAttribute24(city)-->boolean
 --#gen.setAttribute24(city)-->void
 --#gen.clearAttribute24(city)-->void
@@ -234,9 +241,9 @@
 --#gen.isMajorObjective(city)-->boolean
 --#gen.setMajorObjective(city)-->void
 --#gen.clearMajorObjective(city)-->void
---#gen.isAttribute30(city)-->boolean
---#gen.setAttribute30(city)-->void
---#gen.clearAttribute30(city)-->void
+--#gen.isUsedTransporter(city)-->boolean
+--#gen.setUsedTransporter(city)-->void
+--#gen.clearUsedTransporter(city)-->void
 --#gen.isAttribute31(city)-->boolean
 --#gen.setAttribute31(city)-->void
 --#gen.clearAttribute31(city)-->void
@@ -258,7 +265,6 @@
 --#gen.getTileId(tileObject or int,int or nil,int or nil)-->int (by Knighttime, converts a tile/coordinates to a single integer as an ID number)
 -- gen.getTileFromID(tileID) --> tileObject -- undoes gen.getTileID
 -- gen.getTileFromId(tileID) --> tileObject -- undoes gen.getTileID
---#gen.distance(tileUnitCityA,tileUnitCityB,zDist=0)-->integer
 --#gen.unitTypeOnTile(tile,unitTypeOrTableOfUnitType)-->bool
 --#gen.getAdjacentTiles(tile)-->tableOfTiles
 --#gen.moveUnitAdjacent(unit,destRankFn=suitableDefault)-->tile or bool
@@ -268,6 +274,8 @@
 --#gen.inTable(object,table)--> bool
 --#gen.copyTable(table)-->table
 --#gen.errorForNilKey(table,tableName)-->void
+-- gen.linkState(stateTable)
+-- gen.getState()-->table
 
 --
 -- FUNCTION IMPLEMENTATIONS
@@ -491,6 +499,86 @@ local function toTile(input)
 end
 gen.toTile = toTile
 
+
+-- by default, the map is considered flat
+-- use gen.declareMapRound to say the map is round
+local flatMap = true
+-- gen.isMapFlat()-->boolean
+function gen.isMapFlat()
+    return flatMap
+end
+
+-- gen.isMapRound()-->boolean
+function gen.isMapRound()
+    return not flatMap
+end
+
+-- gen.declareMapFlat()-->void
+-- tells this module that the map should be considered flat
+-- for things like distances and adjacent squares
+function gen.declareMapFlat()
+    flatMap = true
+end
+
+-- gen.declareMapRound()-->void
+function gen.delcareMapRound()
+    flatMap = false
+end
+
+-- tileDist(locA,locB,zDist=0)
+-- gen.tileDist(locA,locB,zDist=0)
+-- takes two tiles and a 'vertical distance' (0 if absent)
+-- and computes the distance (1-norm, not Euclidean) between them
+-- doesn't pre-process arguments like gen.distance, so might be slightly
+-- quicker (though this probably will never matter)
+local function tileDist(locA,locB,zDist)
+    zDist = zDist or 0
+    if flatMap then
+        return (math.abs(locA.x-locB.x)+math.abs(locA.y-locB.y)+2*zDist*math.abs(locA.z-locB.z))//2
+    else
+        local xMax,yMax,zMax=civ.getMapDimensions()
+        return math.min((math.abs(locA.x-locB.x)+math.abs(locA.y-locB.y)+2*zDist*math.abs(locA.z-locB.z))//2,
+            (xMax-math.abs(locA.x-locB.x)+math.abs(locA.y-locB.y)+2*zDist*math.abs(locA.z-locB.z))//2)
+    end
+end
+gen.tileDist = tileDist
+
+-- distance(tileUnitCityA,tileUnitCityB,zDist=0)-->integer
+-- gen.distance(tileUnitCityA,tileUnitCityB,zDist=0)-->integer
+-- returns the distance (1-norm, not Euclidean) (in terms of tiles, not coordinates) between 
+-- objects A and B, that have a natural location (also converts doubles and triples of tables)
+-- zDist is the number of tiles that one unit of z coordinate "distance" is equivalent to
+local function distance(tileUnitCityA,tileUnitCityB,zDist)
+    zDist = zDist or 0
+    local locA = nil
+    local locB = nil
+    if type(tileUnitCityA)=="table" then
+        locA=toTile(tileUnitCityA)
+    elseif civ.isUnit(tileUnitCityA) or civ.isCity(tileUnitCityA) then
+        locA=tileUnitCityA.location
+    elseif civ.isTile(tileUnitCityA) then
+        locA = tileUnitCityA
+    else
+        error("gen.distance: first argument must be a tile (or coordinates of a tile), or a unit or a city.")
+    end
+    if type(tileUnitCityB)=="table" then
+        locB=toTile(tileUnitCityB)
+    elseif civ.isUnit(tileUnitCityB) or civ.isCity(tileUnitCityB) then
+        locB=tileUnitCityB.location
+    elseif civ.isTile(tileUnitCityB) then
+        locB = tileUnitCityB
+    else
+        error("gen.distance: second argument must be a tile (or coordinates of a tile), or a unit or a city.")
+    end
+    if flatMap then
+        return (math.abs(locA.x-locB.x)+math.abs(locA.y-locB.y)+2*zDist*math.abs(locA.z-locB.z))//2
+    else
+        local xMax,yMax,zMax=civ.getMapDimensions()
+        return math.min((math.abs(locA.x-locB.x)+math.abs(locA.y-locB.y)+2*zDist*math.abs(locA.z-locB.z))//2,
+            (xMax-math.abs(locA.x-locB.x)+math.abs(locA.y-locB.y)+2*zDist*math.abs(locA.z-locB.z))//2)
+    end
+end
+gen.distance = distance
 
 -- gen.hasIrrigation(tile)-->boolean
 -- returns true if tile has irrigation but no farm
@@ -921,6 +1009,16 @@ function gen.removeTransporter(tile)
         tile.improvements = setBits(tile.improvements,"0xxxxx0x")
         return
     end
+end
+
+-- gen.setTerrainType(tile,terrainID)-->void
+-- changes the terrain type of tile to terrainID
+-- have this function, so that if
+-- terrainType key functionality is changed, this
+-- function can change instead of all code everywhere
+function gen.setTerrainType(tile,terrainID)
+    tile = toTile(tile)
+    tile.terrainType = terrainID
 end
 --
 -- gen.isFortifying(unit)-->boolean
@@ -1573,20 +1671,23 @@ function gen.clearAttribute16(city)
 	 city.attributes = setBit0(city.attributes,16)
 end
 
--- gen.isAttribute17(city)-->boolean
-function gen.isAttribute17(city)
+-- gen.isUsedAirport(city)-->boolean
+function gen.isUsedAirport(city)
 	return isBit1(city.attributes,17)
 end
 
--- gen.setAttribute17(city)-->void
-function gen.setAttribute17(city)
+-- gen.setUsedAirport(city)-->void
+function gen.setUsedAirport(city)
 	 city.attributes = setBit1(city.attributes,17)
 end
 
--- gen.clearAttribute17(city)-->void
-function gen.clearAttribute17(city)
+-- gen.clearUsedAirport(city)-->void
+function gen.clearUsedAirport(city)
 	 city.attributes = setBit0(city.attributes,17)
 end
+gen.isAttribute17 = gen.isUsedAirport
+gen.setAttribute17 = gen.setUsedAirport
+gen.clearAttribute17 = gen.clearUsedAirport
 
 -- gen.isAttribute18(city)-->boolean
 function gen.isAttribute18(city)
@@ -1663,25 +1764,29 @@ function gen.clearBuildShips(city)
 	 city.attributes = setBit0(city.attributes,22)
 end
 
--- gen.isAttribute23(city)-->boolean
-function gen.isAttribute23(city)
+-- gen.isCityInvestigated(city)-->boolean
+function gen.isCityInvestigated(city)
 	return isBit1(city.attributes,23)
 end
 
--- gen.setAttribute23(city)-->void
-function gen.setAttribute23(city)
+-- gen.setCityInvestigated(city)-->void
+function gen.setCityInvestigated(city)
 	 city.attributes = setBit1(city.attributes,23)
 end
 
--- gen.clearAttribute23(city)-->void
-function gen.clearAttribute23(city)
+-- gen.clearCityInvestigated(city)-->void
+function gen.clearCityInvestigated(city)
 	 city.attributes = setBit0(city.attributes,23)
 end
+gen.isAttribute23 = gen.isCityInvestigated
+gen.setAttribute23 = gen.setCityInvestigated
+gen.clearAttribute23 = gen.clearCityInvestigated
 
 -- gen.isAttribute24(city)-->boolean
 function gen.isAttribute24(city)
 	return isBit1(city.attributes,24)
 end
+
 
 -- gen.setAttribute24(city)-->void
 function gen.setAttribute24(city)
@@ -1774,20 +1879,23 @@ function gen.clearMajorObjective(city)
 	 city.attributes = setBit0(city.attributes,29)
 end
 
--- gen.isAttribute30(city)-->boolean
-function gen.isAttribute30(city)
+-- gen.isUsedTransporter(city)-->boolean
+function gen.isUsedTransporter(city)
 	return isBit1(city.attributes,30)
 end
+gen.isAttribute30 = gen.isUsedTransporter
 
--- gen.setAttribute30(city)-->void
-function gen.setAttribute30(city)
+-- gen.setUsedTransporter(city)-->void
+function gen.setUsedTransporter(city)
 	 city.attributes = setBit1(city.attributes,30)
 end
+gen.setAttribute30 = gen.setUsedTransporter
 
--- gen.clearAttribute30(city)-->void
-function gen.clearAttribute30(city)
+-- gen.clearUsedTransporter(city)-->void
+function gen.clearUsedTransporter(city)
 	 city.attributes = setBit0(city.attributes,30)
 end
+gen.clearAttribute30 = gen.clearUsedTransporter
 
 -- gen.isAttribute31(city)-->boolean
 function gen.isAttribute31(city)
@@ -2115,18 +2223,15 @@ function gen.rehomeUnitsInCapturedCity(city,defender)
 		citySupportTable[city.id] = citySupportTable[city.id] or 0
 		return (freeSupport+city.totalShield - citySupportTable[city.id])> 0 	
     end
-	local function taxiDistance(tileA,tileB)
-		return math.abs(tileA.x-tileB.x)+math.abs(tileA.y-tileB.y)
-	end
 	for unit in civ.iterateUnits() do
 		if unit.owner == defender and unit.homeCity == city and civ.getTile(unit.location.x,unit.location.y,unit.location.z) then
 			local bestCitySoFar = nil
 			local bestDistanceSoFar = 1000000
 			for candidateCity in civ.iterateCities() do
 				if candidateCity.owner == defender and canSupportAnotherUnit(candidateCity) 
-					and taxiDistance(candidateCity.location,unit.location) <bestDistanceSoFar then
+					and tileDist(candidateCity.location,unit.location) <bestDistanceSoFar then
 					bestCitySoFar = candidateCity
-					bestDistanceSoFar = taxiDistance(bestCitySoFar.location,unit.location)
+					bestDistanceSoFar = tileDist(bestCitySoFar.location,unit.location)
 				end
 			end
 			unit.homeCity = bestCitySoFar
@@ -2145,7 +2250,7 @@ function gen.homeToNearestCity(unit)
     local bestDist = 1000000
     local bestCity = nil
     local function dist(unit,city)
-        return math.abs(unit.location.x-city.location.x)+math.abs(unit.location.y-city.location.y)
+        return tileDist(unit.location,city.location,0)
     end
     for city in civ.iterateCities() do
         if city.owner == unit.owner and dist(unit,city) < bestDist and
@@ -2208,7 +2313,9 @@ function gen.selectNextActiveUnit(activeUnit,source,customWeightFn)
     end
     saveActiveUnit = activeUnit
     -- if unit activated manually, clear the manual wait for that unit
-    waitingUnits[activeUnit.id]=nil
+    if source then
+        waitingUnits[activeUnit.id]=nil
+    end
     local bestWaitingUnit = nil
     local bestWaitingValue = math.huge
     local bestNotWaitingUnit = nil
@@ -2222,7 +2329,7 @@ function gen.selectNextActiveUnit(activeUnit,source,customWeightFn)
         if unit.location.z ~= activeUnit.location.z then
             weight = weight+10000
         end
-        weight = weight+math.abs(unit.location.x-activeUnit.location.x)+math.abs(unit.location.y-activeUnit.location.y)
+        weight = weight+tileDist(unit.location,activeUnit.location)
         return weight
     end
     customWeightFn = customWeightFn or defaultWeightFunction
@@ -2336,36 +2443,6 @@ function gen.getTileFromID(ID)
 end
 gen.getTileFromId = gen.getTileFromID
 
--- distance(tileUnitCityA,tileUnitCityB)-->integer
--- gen.distance(tileUnitCityA,tileUnitCityB)-->integer
--- returns the distance (1-norm, not Euclidian) (in terms of tiles, not coordinates) between 
--- objects A and B, that have a natural location (also converts doubles and triples of tables)
--- zDist is the number of tiles that one unit of z coordinate "distance" is equivalent to
-local function distance(tileUnitCityA,tileUnitCityB,zDist)
-    zDist = zDist or 0
-    local locA = nil
-    local locB = nil
-    if type(tileUnitCityA)=="table" then
-        locA=toTile(tileUnitCityA)
-    elseif civ.isUnit(tileUnitCityA) or civ.isCity(tileUnitCityA) then
-        locA=tileUnitCityA.location
-    elseif civ.isTile(tileUnitCityA) then
-        locA = tileUnitCityA
-    else
-        error("gen.distance: first argument must be a tile (or coordinates of a tile), or a unit or a city.")
-    end
-    if type(tileUnitCityB)=="table" then
-        locB=toTile(tileUnitCityB)
-    elseif civ.isUnit(tileUnitCityB) or civ.isCity(tileUnitCityB) then
-        locB=tileUnitCityB.location
-    elseif civ.isTile(tileUnitCityB) then
-        locB = tileUnitCityB
-    else
-        error("gen.distance: second argument must be a tile (or coordinates of a tile), or a unit or a city.")
-    end
-    return (math.abs(locA.x-locB.x)+math.abs(locA.y-locB.y)+2*zDist*math.abs(locA.z-locB.z))//2
-end
-gen.distance = distance
 
 
 --gen.unitTypeOnTile(tile,unitTypeOrTableOfUnitType)-->bool
@@ -2581,8 +2658,57 @@ gen.copyTable = copyTable
 -- value is accessed from the table
 -- useful for debugging in certain circumstances
 function gen.errorForNilKey(table,tableName)
-    setmetatable(table,{__index = function(myTable,key)
-        error("The "..tableName.." table doesn't have a value associated with "..tostring(key)..".") end})
+    local mt = getmetatable(table) or {}
+    setmetatable(table,mt)
+    mt.__index = function(myTable,key) error("The "..tableName.." table doesn't have a value associated with "..tostring(key)..".") end
 end
+-- gen.noNewKey(table,tableName)-->void
+-- generates an error if attempting to set a key in
+-- a table that doesn't already exist
+function gen.noNewKey(table,tableName)
+    local mt = getmetatable(table) or {}
+    setmetatable(table,mt)
+    mt.__newindex = function(myTable,key)
+        error("The "..tableName.." table can't accept values for indices that don't already exist.")end
+end
+
+-- gen.noGlobal()
+-- after gen.noGlobal is run, errors will be generated when trying to create a new
+-- global variable, or when accessing a global variable that doesn't already exist
+-- if you want to have a 'console' table to access certain functions from the console,
+-- you should declare it (but you don't have to fill it) before running this function
+function gen.noGlobal()
+    gen.errorForNilKey(_G,"Global")
+    gen.noNewKey(_G,"Global")
+end
+
+local state = "stateNotLinked"
+
+-- gen.linkState(stateTable)
+-- links the state table to the General Library
+-- provides access to the state table so that
+-- gen.getState() can provide it
+
+
+function gen.linkState(stateTable)
+    if type(stateTable) == "table" then
+        state = stateTable
+    else
+        error("gen.linkState: linkState takes a table as an argument.")
+    end
+end
+
+-- gen.getState()
+-- returns the state table submitted to gen.linkState
+-- If you're writing a module intended for use by others,
+-- it is recommended that
+-- you use a linkState system with a sub table, so that
+-- table keys don't accidentally conflict
+function gen.getState()
+    return state
+end
+
+
+
 
 return gen

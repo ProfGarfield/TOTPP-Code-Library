@@ -1,0 +1,354 @@
+0, Moscow
+1, Leningrad
+2, Smolensk
+3, Minsk
+4, Kiev
+5, Odessa
+6, Sevastopol
+7, Kharkov
+8, Stalingrad
+9, Voronezh
+10, Baku
+11, Tblisi
+12, Krasnodar
+13, Kazan
+14, Perm
+15, Magnitogorsk
+16, Murmansk
+17, Arkhangelsk
+18, Chelyabinsk
+19, Omsk
+20, Novosibirsk
+21, Tashkent
+22, Berlin
+23, Warsaw
+24, Krakow
+25, Lvov
+26, Riga
+27, Talinn
+28, Budapest
+29, Bucharest
+30, Vladivostok
+31, Bratsk
+32, Petropavlovsk
+33, Novgorod
+34, Astrakhan
+35, Samarkand
+36, Krasnovodsk
+37, Samara
+38, Yekaterinburg
+39, Aralsk
+40, Irkutsk
+41, Chita
+42, Magadan
+43, Yakutsk
+44, Washington DC
+45, New York
+46, Boston
+47, Augusta
+48, Norfolk
+49, Charleston
+50, Miami
+51, New Orleans
+52, Atlanta
+53, St. Louis
+54, Chicago
+55, Detroit
+56, Cleveland
+57, Buffalo
+58, Minneapolis
+59, Houston
+60, Austin
+61, Dallas
+62, Oklahoma City
+63, Memphis
+64, Des Moines
+65, Denver
+66, Salt Lake City
+67, Albuquerque
+68, Phoenix
+69, San Diego
+70, Los Angeles
+71, San Francisco
+72, Portland
+73, Seattle
+74, Honolulu
+75, Okinawa
+76, Bremen
+77, Anchorage
+78, Las Vegas
+79, London
+80, Southampton
+81, Plymouth
+82, Manchester
+83, Newcastle
+84, Glasgow
+85, Belfast
+86, Paris
+87, Brussels
+88, Brest
+89, Nantes
+90, Bordeaux
+91, Marseilles
+92, Lyon
+93, Strasbourg
+94, Frankfurt
+95, Hamburg
+96, Munich
+97, Milan
+98, Rome
+99, Taranto
+100, Messina
+101, Lisbon
+102, Copenhagen
+103, Aalborg
+104, Stavanger
+105, Bergen
+106, Trondheim
+107, Tromso
+108, Tunis
+109, Algiers
+110, Oran
+111, Casablanca
+112, Mogadishu
+113, Mombasa
+114, Kampala
+115, Bujumbura
+116, Luanda
+117, Libreville
+118, Douala
+119, Lagos
+120, Accra
+121, Singapore
+122, Taiping
+123, Kampot
+124, Saigon
+125, Hanoi
+126, Brunei
+127, Sorong
+128, Port Moresby
+129, Ambovombe
+130, Cayenne
+131, Georgetown
+132, New Delhi
+133, Calcutta
+134, Panaji
+135, Bhopal
+136, Orissa
+137, Chennai
+138, Madurai
+139, Hyderabad
+140, Agra
+141, Jaipur
+142, Visakhapatnam
+143, Ahmedabad
+144, Mumbai
+145, Yan'an
+146, Sian
+147, Changchun
+148, Qiqihar
+149, Pyongyang
+150, Ulaanbaatar
+151, Nomonhan
+152, Tirana
+153, Ottawa
+154, Montreal
+155, Quebec
+156, Toronto
+157, Thunder Bay
+158, Calgary
+159, Edmonton
+160, Vancouver
+161, Tokyo
+162, Osaka
+163, Kagoshima
+164, Pusan
+165, Seoul
+166, Sapporo
+167, Taipei
+168, Dunedin
+169, Christchurch
+170, Wellington
+171, Auckland
+172, Sydney
+173, Melbourne
+174, Adelaide
+175, Hobart
+176, Brisbane
+177, Perth
+178, Darwin
+179, Port Elizabeth
+180, Cape Town
+181, Bejing
+182, Qingdao
+183, Shenyang
+184, Harbin
+185, Hong Kong
+186, Kingston
+187, Changsha
+188, Chengdu
+189, Chongqing
+190, Kunming
+191, Nanning
+192, Guangzhou
+193, Nanking
+194, Shanghai
+195, Wenzhou
+196, Fuzhou
+197, Urumqi
+198, Hami
+199, Lanzhou
+200, Datong
+201, Linyi
+202, Liuzhou
+203, Shijiazhuang
+204, Karachi
+205, Quetta
+206, Rawalpindi
+207, Dacca
+208, Khovd
+209, Almaty
+210, Balkhash
+211, Tel Aviv
+212, Tripoli
+213, Benghazi
+214, Alexandria
+215, Port Said
+216, Cairo
+217, Kuwait
+218, Abu Dhabi
+219, Salalah
+220, Al Mukalla
+221, Aden
+222, Mandalay
+223, Rangoon
+224, Manado
+225, Makassar
+226, Surabaya
+227, Jakarta
+228, Palembang
+229, Sumpit
+230, Gibraltar
+231, Basrah
+232, Tehran
+233, Madrid
+234, Valencia
+235, Bilbao
+236, Zagreb
+237, Belgrade
+238, Vienna
+239, Thessaloniki
+240, Istanbul
+241, Ankara
+242, Athens
+243, Izmir
+244, Antalya
+245, Aleppo
+246, Mosul
+247, Damascus
+248, Baghdad
+249, Samsun
+250, Bandar Abbas
+251, Riyadh
+252, Mecca
+253, Bangkok
+254, Vientiane
+255, Belize
+256, San Juan
+257, Prague
+258, Mexico City
+259, Acapulco
+260, Villahermosa
+261, Mazatlan
+262, La Paz (Mexico)
+263, Hermosillo
+264, Monterrey
+265, Tampico
+266, Havana
+267, Santiago (Cuba)
+268, Port-au-Prince
+269, Jeddah
+270, Medina
+271, Kandahar
+272, Kabul
+273, Mashhad
+274, Stockholm
+275, Oslo
+276, Sundsvall
+277, Oulu
+278, Helsinki
+279, Panama
+280, Port Stanley
+281, Sucre
+282, Buenos Aires
+283, Bahia Blanca
+284, Santiago
+285, Antofagasta
+286, Asuncion
+287, Santa Cruz
+288, La Paz
+289, Lima
+290, Quito
+291, Bogota
+292, Barranquilla
+293, Caracas
+294, Cali
+295, San Jose
+296, San Salvador
+297, Montevideo
+298, Porto Alegre
+299, Sao Paulo
+300, Rio de Janeiro
+301, Brasilia
+302, Salvador
+303, Recife
+304, Fortaleza
+305, Belem
+306, Manaus
+307, Boa Vista
+308, Monrovia
+309, Durban
+310, Bloemfontein
+311, Pretoria
+312, Al-Fashir
+313, N'Djamena
+314, Kano
+315, Abuja
+316, Niamey
+317, Tamale
+318, Bamako
+319, Dakar
+320, Abidjan
+321, Khartoum
+322, Al Goled
+323, Aswan
+324, Asyut
+325, Addis Ababa
+326, Djibouti
+327, Galkayo
+328, Kinshasa
+329, Pointe-Noire
+330, Bangui
+331, Juba
+332, Wau
+333, Nouadhibou
+334, Lubumbashi
+335, Lilongwe
+336, Pemba
+337, Beira
+338, Harare
+339, Lusaka
+340, Windhoek
+341, Swakopmund
+342, Inhambane
+343, Maputo
+344, Namibe
+345, Colombo
+346, Kaliningrad
+347, Vologda
+348, Yaroslavl
+349, Saratov
+350, Uralsk
+351, Manilla
+352, Davao
+353, Lhasa

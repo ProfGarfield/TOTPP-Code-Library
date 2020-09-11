@@ -135,6 +135,15 @@ local gen = require("generalLibrary")
 --          alternateParameters in a table, even if there is only one itemParameters as the value
 --          
 --
+--      .onlyBuildCoastal = bool or nil
+--          if true, the item can only be built if the city has the 'coastal' flag,
+--          that is, in the default game it could build harbors and offshore platforms
+--      .onlyBuildShips = bool or nil
+--          if true, the item can only be built if the city has the 'ship building' flag
+--          that is, in the default game it could build sea units
+--      .onlyBuildHydroPlant = bool or nil
+--          if true, the item can only be built if the city has the 'can build hydro plant' flag
+--          that is, the city could build hydro plants in the default game
 --
 --
 --
@@ -205,7 +214,7 @@ local function postProcessParameterTable(parameterTable)
                parameters.forbiddenLocation = {parameters.forbiddenLocation}
            end
        end
-       if parameters.forbiddenlocation then
+       if parameters.forbiddenLocation then
        parameters.forbiddenLocation = makeNewLocationParameters(parameters.forbiddenLocation)
         end
         -- these parameter keys should be wrapped in a table if necessary, but the parameter values won't be
@@ -214,9 +223,9 @@ local function postProcessParameterTable(parameterTable)
             "allTechs","someTechs","forbiddenTechs","allWonders","someWonders","forbiddenAlternateProduction",
             "requireSomeAsAlternateProduction",}
         for __,value in pairs(wrapKeyTable) do
-            if parameters[value] then
-                print(parameters[value])
-            end
+            --if parameters[value] then
+                --print(parameters[value])
+            --end
             if parameters[value] and type(parameters[value]) ~="table" then
                 parameters[value] = {[1]=parameters[value]}
             end
@@ -266,6 +275,10 @@ allowedParameterKeys["overrideFunction"] =true
 allowedParameterKeys["alternateParameters"] =true
 allowedParameterKeys["computerOnly"] =true
 allowedParameterKeys["humanOnly"] =true
+allowedParameterKeys["onlyBuildCoastal"] =true
+allowedParameterKeys["onlyBuildShips"] =true
+allowedParameterKeys["onlyBuildHydroPlant"] =true
+
 
 -- does rudimentary checks to make sure the parameter tables are formatted correctly
 --  
@@ -278,7 +291,7 @@ local function parameterTableErrorCheck(parameterTable,pTableName)
         end
         for entryIndex,__ in pairs(entry) do
             if not allowedParameterKeys[entryIndex] then
-                print(pTableName.." entry "..tostring(index).." has invalid parameter: "..entryIndex)
+                --print(pTableName.." entry "..tostring(index).." has invalid parameter: "..entryIndex)
                 throwError = true
             end
         end
@@ -430,9 +443,9 @@ local function parametersSatisfied(defaultBuildFunction,city,item,itemParameters
         end
     end
     if itemParameters.allImprovements then
-        if type(itemParameters.allImprovements)~="table" then
-            print(itemParameters.allImprovements.name)
-        end
+        --if type(itemParameters.allImprovements)~="table" then
+        --    print(itemParameters.allImprovements.name)
+        --end
         for __,improvementOrWonder in pairs(itemParameters.allImprovements) do
             if civ.isWonder(improvementOrWonder) then
                 if city ~= improvementOrWonder.city then
@@ -529,6 +542,15 @@ local function parametersSatisfied(defaultBuildFunction,city,item,itemParameters
         return false
     end
     if itemParameters.latestTurn and civ.getTurn() > itemParameters.latestTurn then
+        return false
+    end
+    if itemParameters.onlyBuildCoastal and not gen.isBuildCoastal(city) then
+        return false
+    end
+    if itemParameters.onlyBuildShips and not gen.isBuildShips(city) then
+        return false
+    end
+    if itemParameters.onlyBuildHydroPlant and not gen.isBuildHydroPlant(city) then
         return false
     end
     if itemParameters.allWonders then

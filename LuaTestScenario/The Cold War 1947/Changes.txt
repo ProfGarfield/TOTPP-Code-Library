@@ -1,0 +1,24 @@
+Changes 8/11/20
+
+-Attempted to make 
+-Removed tech-specific stuff from Pro-East/Pro-West to allow China to have its own unique tech path
+
+-Need to revisit the following techs:
+
+Met
+Min
+Rec
+Ref
+Feu
+
+X4
+X5
+X6
+X7
+
+Fli - save
+
+-Removed Pakistani Infantry - want to use some sort of pirate vessel instead
+
+
+-

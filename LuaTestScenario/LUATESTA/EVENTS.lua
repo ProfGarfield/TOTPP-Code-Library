@@ -22,9 +22,18 @@ local func = require "functions"
 local map = require("map")
 gen = require("generalLibrary")
 local flag = require("flags")
+--gen.noGlobal()
 local kw = require("killWarrior")
 local text = require("text")
 local customMusic = require("customMusic")
+
+--local tribeEvents = nil
+--if civ.getTribe(1).isHuman or civ.getTribe(2).isHuman or civ.getTribe(3).isHuman then
+--    tribeEvents = require("tribeA")
+--else
+--
+--    tribeEvents = require("tribeB")
+--end
 local state = {}
 state.flagTable = state.flagTable or  {}
 
@@ -159,6 +168,9 @@ local oneLineMenuText = "Choose an option."
 local threeLineMenuText ="Choose\n^an\n^option."
 
 local polygonTable = {}
+
+local deadUnit = nil
+local deadUnitLoc = nil
 
 --Text to show and tech to give (amphibious warfare) when warriors killed
 local WarriorsKilled = {
@@ -372,7 +384,7 @@ text.linkState(state.textTable)
      return civlua.serialize(state) end) 
  civ.scen.onScenarioLoaded(function ()
      --civ.ui.text("civ.scen.onScenarioLoaded")
-     civ.playMusic(musicFolder.."\\FlyingFortress.wav")
+        --tribeEvents.onScenarioLoaded()
      --civ.sleep(45000)
      --civ.playSound("Barracks.wav")
      --civ.playMusic(musicFolder.."\\Giuseppe.mp3")

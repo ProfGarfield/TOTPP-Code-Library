@@ -53,6 +53,10 @@
 --  text.simpleTabTableToText(tabulationData,title="",borderWidth=4) --> string | Knighttime Contribution
 --  text.tabulationMenu(tabMenuTable,menuText,menuTitle,canCancel,menuPage=1)-->integer | Knighttime Contribution
 --  text.checkboxMenu(checkboxTable,menuText,menuTitle,menuPage=1)
+--  text.groupDigits(integer)-->string
+--  text.setDigitGroupSeparator(string)-->void
+--  text.money(amount) --> string
+--  text.setMoney(string)-->void
 --
 -- Control Sequences:
 -- "%PAGEBREAK"
@@ -1088,6 +1092,76 @@ local function checkboxMenu(checkboxNameTable,checkboxStatusTable,menuText,menuT
     end
 end
 text.checkboxMenu = checkboxMenu
+
+
+
+
+local digitGroupSeparator = ","
+
+--  text.groupDigits(integer)-->string
+--  takes floor of number, and adds a digit group
+--  separator to split the integer, ie
+--  12345 becomes 12,345
+local function groupDigits(amount)
+    local function addSeparator(numString,group)
+        group = group or string.len(numString)//3
+        if group <= 0 then
+            return numString
+        else
+            return addSeparator(numString:sub(1,-3*group+1)..digitGroupSeparator..numString:sub(-3*group,-1),group-1)
+        end
+    end
+    return addSeparator(tostring(amount))
+end
+text.groupDigits = groupDigits
+
+
+--  text.setDigitGroupSeparator(string)-->void
+--  sets the digit group separator
+--  default digit group separator is ","
+--  For no digit group separator, use ""
+local function setDigitGroupSeparator(string)
+    if type(string) ~= "string" then
+        error("text.setDigitGroupSeparator: must have a string (even empty string) as an argument.")
+    end
+    digitGroupSeparator = string
+end
+--
+--
+local moneyConvert = "%STRING1 Gold"
+
+--  text.money(amount) --> string
+--  converts an integer to an appropriate string denoting money
+local function money(amount)
+    if type(moneyConvert) == "string" then
+        return text.substitute(moneyConvert,{text.groupDigits(amount)})
+    else
+        return moneyConvert(amount)
+    end
+end
+text.money = money
+
+
+--  text.setMoney(string)-->void
+--  sets the method of conversion of an integer to a money amount
+--  text.money will subsitute %STRING1 for the money amount,
+--  with digit separators added, and return the string
+
+local function setMoney(convertString)
+    if type(convertString) ~= "string" then
+        error("text.setMoney: must be given a string as an argument.")
+    end
+    moneyConvert = convertString
+end
+
+
+
+
+
+
+
+
+
 
 return text
 

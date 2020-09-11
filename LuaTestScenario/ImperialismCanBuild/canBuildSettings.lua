@@ -141,6 +141,16 @@ local canBuildFunctions = require("canBuild")
 --          (in conjunction with alternateParameters, this can be used to have different conditions for the
 --          ai and human players)
 --
+--      .onlyBuildCoastal = bool or nil
+--          if true, the item can only be built if the city has the 'coastal' flag,
+--          that is, in the default game it could build harbors and offshore platforms
+--      .onlyBuildShips = bool or nil
+--          if true, the item can only be built if the city has the 'ship building' flag
+--          that is, in the default game it could build sea units
+--      .onlyBuildHydroPlant = bool or nil
+--          if true, the item can only be built if the city has the 'can build hydro plant' flag
+--          that is, the city could build hydro plants in the default game
+--
 --
 
 local britishHomeCities = {--[[britain]]{287,35},{286,38},{283,39},{284,34},{285,29},{283,25},
@@ -201,6 +211,10 @@ local wonderBuild = {}
 wonderBuild[object.wDiplomaticCorps.id] = {allImprovements=object.iCapital}
 -- Imperial Powers can only be constructed in a capital, or where the Kremlin is (
 wonderBuild[object.wImperialPowers.id] = {someImprovements={object.iCapital,object.wKremlin},numberOfImprovements=1}
+-- no particular reason for this restriction, other than testing
+--wonderBuild[object.wArmsRace.id] = {overrideDefaultBuildFunction=true,onlyBuildHydroPlant=true}
+--wonderBuild[object.wArmsRace.id] = {overrideDefaultBuildFunction=true,onlyBuildCoastal=true}
+wonderBuild[object.wArmsRace.id] = {overrideDefaultBuildFunction=true,onlyBuildShips=true}
 
 canBuildFunctions.supplyUnitTypeParameters(unitTypeBuild)
 canBuildFunctions.supplyImprovementParameters(improvementBuild)

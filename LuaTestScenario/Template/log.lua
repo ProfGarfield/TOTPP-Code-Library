@@ -29,7 +29,7 @@
 -- log.configure.improvementProduction(improvement,maxReports)
 
 
-text = require("text")
+local text = require("text")
 
 local log = {}
 

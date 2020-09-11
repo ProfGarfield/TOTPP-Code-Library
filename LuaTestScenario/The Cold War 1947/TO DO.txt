@@ -1,0 +1,26 @@
+NECESSARY STEPS TO COMPLETE THE SCENARIO
+
+
+EVENTS:
+-Purchase Unit Event (need seller to set conditions and buyer to purchase.  Should default to middle ground to accomodate SP game, and randomly change in SP only).
+
+-Sub Slips By Event (key press brings up button that asks if sub should teleport 3 spaces E, W, N, S to prevent players from blocking straits).
+-SALT treaty (should limit # of nuclear weapons tribes can possess with penalty for possessing more if signatory, and benefit to possessing same or less if signatory).
+
+
+-Rebel Spawn Event (Perhaps based on regions or perhaps just a table.  Can purchase units on tiles of choice).
+
+-Pressing button brings up dialogue box for Tier #1
+Tier I - REGION (Asia [option1], Latin America [option2], Africa [option3]) - selecting option brings you to tier II
+Tier II - Area (ex. Vietnam, Indonesia, Phillipeans) - slection option brings you to tier III
+Tier III - Effort Level (ex. high, medium, low)
+
+high has higher cost but gives most units/better units
+medium has mid cost and gives average units
+low has low cost and gives weak units and less of them
+
+probably in SP, want to have this also spawn opposing forces.  
+
+low will spawn comparable # of opposition
+mid will spawn slightly less opposition
+high will spawn very much less opposition
