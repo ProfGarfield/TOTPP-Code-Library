@@ -278,8 +278,6 @@
 -- gen.noGlobal()
 -- gen.linkState(stateTable)
 -- gen.getState()-->table
--- gen.cityRadiusTiles(cityOrTileOrCoordTable) --> table
--- gen.getTilesInRadius(centre,radius,minRadius=0,maps=nil) --> table
 
 --
 -- FUNCTION IMPLEMENTATIONS
@@ -525,7 +523,7 @@ function gen.declareMapFlat()
 end
 
 -- gen.declareMapRound()-->void
-function gen.declareMapRound()
+function gen.delcareMapRound()
     flatMap = false
 end
 
@@ -2483,14 +2481,14 @@ local function getAdjacentTiles(tile)
                 civ.getTile(xVal-1,yVal-1,zVal),}
     else
         local xMax,yMax,zMax = civ.getMapDimensions()
-        return {civ.getTile((xVal-2)%xMax,yVal,zVal),
-                civ.getTile((xVal-1)%xMax,yVal+1,zVal),
-                civ.getTile((xVal)%xMax,yVal+2,zVal),
-                civ.getTile((xVal+1)%xMax,yVal+1,zVal),
-                civ.getTile((xVal+2)%xMax,yVal,zVal),
-                civ.getTile((xVal+1)%xMax,yVal-1,zVal),
-                civ.getTile((xVal)%xMax,yVal-2,zVal),
-                civ.getTile((xVal-1)%xMax,yVal-1,zVal),}
+        return {civ.getTile(xVal%xMax-2,yVal,zVal),
+                civ.getTile(xVal%xMax-1,yVal+1,zVal),
+                civ.getTile(xVal%xMax,yVal+2,zVal),
+                civ.getTile(xVal%xMax+1,yVal+1,zVal),
+                civ.getTile(xVal%xMax+2,yVal,zVal),
+                civ.getTile(xVal%xMax+1,yVal-1,zVal),
+                civ.getTile(xVal%xMax,yVal-2,zVal),
+                civ.getTile(xVal%xMax-1,yVal-1,zVal),}
     end
 end
 gen.getAdjacentTiles = getAdjacentTiles
@@ -2724,210 +2722,6 @@ function gen.getState()
     return state
 end
 
--- gen.cityRadiusTiles(cityOrTileOrCoordTable) --> table
---  returns a table of tiles around a center tile, the 
---  size of a city 'footprint'.  The indices are listed below
---  and are based on how city.workers determines which tiles
---  are worked
---
---      
---
---      #       #       #       #       #
---          #       #       #       #       #
---      #       #       #       #       #
---          #       20      13      #       #
---      #       12      8       9       #
---          19      7       1       14      #
---      #       6       21      2       #
---          18      5       3       15      #
---      #       11      4       10      #
---          #       17      16      #       #
---      #       #       #       #       #
---          #       #       #       #       #
---
---
-function gen.cityRadiusTiles(input)
-    if civ.isCity(input) then
-        input = input.location
-    end
-    local tile = toTile(input)
-    local xVal = tile.x
-    local yVal = tile.y
-    local zVal = tile.z
-    if flatMap then
-        return {
-        [1] = civ.getTile(xVal+1,yVal-1,zVal),
-        [2] = civ.getTile(xVal+2,yVal,zVal),
-        [3] = civ.getTile(xVal+1,yVal+1,zVal),
-        [4] = civ.getTile(xVal,yVal+2,zVal),
-        [5] = civ.getTile(xVal-1,yVal+1,zVal),
-        [6] = civ.getTile(xVal-2,yVal,zVal),
-        [7] = civ.getTile(xVal-1,yVal-1,zVal),
-        [8] = civ.getTile(xVal,yVal-2,zVal),
-        [9] = civ.getTile(xVal+2,yVal-2,zVal),
-        [10] = civ.getTile(xVal+2,yVal+2,zVal),
-        [11] = civ.getTile(xVal-2,yVal+2,zVal),
-        [12] = civ.getTile(xVal-2,yVal-2,zVal),
-        [13] = civ.getTile(xVal+1,yVal-3,zVal),
-        [14] = civ.getTile(xVal+3,yVal-1,zVal),
-        [15] = civ.getTile(xVal+3,yVal+1,zVal),
-        [16] = civ.getTile(xVal+1,yVal+3,zVal),
-        [17] = civ.getTile(xVal-1,yVal+3,zVal),
-        [18] = civ.getTile(xVal-3,yVal+1,zVal),
-        [19] = civ.getTile(xVal-3,yVal-1,zVal),
-        [20] = civ.getTile(xVal-1,yVal-3,zVal),
-        [21] = civ.getTile(xVal,yVal,zVal),
-        }
-    else
-        local width,height,maps = civ.getMapDimensions()
-        return {
-        [1] = civ.getTile((xVal+1)%width,yVal-1,zVal),
-        [2] = civ.getTile((xVal+2)%width,yVal,zVal),
-        [3] = civ.getTile((xVal+1)%width,yVal+1,zVal),
-        [4] = civ.getTile((xVal)%width,yVal+2,zVal),
-        [5] = civ.getTile((xVal-1)%width,yVal+1,zVal),
-        [6] = civ.getTile((xVal-2)%width,yVal,zVal),
-        [7] = civ.getTile((xVal-1)%width,yVal-1,zVal),
-        [8] = civ.getTile((xVal)%width,yVal-2,zVal),
-        [9] = civ.getTile((xVal+2)%width,yVal-2,zVal),
-        [10] = civ.getTile((xVal+2)%width,yVal+2,zVal),
-        [11] = civ.getTile((xVal-2)%width,yVal+2,zVal),
-        [12] = civ.getTile((xVal-2)%width,yVal-2,zVal),
-        [13] = civ.getTile((xVal+1)%width,yVal-3,zVal),
-        [14] = civ.getTile((xVal+3)%width,yVal-1,zVal),
-        [15] = civ.getTile((xVal+3)%width,yVal+1,zVal),
-        [16] = civ.getTile((xVal+1)%width,yVal+3,zVal),
-        [17] = civ.getTile((xVal-1)%width,yVal+3,zVal),
-        [18] = civ.getTile((xVal-3)%width,yVal+1,zVal),
-        [19] = civ.getTile((xVal-3)%width,yVal-1,zVal),
-        [20] = civ.getTile((xVal-1)%width,yVal-3,zVal),
-        [21] = civ.getTile((xVal)%width,yVal,zVal),
-        }
-    end
-end
-
-    
-
--- gen.getTilesInRadius(centre,radius,minRadius=0,maps=nil) --> table
---      produces a table of nearby tiles to centre,
---      lower index means closer tile (or, same distance),
---      not counting z axis if multiple maps are used
---      starts at 1, no missing indices (if a tile doesn't exist, there
---      won't be an empty entry, the next tile will use that entry)
---      centre = a tile or table of coordinates 
---          central til around which we will find tiles
---      radius = integer
---          is the distance (in tiles, not coordinates) from the centre to the furthest
---          tiles desired
---      minRadius = integer
---          is the distance in tiles from the centre for the nearest tile to be
---          included (e.g. if you don't want centre itself, set minRadius to 1, if you
---          want a ring only, set minRadius to radius)
---      maps = nil or integer in 0-3 or table of integers
---          if nil, only get tiles from the map that centre is on
---          if integer, only get tiles from that map
---          if table of integers, tiles from all maps listed
---          e.g. {1,3} means get tiles from maps 1 and 3
---
---      
-function gen.getTilesInRadius(centre,radius,minRadius,maps)
-    centre = toTile(centre)
-    local cX,cY,cZ = centre.x,centre.y,centre.z
-    minRadius = minRadius or 0
-    local doMap = {}
-    if type(allMaps) == "number" then
-        doMap[maps] = true
-    elseif type(maps) == "table" then
-        for __,mapNumber in pairs(maps) do
-            doMap[mapNumber] = true
-        end
-    else
-        doMap[centre.z] = true
-    end
-    local function addTileRing(centreX,centreY,rad,map,table,firstUnusedIndex,width) --> next unused index
-        local index = firstUnusedIndex
-        local twoDist = 2*rad
-        if flatMap then
-            for i=1,twoDist do
-                local nextTile = civ.getTile(centreX+i,centreY+twoDist-i,map)
-                if nextTile then
-                    table[index] = nextTile
-                    index= index+1
-                end
-            end
-            for i=1,twoDist do
-                local nextTile = civ.getTile(centreX+twoDist-i,centreY-i,map)
-                if nextTile then
-                    table[index] = nextTile
-                    index= index+1
-                end
-            end
-            for i=1,twoDist do
-                local nextTile = civ.getTile(centreX-i,centreY-twoDist+i,map)
-                if nextTile then
-                    table[index] = nextTile
-                    index= index+1
-                end
-            end
-            for i=1,twoDist do
-                local nextTile = civ.getTile(centreX-twoDist+i,centreY+i,map)
-                if nextTile then
-                    table[index] = nextTile
-                    index= index+1
-                end
-            end
-        else
-            for i=1,twoDist do
-                local nextTile = civ.getTile((centreX+i)%width,centreY+twoDist-i,map)
-                if nextTile then
-                    table[index] = nextTile
-                    index= index+1
-                end
-            end
-            for i=1,twoDist do
-                local nextTile = civ.getTile((centreX+twoDist-i)%width,centreY-i,map)
-                if nextTile then
-                    table[index] = nextTile
-                    index= index+1
-                end
-            end
-            for i=1,twoDist do
-                local nextTile = civ.getTile((centreX-i)%width,centreY-twoDist+i,map)
-                if nextTile then
-                    table[index] = nextTile
-                    index= index+1
-                end
-            end
-            for i=1,twoDist do
-                local nextTile = civ.getTile((centreX-twoDist+i)%width,centreY+i,map)
-                if nextTile then
-                    table[index] = nextTile
-                    index= index+1
-                end
-            end
-        end
-        -- the central tile won't be captured above
-        if rad==0 then
-            local nextTile = civ.getTile(centreX,centreY,map)
-            if nextTile then
-                table[index] = nextTile
-                index= index+1
-            end
-        end
-        return index
-    end
-    local mapWidth,mapHeight,numberOfMaps = civ.getMapDimensions()
-    local tableOfTiles = {}
-    local nextIndex = 1
-    for rad = minRadius,radius do
-        for z = 0,numberOfMaps-1 do
-            if doMap[z] then
-                nextIndex= addTileRing(cX,cY,rad,z,tableOfTiles,nextIndex,mapWidth)
-            end
-        end
-    end
-    return tableOfTiles               
-end
 
 
 
