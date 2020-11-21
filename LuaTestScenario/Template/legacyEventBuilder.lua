@@ -50,7 +50,7 @@ local function buildLegacyEvents(writeTextFile,showEventParsed,eventTextFileName
     console={}
     currentFolder = currentFolder or string.gsub(eventsPath,"legacyEventBuilder.lua","")
     
-    local civlua=require("civlua")
+    local civlua=require("civluaModified")
     
     local atIfOpen=false
     local atAndOpen=false

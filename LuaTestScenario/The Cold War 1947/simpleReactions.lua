@@ -6,8 +6,8 @@
 --  You should probably require (or copy, but using require is better so you only have to make
 --  changes in one place) your table of unit types.
 --  e.g.
---  local object = require("object")
-local unitAliases = require("unitAliases")
+local object = require("object")
+--local unitAliases = require("unitAliases")
 --
 --  You will need the reactionBase module
 local reactionBase = require("reactionBase")
@@ -232,124 +232,29 @@ local reactInfo = {}
 --
 local carrierList = 
 {
-unitAliases.Akagi			,
-unitAliases.Kaga			,
-unitAliases.Hiryu			,
-unitAliases.Soryu			,
-unitAliases.Yorktown		,
-unitAliases.Enterprise		,
-unitAliases.Hornet			,
+object.uCarrier			,
+object.uNPCarrier		,
+
 }
 
-reactInfo[unitAliases.Zero.id] = {reactionsPerTurn = 2,
+reactInfo[object.uMiG15.id] = {reactionsPerTurn = 2,
 details={
-    {triggerUnitTypes = {unitAliases.B17,unitAliases.B26,unitAliases.SB2U,unitAliases.SBD,unitAliases.TBD,unitAliases.PBY}, forbiddenUnitTypesOnTileReactionUnit = carrierList,
+    {triggerUnitTypes = {object.uStrategicBomber}, forbiddenUnitTypesOnTileReactionUnit = carrierList,
     reactionRange = 3, hitChance = 0.75, damageSchedule = gen.makeThresholdTable({[0]=8,[0.5]=6,[0.7]=4,[0.9]=2}),
     destroyMunitionsWithKill = true,
     },-- close reactionDetail 1
-    {triggerUnitTypes = {unitAliases.F2A}, forbiddenUnitTypesOnTileReactionUnit = carrierList,
-    reactionRange = 3, hitChance = 0.5, damageSchedule = gen.makeThresholdTable({[0]=7,[0.3]=6,[0.7]=5,[0.9]=2}),
-    destroyMunitionsWithKill = true,
-    },-- close reactionDetail 2
-	{triggerUnitTypes = {unitAliases.F4F}, forbiddenUnitTypesOnTileReactionUnit = carrierList,
-    reactionRange = 3, hitChance = 0.25, damageSchedule = gen.makeThresholdTable({[0]=6,[0.05]=5,[0.3]=4,[0.9]=2}),
-    destroyMunitionsWithKill = true,
-    },-- close reactionDetail 3
+   
 },-- close details key
 }--close reactionInformation for the Zero
 
-reactInfo[unitAliases.F2A.id] = {reactionsPerTurn = 1,
-details={
-    {triggerUnitTypes = {unitAliases.KateTorp,unitAliases.KateBomb,unitAliases.Val,unitAliases.Scout}, forbiddenUnitTypesOnTileReactionUnit = carrierList,
-    reactionRange = 2, hitChance = 0.8, damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=5,[0.5]=4,[0.9]=3}),
-    destroyMunitionsWithKill = true,
-    },-- close reactionDetail 1
-    {triggerUnitTypes = {unitAliases.Zero}, forbiddenUnitTypesOnTileReactionUnit = carrierList,
-    reactionRange = 2, hitChance = 0.25, damageSchedule = gen.makeThresholdTable({[0]=5,[0.05]=4,[0.3]=3,[0.9]=2}),
-    destroyMunitionsWithKill = true,
-    },-- close reactionDetail 2
-	
-    
-},-- close details key
-}--close reactionInformation for the F2A
 
-reactInfo[unitAliases.F4F.id] = {reactionsPerTurn = 2,
-details={
-    {triggerUnitTypes = {unitAliases.KateTorp,unitAliases.KateBomb,unitAliases.Val,unitAliases.Scout}, forbiddenUnitTypesOnTileReactionUnit = carrierList,
-    reactionRange = 3, hitChance = 0.75, damageSchedule = gen.makeThresholdTable({[0]=8,[0.5]=4,[0.7]=2,[0.9]=1}),
-    destroyMunitionsWithKill = true,
-    },-- close reactionDetail 1
-    {triggerUnitTypes = {unitAliases.Zero}, forbiddenUnitTypesOnTileReactionUnit = carrierList,
-    reactionRange = 3, hitChance = 0.25, damageSchedule = gen.makeThresholdTable({[0]=8,[0.05]=6,[0.3]=4,[0.9]=2}),
-    destroyMunitionsWithKill = true,
-    },-- close reactionDetail 2
-	
-    
-},-- close details key
-}--close reactionInformation for the F4F
-
-reactInfo[unitAliases.AAA.id] = {reactionsPerTurn = 3,
-details={
-    {triggerUnitTypes = {unitAliases.KateTorp,unitAliases.KateBomb,unitAliases.Val,unitAliases.Scout},
-    reactionRange = 4, hitChance = 0.5, damageSchedule = gen.makeThresholdTable({[0]=5,[0.75]=10,[0.95]=4}),
-    destroyMunitionsWithKill = true,
-    },-- close reactionDetail 1
-    {triggerUnitTypes = {unitAliases.Zero},
-    reactionRange = 4, hitChance = 0.25, damageSchedule = gen.makeThresholdTable({[0]=4,[0.75]=6,[0.95]=2}),
-    destroyMunitionsWithKill = true,
-    },-- close reactionDetail 2
-	
-    
-},-- close details key
-}--close reactionInformation for the AAA
-
-reactInfo[unitAliases.CoastalArt.id] = {reactionsPerTurn = 3,
-details={
-    {triggerUnitTypes = {unitAliases.BCJPN,unitAliases.CAJPN},
-    reactionRange = 8, hitChance = 0.75, damageSchedule = gen.makeThresholdTable({[0]=10,[0.25]=8,[0.75]=5,[0.95]=20}),
-    destroyMunitionsWithKill = true,
-    },-- close reactionDetail 1
-    {triggerUnitTypes = {unitAliases.CLJPN,unitAliases.DDJPN},
-    reactionRange = 8, hitChance = 0.40, damageSchedule = gen.makeThresholdTable({[0]=10,[0.25]=8,[0.75]=5,[0.95]=20}),
-    destroyMunitionsWithKill = true,
-    },-- close reactionDetail 2
-	
-    
-},-- close details key
-}--close reactionInformation for the CoastalArt
-
-reactInfo[unitAliases.DDJPN] = {reactionsPerTurn = 1,
-details={
-    {triggerUnitTypes = {unitAliases.SSUSA}, 
-    reactionRange = 2, hitChance = 0.75, damageSchedule = gen.makeThresholdTable({[0]=10,[0.25]=8,[0.75]=5,[0.95]=20}),
-    destroyMunitionsWithKill = true,
-    },-- close reactionDetail 1
-        
-},-- close details key
-}--close reactionInformation for the DDJPN
-
-reactInfo[unitAliases.DDUSA] = {reactionsPerTurn = 1,
-details={
-    {triggerUnitTypes = {unitAliases.SSJPN}, 
-    reactionRange = 2, hitChance = 0.75, damageSchedule = gen.makeThresholdTable({[0]=10,[0.25]=8,[0.75]=5,[0.95]=20}),
-    destroyMunitionsWithKill = true,
-    },-- close reactionDetail 1
-        
-},-- close details key
-}--close reactionInformation for the DDUSA
 
 local damagedCarrierList =
 {
-unitAliases.BurningAkagi	,
-unitAliases.BurningKaga		,
-unitAliases.BurningHiryu	,
-unitAliases.BurningSoryu	,
-unitAliases.BurningYorktown		,
-unitAliases.BurningEnterprise	,
-unitAliases.BurningHornet		,
+
 }
 -- this was inserted to test unit demotion (using globalDoReaction) from the console using aircraft carriers
--- and other stuff not anticipated to be needed for Midway
+--[[ and other stuff not anticipated to be needed for Midway
 local allLandTypes = {}
 for i=0,15 do allLandTypes[i]=0 end allLandTypes[10]=nil
 reactInfo[unitAliases.KateTorp.id] = {reactionsPerTurn = 3, --moneyCost = 20, minTreasury = 20, protectedTreasury = 10,
@@ -369,7 +274,7 @@ details = { {triggerUnitTypes = carrierList, forbiddenUnitTypesOnTileReactionUni
             destroyMunitionsWithKill = true
             },-- close reactionDetail 2
         },--close details key
-}-- close reactionInformation for the KateTorp
+}-- close reactionInformation for the KateTorp]]
 
 
 

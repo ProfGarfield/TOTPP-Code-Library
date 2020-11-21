@@ -42,6 +42,7 @@ unitAliases.Torpedo				= civ.getUnitType(110)
 --unitAliases.DefensiveFire = civ.getUnitType(110)
 -- Set transporter setting.  Can probably be removed after a game is saved after the script is loaded, but it should not hurt to keep it
 --unitAliases.DefensiveFire.nativeTransport = 0 (I could not get this to work - JPP)
+unitAliases.DepthCharge         = civ.getUnitType(48)
 
 unitAliases.USAAFAce			= civ.getUnitType(112)
 unitAliases.RAFAce			    = civ.getUnitType(113)
@@ -148,5 +149,7 @@ unitAliases.AlliedArmyGroup     = civ.getUnitType(74)
 unitAliases.AlliedBatteredArmyGroup = civ.getUnitType(75)
 unitAliases.constructionTeam    = civ.getUnitType(1)
 unitAliases.neutralTerritory = civ.getUnitType(106)
+unitAliases.BarrageBalloons = civ.getUnitType(49)
+unitAliases.BarrageBalloon = unitAliases.BarrageBalloons
 
 return unitAliases

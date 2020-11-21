@@ -17,7 +17,7 @@ local previousUnit = nil
 local previousUnitDestination = nil
 local pathfind = require("pathfind")
 
-local trainCanCrossTerrain = {
+local trainCanCrossTerrainDay = {
     [0]=true,
     [1]=true,
     [4]=true,
@@ -27,6 +27,20 @@ local trainCanCrossTerrain = {
     [12]=true,
     [13]=true,
     [14]=true,
+}
+
+local trainCanCrossTerrainNight = {
+   [0]=true,
+   [1]=true,
+   [4]=true,
+   --[8] = true,
+   [9]=true,
+   [10]=true,
+   [12]=true,
+   [14]=true,
+   [15]=true,
+
+
 }
 -- trainGoto
 -- sets the unit's goto order to 1 square beyond its 
@@ -46,6 +60,12 @@ local function trainGotoGuts(unit,destination)
     end
     previousUnit = nil
     previousUnitDestination = nil
+    local trainCanCrossTerrain = nil
+    if unit.location.z == 0 then
+        trainCanCrossTerrain = trainCanCrossTerrainDay
+    else
+        trainCanCrossTerrain = trainCanCrossTerrainNight
+    end
     local pathTable = pathfind.breadthFirstSearchFixedCost(unit.location,{destination},trainCanCrossTerrain,{})
     if pathTable and pathTable[1] then 
         -- a path to the destination was found, get the tile 1 square beyond the maximum movement allowance

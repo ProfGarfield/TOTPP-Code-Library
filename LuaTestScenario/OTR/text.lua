@@ -53,6 +53,10 @@
 --  text.simpleTabTableToText(tabulationData,title="",borderWidth=4) --> string | Knighttime Contribution
 --  text.tabulationMenu(tabMenuTable,menuText,menuTitle,canCancel,menuPage=1)-->integer | Knighttime Contribution
 --  text.checkboxMenu(checkboxTable,menuText,menuTitle,menuPage=1)
+--  text.groupDigits(integer)-->string
+--  text.setDigitGroupSeparator(string)-->void
+--  text.money(amount) --> string
+--  text.setMoney(string)-->void
 --
 -- Control Sequences:
 -- "%PAGEBREAK"
@@ -87,11 +91,6 @@ local text={}
 -- textState allows this module to access the state table
 local textState = "notLinked"
 
--- default number of lines/options to show in a text window
-local linesPerWindow = 12 
-
--- Window must be able to display this many lines if necessary
-local minimumLinesPerWindow = 8
 
 -- text.linkState(tableInState) --> void
 -- links the state table to this module
@@ -115,25 +114,25 @@ local function linkState(tableInState)
     for i=0,7 do
         textState.pendingMessages[i] = textState.pendingMessages[i] or {}
     end
-    textState.linesPerWindow = textState.linesPerWindow or {}
-    for i=0,7 do
-        textState.linesPerWindow[i] = textState.linesPerWindow[i] or linesPerWindow
-    end
 
 end
 text.linkState = linkState
 
+-- Maximum number of lines/options to show in a text window
+local linesPerWindow = 12
 
---  text.setLinesPerWindow(integer,tribe=currentPlayerTribe)--> void
--- Set the lines per window for the active tribe (or a tribe)
-local function setLinesPerWindow(integer,tribe)
-    local tribeID = (tribe or civ.getPlayerTribe()).id
-    textState.linesPerWindow[tribeID] = math.max(math.floor(integer),minimumLinesPerWindow)
+-- Window must be able to display this many lines if necessary
+local minimumLinesPerWindow = 8
+
+--  text.setLinesPerWindow(integer)--> void
+-- Set the lines per window
+local function setLinesPerWindow(integer)
+    linesPerWindow = math.max(math.floor(integer),minimumLinesPerWindow)
 end
 text.setLinesPerWindow = setLinesPerWindow
 
 local function getLinesPerWindow()
-    return textState.linesPerWindow[civ.getPlayerTribe().id]
+    return linesPerWindow
 end
 text.getLinesPerWindow = getLinesPerWindow
 
@@ -150,7 +149,6 @@ text.getLinesPerWindow = getLinesPerWindow
 -- to a manageable size
 -- This can be improved by counting characters and font sizes
 local function linesInText(string)
-    local linesPerWindow = getLinesPerWindow()
     local linesSoFar = 1
     -- if very first character in the string is a newline, don't count that as a line
     -- (i.e. subtract 1)
@@ -167,7 +165,6 @@ end
 -- Takes a string, and splits it into two strings if it is too long
 -- for a single window.  If the string fits in one window, the second return value is nil
 local function splitTextForWindow(string,maxLines)
-    local linesPerWindow = getLinesPerWindow()
     maxLines = maxLines or linesPerWindow
     local firstPageBreakStart,firstPageBreakEnd = string.find(string,pageBreakControl)
     firstPageBreakStart = firstPageBreakStart or math.huge -- allows for simple comparison check
@@ -224,7 +221,6 @@ text.addMultiLineTextToDialog = addMultiLineTextToDialog
 --  If a table of strings is input, each string is shown in
 --  order starting at tableOfStrings[1]
 local function simple(stringOrTable,boxTitle)
-    local linesPerWindow = getLinesPerWindow()
     boxTitle = boxTitle or ""
     if type(stringOrTable)=="string" then
         local remainingString = stringOrTable
@@ -388,7 +384,6 @@ text.displayAccumulatedMessages = displayAccumulatedMessages
 --           if false, there is no cancel option
 -- menuPage is the "page" of the menu that is to be opened
 local function menu(menuTable,menuText,menuTitle,canCancel, menuPage)
-    local linesPerWindow = getLinesPerWindow()
     local menuTextLines = linesInText(menuText)
     menuTitle = menuTitle or ""
     menuPage = menuPage or 1
@@ -480,7 +475,6 @@ local function displayArchivedMessage(archivedMessage,archivePage,displayArchive
     archiveMessage = archiveMessage or "Choose a message to review."
     archivePage = archivePage or 1
     showHidden = showHidden or false
-    local linesPerWindow = getLinesPerWindow()
     tribe = tribe or civ.getCurrentTribe()
     simple(archivedMessage.messageBody,archivedMessage.messageTitle)
     repeat
@@ -550,7 +544,6 @@ text.displayArchivedMessage = displayArchivedMessage
 -- tribe chooses the archive to open, active tribe by default
 --
 local function openArchive(archiveTitle,archiveMessage,archivePage,showHidden,tribe)
-    local linesPerWindow = getLinesPerWindow()
     archiveTitle = archiveTitle or "Archived Messages"
     archiveMessage = archiveMessage or "Choose a message to review."
     archivePage = archivePage or 1
@@ -781,7 +774,6 @@ text.copyTableAsText = copyTableAsText
 --          columns are left alligned
 --
 local function simpleTabulation(tabulationData,title,borderWidth,page)
-    local linesPerWindow = getLinesPerWindow()
     title = title or ""
     page = page or 1
     borderWidth = borderWidth or 4
@@ -849,7 +841,6 @@ text.simpleTabulation=simpleTabulation
 --          columns are left aligned
 
 local function simpleTabTableToText(tabulationData,title,borderWidth)
-    local linesPerWindow = getLinesPerWindow()
     title = title or ""
     borderWidth = borderWidth or 4
     local columnTable = {}
@@ -890,7 +881,6 @@ text.simpleTabTableToText = simpleTabTableToText
 --          columns are left aligned
 
 local function tabulationMenu(tabMenuTable,menuText,menuTitle,canCancel,menuPage)
-    local linesPerWindow = getLinesPerWindow()
     menuPage = menuPage or 1
     if tabMenuTable[0] then
         error("text.tabulationMenu, tabMenuTable (arg 1) can't have an entry in key 0."..
@@ -933,7 +923,6 @@ text.tabulationMenu = tabulationMenu
 local function tabulationWithOptions(dataTable,columnTable,title,borderWidth,headerRows,
                 firstPagePreviousSubstitute,lastPageCloseSubstitute,regPageExtraOptionsTable,
                 lastPageExtraOptionsTable,page)
-                local linesPerWindow = getLinesPerWindow()
     title = title or ""
     page = page or 1
     borderWidth = borderWidth or 4
@@ -1049,7 +1038,6 @@ text.tabulationWithOptions=tabulationWithOptions
 --
 
 local function checkboxMenu(checkboxNameTable,checkboxStatusTable,menuText,menuTitle,menuPage)
-    local linesPerWindow = getLinesPerWindow()
     local menuTextLines = linesInText(menuText)
     menuTitle = menuTitle or ""
     menuPage = menuPage or 1
@@ -1105,21 +1093,80 @@ local function checkboxMenu(checkboxNameTable,checkboxStatusTable,menuText,menuT
 end
 text.checkboxMenu = checkboxMenu
 
+
+
+
+local digitGroupSeparator = ","
+
+--  text.groupDigits(integer)-->string
+--  takes floor of number, and adds a digit group
+--  separator to split the integer, ie
+--  12345 becomes 12,345
+local function groupDigits(amount)
+    amount = math.floor(amount)
+    local numString = tostring(amount)
+    
+    local function addSeparator(numString)
+        local digits = string.len(numString)
+        if digits <= 3 then
+            return numString
+        elseif digits % 3 > 0 then
+            return numString:sub(1,digits % 3)..digitGroupSeparator..addSeparator(numString:sub(digits%3 +1))
+        else
+            return numString:sub(1,3)..digitGroupSeparator..addSeparator(numString:sub(4))
+        end
+    end
+    return addSeparator(tostring(amount))
+end
+text.groupDigits = groupDigits
+
+
+--  text.setDigitGroupSeparator(string)-->void
+--  sets the digit group separator
+--  default digit group separator is ","
+--  For no digit group separator, use ""
+local function setDigitGroupSeparator(string)
+    if type(string) ~= "string" then
+        error("text.setDigitGroupSeparator: must have a string (even empty string) as an argument.")
+    end
+    digitGroupSeparator = string
+end
+--
+--
+local moneyConvert = "%STRING1 Gold"
+
+--  text.money(amount) --> string
+--  converts an integer to an appropriate string denoting money
+local function money(amount)
+    if type(moneyConvert) == "string" then
+        return text.substitute(moneyConvert,{text.groupDigits(amount)})
+    else
+        return moneyConvert(amount)
+    end
+end
+text.money = money
+
+
+--  text.setMoney(string)-->void
+--  sets the method of conversion of an integer to a money amount
+--  text.money will subsitute %STRING1 for the money amount,
+--  with digit separators added, and return the string
+
+local function setMoney(convertString)
+    if type(convertString) ~= "string" then
+        error("text.setMoney: must be given a string as an argument.")
+    end
+    moneyConvert = convertString
+end
+
+text.setMoney = setMoney
+
+
+
+
+
+
+
+
+
 return text
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

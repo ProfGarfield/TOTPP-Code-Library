@@ -261,6 +261,7 @@
 --#gen.activate(unit)-->void
 --#gen.activateWithSource(unit,source)-->void
 --#gen.linkActivationFunction(function(unit,source)-->void)-->void
+--#gen.getActivationFunction()-->function(unit,source)
 --#gen.getTileID(tileObject or int,int or nil,int or nil)-->int (by Knighttime, converts a tile/coordinates to a single integer as an ID number)
 --#gen.getTileId(tileObject or int,int or nil,int or nil)-->int (by Knighttime, converts a tile/coordinates to a single integer as an ID number)
 -- gen.getTileFromID(tileID) --> tileObject -- undoes gen.getTileID
@@ -280,6 +281,18 @@
 -- gen.getState()-->table
 -- gen.cityRadiusTiles(cityOrTileOrCoordTable) --> table
 -- gen.getTilesInRadius(centre,radius,minRadius=0,maps=nil) --> table
+-- gen.clearGapsInArray(table,lowestValue=1)
+-- gen.playMusic(fileName)
+-- gen.setMusicDirectory(path)
+-- gen.getEphemeralTable()-->table
+-- gen.linkGeneralLibraryState(stateTable) --> void
+-- gen.limitedExecutions(key,maxTimes,limitedFunction)--> void
+--
+-- gen.isSinglePlayerGame() --> boolean
+-- gen.tableWrap(item)-->table
+-- gen.tableWrap(item,needsWrapFn)-->table
+--
+-- gen.copyUnitAttributes(parent,child)-->void
 
 --
 -- FUNCTION IMPLEMENTATIONS
@@ -2409,6 +2422,12 @@ function gen.linkActivationFunction(activationFn)
 end
 
 
+--gen.getActivationFunction()-->function(unit,source)
+--provides the unit activation function linked to the general library
+function gen.getActivationFunction()
+    return activationFunction
+end
+
 
 --gen.getTileID(tileObject or int,int or nil,int or nil)-->int (by Knighttime, converts a tile/coordinates to a single integer as an ID number)
 -- Returns a single-value numeric key that uniquely identifies a tile on any map
@@ -2929,6 +2948,151 @@ function gen.getTilesInRadius(centre,radius,minRadius,maps)
     return tableOfTiles               
 end
 
+-- gen.clearGapsInArray(table,lowestValue=1)-->void
+-- Re-indexes all integer keys and values
+-- in a table, so that there are no gaps.
+-- Starts at lowestValue, and maintains order
+-- of integer keys
+-- Non integer keys (including other numbers)
+-- and integers below lowestValue are left unchanged
+function gen.clearGapsInArray(table,lowestValue)
+    lowestValue = lowestValue or 1
+    local largestIndex = lowestValue-1
+    for index,val in pairs(table) do
+        if type(index) == "number" and index > largestIndex then
+            largestIndex = index
+        end
+    end
+    local nextIndex = lowestValue
+    for i=lowestValue,largestIndex do
+        if table[i] ~= nil then
+            if nextIndex < i then
+                table[nextIndex] = table[i]
+                table[i] = nil
+            end
+            nextIndex = nextIndex+1
+        end
+    end
+end
+
+local musicFolder = ""
+-- gen.playMusic(fileName)
+function gen.playMusic(fileName)
+    civ.playMusic(musicFolder.."\\"..fileName)
+end
+
+-- gen.setMusicDirectory(path)
+function gen.setMusicDirectory(path)
+    musicFolder = path
+end
+
+-- the ephemeralTable is a table for shared data
+-- since it is not saved, it doesn't have to be serializeable,
+-- so you don't have to worry about making keys and
+-- values text or numbers
+-- However, the information will not be preserved after a save and load
+local ephemeralTable = {}
+-- gen.getEphemeralTable()-->table
+function gen.getEphemeralTable()
+    return ephemeralTable
+end
+
+local genStateTable = "stateTableNotLinked"
+-- gen.linkGeneralLibraryState(stateTable) --> void
+-- links a sub table of the state table for the purposes of
+-- providing a table for functions in the General Library
+-- this is distinct from getState, which provides a state
+-- 'visible' state table to the end user
+function gen.linkGeneralLibraryState(stateTable)
+    if type(stateTable) == "table" then
+        genStateTable = stateTable
+    else
+        error("gen.linkGeneralLibraryState: linkGeneralLibraryState takes a table as an argument.")
+    end
+    genStateTable.limitedExecutions = genStateTable.limitedExecutions or {}
+end
+
+-- gen.limitedExecutions(key,maxTimes,limitedFunction)--> void
+-- if the value at key is less than maxTimes, limitedFunction will execute,
+-- and the value at key will increment by 1
+-- Otherwise, don't execute limitedFunction
+-- Note: limitedFunction()-->void
+function gen.limitedExecutions(key,maxTimes,limitedFunction)
+    genStateTable.limitedExecutions[key] = genStateTable.limitedExecutions[key] or 0
+    if genStateTable.limitedExecutions[key] < maxTimes then
+        genStateTable.limitedExecutions[key] = genStateTable.limitedExecutions[key]+1
+        limitedFunction()
+    end
+end
+
+-- gen.justOnce(key,limitedFunction) --> void
+-- wrapper for gen.limitedExecutions with maxTimes being 1
+function gen.justOnce(key,limitedFunction)
+    gen.limitedExecutions(key,1,limitedFunction)
+end
+
+-- gen.isSinglePlayerGame() --> boolean
+-- returns true if there is exactly one human player, false otherwise
+
+function gen.isSinglePlayerGame()
+    local humanMask = civ.game.humanPlayers
+    -- not humanMask >= 0, so don't have to worry about negatives
+    if humanMask == 0 then
+        -- no human player, so not single player game
+        return false
+    end
+    -- if there is exactly one human player, then humanMask
+    -- will be a power of 2, and so will have an integer logarithm
+    return (math.log(humanMask,2) == math.floor(math.log(humanMask,2)))
+end
 
 
+-- gen.tableWrap(item)-->table
+-- if item is a table, return the table
+-- otherwise, return a table with the item as element 1
+-- This is useful so that the scenario designer doesn't have
+-- to wrap a single element in a table
+-- gen.tableWrap(item,needsWrapFn)-->table
+--  needsWrapFn(item)-->bool
+--  if true, item needs a wrapping table, if not, it doesn't
+--  useful if you can distinguish between tables that represent other
+--  data structures, and tables of such data structures
+--
+
+function gen.tableWrap(item,needsWrapFn)
+    needsWrapFn = needsWrapFn or function(item) return type(item)~="table" end
+    if needsWrapFn(item) then
+        return {item}
+    else
+        return item
+    end
+end
+
+--
+-- gen.copyUnitAttributes(parent,child)-->void
+-- copies the attributes of the 'parent' unit to the 'child' unit
+-- all attributes accessible through lua are copied (except unit type,
+-- and unit id number, and carriedBy)
+--  Useful if a unit's type must be changed (by creating a new unit), but everything
+--  else should stay the same
+function gen.copyUnitAttributes(parent,child)
+    child.owner = parent.owner
+    child:teleport(parent.location)
+    child.homeCity = parent.homeCity
+    child.damage = parent.damage
+    child.moveSpent = parent.moveSpent
+    if parent.gotoTile then
+        gen.setToGoingTo(child,parent.gotoTile)
+    else
+        child.order = parent.order
+    end
+    child.attributes = parent.attributes
+    child.veteran = parent.veteran
+end
+
+
+
+--
+--
+--
 return gen

@@ -1,0 +1,219 @@
+@CIVILIZE
+Expand the Military,    5, 1,  Ind, nil, 0, 0    ; AFl 0
+...Alphabet,            5, 1,  no,  no,  3, 4    ; Alp 1
+Legio XIII and XIV,     5, 1,  AFl, nil, 0, 0    ; Amp 2
+Legio I,                5, 1,  Amp, nil, 0, 0    ; Ast 3
+Legio XV,               5, 1,  Ast, nil, 0, 0    ; Ato 4
+Auxilliary Levies,      5, 1,  MP,  Ind, 0, 3    ; Aut 5
+Legio V and VI,         5, 1,  Ato, nil, 0, 0    ; Ban 6
+Gallia Cisalpina,       1, 1,  nil, nil, 1, 3    ; Bri 7 
+...Bronze Working,      1, 1,  no,   no, 3, 4    ; Bro 8
+Antiquity,              5, 1,  nil, nil, 1, 4    ; Cer 9
+...Chemistry,           5,-1,  Uni, Med, 3, 4    ; Che 10
+...Chivalry,            1, 1,  no,   no, 3, 4    ; Chi 11
+...Code of Laws,        1, 1,  no,   no, 3, 4    ; CoL 12
+...Combined Arms,       1, 1,  no,   no, 3, 4    ; CA  13
+...Combustion,          1, 1,  no,   no, 3, 4    ; Cmb 14
+...Communism,           1, 1,  no,   no, 3, 4    ; Cmn 15
+...Computers,           1, 1,  no,   no, 3, 4    ; Cmp 16
+...Conscription,        1, 1,  no,   no, 3, 4    ; Csc 17
+...Construction,        1, 1,  no,   no, 3, 4    ; Cst 18
+Siege Works,            5, 1,  Eng, Exp, 0, 1    ; Cor 19
+Civil Engineering,      5, 1,  Iro, nil, 0, 4    ; Cur 20
+...Democracy,           1, 1,  no,   no, 0, 4    ; Dem 21
+Balearic Slingers,      5, 1,  Aut, nil, 0, 1    ; Eco 22
+Artillery,              5, 1,  Eng, Eco, 0, 1    ; E1  23
+...Electronics,         1, 1,  no,   no, 3, 4    ; E2  24
+Military Engineering,   5, 1,  Ind, nil, 0, 1    ; Eng 25
+Assimilation,           5, 1,  nil, nil, 1, 3    ; Env 26
+Civil Architecture,     5, 1,  Cur, nil, 0, 4    ; Esp 27
+Detachments,            5, 1,  Eng, nil, 0, 1    ; Exp 28 
+...Feudalism,           1, 1,  no,   no, 3, 4    ; Feu 29
+Death of Caesar,        1, 1,  no,   no, 1, 2    ; Fli 30
+...Fundamentalism,      1, 1,  no,   no, 3, 4    ; Fun 31
+...Fusion Power,        1, 1,  no,   no, 3, 4    ; FP  32
+Cretan Archers,         5, 1,  Eco, nil, 0, 1    ; Gen 33
+...Guerrilla Warfare,   1, 1,  no,   no, 3, 4    ; Gue 34
+...Gunpowder,           1, 1,  no,   no, 3, 4    ; Gun 35
+Roman Cavalry,          5, 1,  nil, nil, 0, 1    ; Hor 36
+Roman Legions,          5, 1,  nil, nil, 0, 0    ; Ind 37
+Legio X Destroyed,      6, 0,  no,   no, 1, 2    ; Inv 38
+SPQR,                   5, 1,  nil, nil, 1, 3    ; Iro 39 
+Military Architect.,    5, 1,  Esp, Eng, 0, 4    ; Lab 40
+Roman City,             5, 1,  Esp, Pla, 1, 3    ; Las 41
+Patrols,                5, 1,  Hor,  RR, 0, 3    ; Ldr 42
+...Literacy,            1, 1,  no,   no, 3, 4    ; Lit 43
+...Clemency,            5, 1,  no,   no, 0, 0    ; Too 44
+...Magnetism,           1, 1,  no,   no, 3, 4    ; Mag 45
+Naval Ops,              5, 1,  nil, nil, 1, 1    ; Map 46
+...Masonry,             1, 1,  no,   no, 3, 4    ; Mas 47
+Exploitation,           5, 1,  nil, nil, 0, 3    ; MP  48
+...Mathematics,         1, 1,  no,   no, 3, 4    ; Mat 49
+...Medicine,            1, 1,  no,   no, 3, 4    ; Med 50
+...Metallurgy,          1, 1,  no,   no, 3, 4    ; Met 51
+Legio VIII Destroyed,   1, 1,  no,   no, 1, 2    ; Min 52
+...Mobile Warfare,      1, 1,  no,   no, 3, 4    ; Mob 53
+...Monarchy,            1, 1,  no,   no, 3, 4    ; Mon 54
+Religion,               5, 1,  nil, nil, 1, 4    ; MT  55
+Warrior Society,        5, 1,  nil, nil, 1, 4    ; Mys 56
+Legio I Destroyed,      1, 1,  no,   no, 1, 2    ; Nav 57 
+Legio V Destroyed,      1, 1,  no,   no, 1, 2    ; NF  58
+Legio VI Destroyed,     1, 1,  no,   no, 1, 2    ; NP  59
+...Philosophy,          1, 1,  no,   no, 3, 4    ; Phi 60
+Legio VII Destroyed,    1, 1,  no,   no, 1, 2    ; Phy 61
+Publicani,              5, 1,  MP,  nil, 0, 3    ; Pla 62
+Legio IX Destroyed,     1, 1,  no,   no, 1, 2    ; Plu 63
+Legio XI Destroyed,     1, 1,  no,   no, 1, 2    ; PT  64
+Legio XII Destroyed,    1, 1,  no,   no, 1, 2    ; Pot 65
+Batavian Horse,         5, 1,  no,   no, 0, 1    ; Rad 66
+Roman Roads,            5, 1,  Cur, Eng, 0, 4    ; RR  67
+Allied Status,          5, 1,  Env, nil, 0, 3    ; Rec 68
+...Refining,            1, 1,  no,   no, 3, 4    ; Ref 69
+Latifundia,             5, 1,  Las, nil, 0, 4    ; Rfg 70
+...Republic,            1, 1,  no,   no, 3, 4    ; Rep 71
+Legio XIII Destroyed,   1, 1,  no,   no, 1, 2    ; Rob 72
+Legio XIV Destroyed,    1, 1,  no,   no, 1, 2    ; Roc 73
+Gallic Citizenship,     5, 1,  Rec, Ban, 1, 3    ; San 74
+...Seafaring,           1, 1,  no,   no, 3, 4    ; Sea 75
+Vercingetorix Captured, 5, 1,  no,   no, 0, 0    ; SFl 76
+Beyond the Rhine,       5, 1,  nil,  nil, 0, 0    ; Sth 77
+Britannic Landings,     5, 1,  nil,  nil, 0, 0    ; SE  78
+De Bello Gallico,       5, 1,  War, Whe, 0, 0    ; Stl 79
+Political Support,      5, 1,  no,   no, 1, 3    ; Sup 80
+Legio XV Destroyed,     1, 1,  no,   no, 1, 2    ; Tac 81
+Gallia Romanized,       5, 1,  Las, Ldr, 1, 3    ; The 82
+...Theory of Gravity,   1, 1,  no,   no, 3, 4    ; ToG 83
+Gravitas,               5, 1,  nil, nil, 1, 3    ; Tra 84
+...University,          1, 1,  no,   no, 3, 4    ; Uni 85
+Tales of Victory,       5, 1,  Tra, nil, 0, 0    ; War 86
+Belgae Defeated,        5, 1,  nil, nil, 0, 0    ; Whe 87
+...Writing,             1, 1,  no,   no, 3, 4    ; Wri 88
+Resistance,             1, 0,  nil, nil, 2, 0    ; ... 89
+Minor Disaster,         1, 1,  no,   no, 1, 2    ; U1  90 given if 3 legions destroyed
+Utter Disaster,         1, 1,  no,   no, 1, 2    ; U2  91 given if flag for 6 legions destroyed
+Complete Disaster,      1, 1,  no,   no, 1, 2    ; U3  92 given if flag for 9 legions destroyed
+...Extra Advance 1,     1, 1,  no,   no, 3, 4    ; X1  93
+...Extra Advance 2,     1, 1,  no,   no, 3, 4    ; X2  94
+...Extra Advance 3,     1, 1,  no,   no, 3, 4    ; X3  95
+...Extra Advance 4,     1, 1,  no,   no, 3, 4    ; X4  96
+...Extra Advance 5,     1, 1,  no,   no, 3, 4    ; X5  97
+...Extra Advance 6,     1, 1,  no,   no, 3, 4    ; X6  98
+...Extra Advance 7,     1, 1,  no,   no, 3, 4    ; X7  99
+
+;
+; Above 11 tech slots (U1 to X8) allow you to define your own 
+; civilization advances if desired.  Supply the name, the AI 
+; value, and the prerequisites.
+;
+; Then use the "U1", "U2", etc. 
+; identifier to incorporate it into the tech chain as a
+; prerequisite for other techs, units, city improvements.
+;
+
+;
+;  City Improvements
+;
+;   cost(x10), upkeep, preq
+;
+@IMPROVE
+Nothing,                     1,  0,    nil, ; nothing 0
+Principia,                   8,  0,    Lab, ; palace 1 
+Valetudinarium,             60,  8,    Lab, ; barracks 2 
+Horrea,                      4,  1,    nil, ; granary 3 
+Town Watch,                  4,  1,    nil, ; temple 4
+Market,                      4,  1,    nil, ; marketplace 5
+Frescoes,                    4,  1,    Tra, ; library 6 
+Portae Principales,         10,  2,    Lab, ; courthouse 7
+Defenses,                   30,  4,    Lab, ; city walls 8
+Aqueduct,                   45,  2,    Esp, ; aqueduct 9
+Treasury,                   10,  2,    Pla, ; bank 10
+NOT USED,                   10,  1,    no,  ; cathedral 11
+Statues,                     6,  1,    War, ; university 12
+Citizenship,                80,  8,    San, ; mass transit 13
+Patrols,                    10,  1,    Ldr, ; colosseum 14
+Census,                     20,  1,    MP,  ; factory 15
+Publicani,                  25,  2,    Pla, ; manufacturing plant 16
+Siege Engineer Workshop,    10,  5,    E1,  ; SDI defense 17
+Stables,                    45,  3,    Hor, ; recycling center 18
+NOT USED,                   10,  1,    no,  ; power plant 19
+NOT USED,                   10,  1,    no,  ; hyrdo plant 20
+Recruitment Center,         30,  3,    Aut, ; nuclear plant 21
+Forum,                      50,  3,    Las, ; stock exchange 22
+Baths,                      50,  3,    Las, ; sewer system 23
+Latifundia,                 25,  2,    Rfg, ; supermarket 24
+Roman Roads,                30,  1,    RR,  ; superhighways 25
+NOT USED,                   14,  2,    no,  ; research lab 26
+NOT USED,                   10,  1,    no,  ; SAM missile battery 27
+NOT USED,                   10,  1,    no,  ; Coastal fortress 28
+NOT USED,                   10,  1,    no,  ; Solar plant 29
+Fishing Fleet,               4,  1,    nil, ; Harbor 30
+NOT USED,                    6,  2,    no,  ; Offshore Platform 31
+Forced March,                2,  0,    Ind, ; Airport 32
+Vallum,                     20,  1,    Gen, ; Police station 33
+Port,                       60,  5,    NP,  ; port facility 34
+NOT USED,                   10,  1,    no,  ; transporter 35
+NOT USED,                   10,  1,    no,  ; ss structural 36
+NOT USED,                   10,  1,    no,  ; ss component 37
+NOT USED,                   10,  1,    no,  ; ss module 38
+(Tolls),                    60,  0,    nil, ; (capitalization) 39
+NOT USED,                   60,  0,    no,  ; Wonder 0
+Memory of Aquae Sextiae,    60,  2,    Ind, ; Wonder 1
+Aedui Allies,               20,  2,    Rec, ; Wonder 2
+NOT USED,                   20,  0,    no,  ; Wonder 3
+NOT USED,                   10,  1,    no,  ; Wonder 4
+Memory of Vercellae,        60,  2,    Ind, ; Wonder 5
+Oppida,                     30,  0,    nil, ; Wonder 6 Averni
+Vercingetorix,              30,  0,    nil, ; Wonder 7 Averni
+NOT USED,                   10,  1,    no,  ; Wonder 8
+NOT USED,                   10,  1,    no,  ; Wonder 9
+Gaius Juilus Caesar,        40,  0,    Ind, ; Wonder 10
+De Provinciis Consularibus, 10,  0,    Sth, ; Wonder 11
+Veneti Fleet,               40,  0,    nil, ; Wonder 12
+NOT USED,                   30,  0,    no,  ; Wonder 13
+NOT USED,                   10,  1,    no,  ; Wonder 14
+Legions of Rome,            60,  2,    Ind, ; Wonder 15
+Triumph,                    10,  0,    SFl, ; Wonder 16
+Britannic Landings,         10,  2,    SE,  ; Wonder 17
+Gallia Romanized,           10,  0,    The, ; Wonder 18
+NOT USED,                   10,  1,    no,  ; Wonder 19
+NOT USED,                   10,  1,    no,  ; Wonder 20
+NOT USED,                   10,  1,    no,  ; Wonder 21
+NOT USED,                   60,  0,    no,  ; Wonder 22
+NOT USED,                   10,  1,    no,  ; Wonder 23
+NOT USED,                   10,  1,    no,  ; Wonder 24
+NOT USED,                   10,  1,    no,  ; Wonder 25
+De Bello Gallico,           10,  0,    Stl, ; Wonder 26
+Legio X "Fretensis",        60,  2,    Ind, ; Wonder 27
+
+;
+; Expiration advancements for Wonders of the World
+;
+@ENDWONDER
+Ind,        ; NOT USED (Pyramids)
+U1,         ; Memory of Aquae Sextiae (Hanging Gardens)
+nil,        ; Aeudi Allies (Colossus)
+Ind,        ; NOT USED (Lighthouse)
+Ind,        ; NOT USED (Great Library)
+U2,         ; Memory of Vercellae (Oracle)
+nil,        ; Oppida (Great Wall)
+SFl,        ; Vercingetorix (Sun Tzu's War Academy)
+Ind,        ; NOT USED (King Richard's Crusade)
+Ind,        ; NOT USED (Marco Polo's Embassy)
+Fli,        ; Julius Caesar (Michelangelo)
+nil,        ; De Provinciis Consularibus (Copernicus)
+nil,        ; Veneti Fleet (Magellan)
+Ind,        ; NOT USED (Shakespeare)
+Ind,        ; NOT USED (Da Vinci's Workshop)
+U3,         ; Legions of Rome (Bach)
+nil,        ; Triumph (Newton)
+nil,        ; Assimilation Policy (Smith's Trading Co.)
+nil,        ; Gallia Romanized (Darwin)
+Ind,        ; NOT USED (Statue of Liberty)
+Ind,        ; NOT USED (Eiffel Tower)
+Ind,        ; NOT USED (Women's Suffrage)
+Ind,        ; NOT USED (Hoover Dam)
+Ind,        ; NOT USED (Manhattan Project)
+Ind,        ; NOT USED (United Nations)
+Ind,        ; NOT USED (Apollo)
+nil,        ; Commentarii de Bello Gallico (SETI) 
+Inv,        ; Legio X "Fretensis" (Cure for Cancer)

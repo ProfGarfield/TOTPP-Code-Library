@@ -1,0 +1,14 @@
+@BEGINEVENTS
+
+@IF
+unitkilled
+unit=anyunit
+attacker=anybody
+defender=anybody
+@THEN
+TEXT
+Unit Killed legacy event test.
+ENDTEXT
+@ENDIF
+
+@ENDEVENTS

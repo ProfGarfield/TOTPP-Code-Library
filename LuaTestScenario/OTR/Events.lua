@@ -13,6 +13,7 @@ local function debugPrint(printobject,b,c,d,e,f,g,h)
         print(printobject,b,c,d,e,f,g,h)
     end
 end
+debugPrint("debugPrint enabled")
 
 
 -- Cut and paste this code to the top of your scenario code in order to access a library
@@ -22,7 +23,8 @@ end
 local eventsPath = string.gsub(debug.getinfo(1).source, "@", "")
 local scenarioFolderPath = string.gsub(eventsPath, "events.lua", "?.lua")
 if string.find(package.path, scenarioFolderPath, 1, true) == nil then
-   package.path = package.path .. ";" .. scenarioFolderPath
+    --package.path = package.path .. ";" .. scenarioFolderPath
+    package.path = scenarioFolderPath
 end
 
 scenarioFolder = string.gsub(scenarioFolderPath,"?.lua","")
@@ -110,6 +112,8 @@ local unitAliases = require("unitAliases")
 local reactOTR = require("reactionsOTR")
 local reactionBase = require("reactionBase")
 
+local keyboard = require("keyboard")
+
 -- ���������� Variables: ���������������������������������������������������������������������������������������������������������������������������������������
 
 -- The `state` table represents the persistent state of the scenario, it is initialized here.
@@ -141,6 +145,7 @@ state.newspaper.allies = state.newspaper.allies or {articleName = "Report", news
 state.newspaper.germans = state.newspaper.germans or {articleName="Report", newspaperName = "German Reports"}
 state.reactions = state.reactions or {}
 state.radarRemovalInfo = state.radarRemovalInfo or {}
+state.improvementRemovalInfo = state.improvementRemovalInfo or {}
 state.cityDockings = state.cityDockings or {}
 state.cityHasDoneTrainlift = state.cityHasDoneTrainlift or {}
 state.formationFlag = false
@@ -441,6 +446,7 @@ specialNumbers.occupationScoreTrain6Threshold = 18
 -- exclude possibility of 7 trains at the moment
 specialNumbers.occupationScoreTrain7Threshold = 21 -- minimum occupation score for seventh train
 specialNumbers.maxExtractionLevel = 6 -- maximum number of trains germany can attempt to extract from France
+specialNumbers.occupationCityRevelationChance0Train = 0 -- chance a city in France will be revealed if the extraction value is 0 trains
 specialNumbers.occupationCityRevelationChance1Train = 0 -- chance a city in France will be revealed if the extraction value is 1 trains
 specialNumbers.occupationCityRevelationChance2Train = 0.25 -- chance a city in France will be revealed if the extraction value is 2 trains
 specialNumbers.occupationCityRevelationChance3Train = 0.75 -- chance a city in France will be revealed if the extraction value is 3 trains
@@ -448,6 +454,7 @@ specialNumbers.occupationCityRevelationChance4Train = 1 -- chance a city in Fran
 specialNumbers.occupationCityRevelationChance5Train = 1 -- chance a city in France will be revealed if the extraction value is 5 trains
 specialNumbers.occupationCityRevelationChance6Train = 1 -- chance a city in France will be revealed if the extraction value is 6 trains
 specialNumbers.occupationCityRevelationChance7Train = 1 -- chance a city in France will be revealed if the extraction value is 6 trains
+specialNumbers.occupationAirfieldRevelationChance0Train = 0 -- chance an airfield in france will be revealed if the extraction value is 0 trains
 specialNumbers.occupationAirfieldRevelationChance1Train = 0 -- chance an airfield in france will be revealed if the extraction value is 1 trains
 specialNumbers.occupationAirfieldRevelationChance2Train = 0 -- chance an airfield in france will be revealed if the extraction value is 2 trains
 specialNumbers.occupationAirfieldRevelationChance3Train = 0 -- chance an airfield in france will be revealed if the extraction value is 3 trains
@@ -455,6 +462,7 @@ specialNumbers.occupationAirfieldRevelationChance4Train = 0.1 -- chance an airfi
 specialNumbers.occupationAirfieldRevelationChance5Train = 0.25 -- chance an airfield in france will be revealed if the extraction value is 5 trains
 specialNumbers.occupationAirfieldRevelationChance6Train = 0.35 -- chance an airfield in france will be revealed if the extraction value is 6 trains
 specialNumbers.occupationAirfieldRevelationChance7Train = 0.35 -- chance an airfield in france will be revealed if the extraction value is 6 trains
+specialNumbers.occupationFirefighterDestructionChance0Train = 0 -- chance a firefighters improvement will be destroyed if the extraction value is 0 trains
 specialNumbers.occupationFirefighterDestructionChance1Train = 0 -- chance a firefighters improvement will be destroyed if the extraction value is 1 trains
 specialNumbers.occupationFirefighterDestructionChance2Train = 0 -- chance a firefighters improvement will be destroyed if the extraction value is 2 trains
 specialNumbers.occupationFirefighterDestructionChance3Train = 0 -- chance a firefighters improvement will be destroyed if the extraction value is 3 trains
@@ -514,8 +522,21 @@ specialNumbers.earliestAlliedInvasionDateIfDelays = 80 -- if Allies research del
 specialNumbers.invasionDelayExtension = 10 -- subsequent Allied research of delays will postpone earliest invasion date by this many turns
 specialNumbers.minInvasionDelay = 10 -- Allied invasion will be postponed at least this many turns from the current turn (e.g. if delays is researched on turn 75, invasion can't happen until turn 85, even if earliest date would otherwise be 80
 --]]
-specialNumbers.defaultSurvivalChance = 0.8 -- the default probability that a unit that will be killed by a munition will survive.  See overTwoHundred.unitSurvivalChance
+specialNumbers.defaultSurvivalChance = 0.66 -- the default probability that a unit that will be killed by a munition will survive.  See overTwoHundred.unitSurvivalChance
+-- note: this has been changed so that the unit won't be damaged at all, rather than survive at low hp
 specialNumbers.survivalHP = 3 -- the remaining hitpoints of a unit that survives a munition attack that under standard combat rules should have been fatal
+-- note: survivalHP not currently used, since mechanic has been changed to not taking damage from full health.
+specialNumbers.barrageBalloonKillChance = 0.8 -- chance an attacked barrage balloon will be killed by a munition.
+-- rockets do a random amount of damage to the target, instead of engaging in normal combat
+-- damage = math.max(0,math.random(minDamage,maxDamage))
+-- that is, if min damage is less than 0, there is a chance of the rocket missing completely,
+-- but the victim won't be healed
+-- veteran status of target doesn't matter
+specialNumbers.minRocketDamageRookie = 1 -- minimum damage a non veteran rocket can do
+specialNumbers.maxRocketDamageRookie = 20 -- maximum damage a non veteran rocket can do
+specialNumbers.minRocketDamageVeteran = 2 -- minimum damage a vet rocket can do
+specialNumbers.maxRocketDamageVeteran = 21 -- maximum damage a vet rocket can do
+specialNumbers.improvementMarkerType = "fortress"
 
 local airWorkaround = true -- Set to false to remove the workaround for munition creation for air units
 
@@ -746,6 +767,12 @@ improvementAliases.jagdfliegerschule = civ.getImprovement(32)
 improvementAliases.railyards = civ.getImprovement(25)
 improvementAliases.criticalIndustry = civ.getImprovement(13)
 improvementAliases.firefighters = civ.getImprovement(28)
+improvementAliases.industryI = civ.getImprovement(15) 
+improvementAliases.industryII = civ.getImprovement(16) 
+improvementAliases.industryIII = civ.getImprovement(29) 
+improvementAliases.aircraftFactoryI = civ.getImprovement(6) 
+improvementAliases.aircraftFactoryII = civ.getImprovement(12) 
+improvementAliases.aircraftFactoryIII = civ.getImprovement(26) 
 -- returns true if the allies have captured enough cities to open
 -- the Russian Front (they will also need points as well, not covered
 -- in this function)
@@ -819,7 +846,8 @@ textAliases.ExpertenArrival = [[Another Luftwaffe pilot has earned the prestigio
 textAliases.secondTurn1 = [[Over the Reich takes advantage of lua scripting in several exciting ways that you should be aware of.]]
 textAliases.secondTurn2 = [[Each turn, all of your heavy flak (88mm and 3.7-inch guns) will be fortified unless they are within two spaces of an enemy aircraft.  This is done to reduce the time it takes to play each turn.  If you were moving one of these units, you will want to go find it so you can unfortify it and move it towards its destination.]]
 textAliases.secondTurn3 = [[Your heavy flak units that are near enemy aircraft will warn you that a raid is incoming by day or night.  Press 'k' to fire flak bursts at daylight targets, and press 'backspace' to fire them at nighttime targets.]]
-textAliases.secondTurn4 = [[You are also able to scan the skies with all of your radar sets at once.  To do so, select any radar set and press 'backspace.'  It is recommended that you do this first thing each turn to help you identify enemy targets.]]
+--textAliases.secondTurn4 = [[You are also able to scan the skies with all of your radar sets at once.  To do so, select any radar set and press 'backspace.'  It is recommended that you do this first thing each turn to help you identify enemy targets.]]
+textAliases.secondTurn4 = [[You are able to scan the skies with all of your radar sets at once.  To do so, select any radar set and press 'backspace.'  It is recommended that you do this first thing each turn to help you identify enemy targets.]]
 textAliases.secondTurn5 = [[It is also important to remember that bomb-carrying aircraft in Over the Reich have a limited payload and can only strike once per sortie.  Once they drop bombs, their home city will be set to "NONE."  To rearm them, you must re-home them.  Units with "NONE" for a home city cannot drop bombs.]]
 textAliases.secondTurn6 = [[Aircraft that are activated within an airfield will automatically have their home city changed from "NONE" to that airfield, as long as the airfiled can support it.  It is important, however, to note that this only occurs if the game AUTOMATICALLY activates the unit.  In other words, you cannot enter the city screen and activate the unit manually--the game must cycle to that unit for this change to take effect.  Thus, if you are preparing to launch a bomber raid, and wish to manually select the lead bomber, you must change its home city manually before setting off on your sortie.]]
 
@@ -1270,6 +1298,9 @@ useCarrier[unitAliases.Me109G14.id] = true
 useCarrier[unitAliases.Me109K4.id] = true
 useCarrier[unitAliases.Ju87G.id] = true
 useCarrier[unitAliases.HermannGraf.id] = true
+-- this way, task forces can attack carriers that are carrying aircraft
+useCarrier[unitAliases.GermanTaskForce.id] = true
+useCarrier[unitAliases.AlliedTaskForce.id] = true
 
 local rearmOnCarrier ={}
 rearmOnCarrier[unitAliases.Ju87G.id] = true
@@ -1295,9 +1326,9 @@ end
 ----------------------------------------------------------------------------------------------------
 -- Defines certain ammunition to be deleted at the end of each turn, so it doesn't stack up
 local unitTypesToBeDeletedEachTurn =
-	{ 8, 77, 95, 96, 97, 98, 99, 100, 103, 104, 110, 114, 116, 124,unitAliases.Window.id }
+	{ 8, 48, 77, 95, 96, 97, 98, 99, 100, 103, 104, 110, 114, 116, 124,unitAliases.Window.id }
 local unitTypesWhichCanBeDestroyedWithoutMovementReduction =
-	{ 8, 77, 95, 96, 97, 98, 99, 100, 101, 103, 104, 106, 110, 114, 116, 124 }
+	{ 8, 48, 77, 95, 96, 97, 98, 99, 100, 101, 103, 104, 106, 110, 114, 116, 124 }
 
 -- Defines aircraft that should not be able to land in city squares or different theatre squares (Italian Theatre and Russian Front)
 --First one is aircraft that can't land anywhere except an airbase city
@@ -1491,7 +1522,7 @@ local artilleryUnitTypes = {
 	["Me109G14"] = { unitType=civ.getUnitType(13), munitionCreated=civ.getUnitType(95), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=11, moneyCostOfMunition=5, displayText=nil },
 	["Me109K4"] = { unitType=civ.getUnitType(14), munitionCreated=civ.getUnitType(95), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=12, moneyCostOfMunition=5, displayText=nil },
 	["Fw190A5"] = { unitType=civ.getUnitType(15), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=10, moneyCostOfMunition=5, displayText=nil },
-	["Fw190A8"] = { unitType=civ.getUnitType(16), munitionCreated=civ.getUnitType(77), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=11, moneyCostOfMunition=5, displayText=nil },
+	["Fw190A8"] = { unitType=civ.getUnitType(16), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=11, moneyCostOfMunition=5, displayText=nil },
 	["Fw190D9"] = { unitType=civ.getUnitType(17), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=12, moneyCostOfMunition=5, displayText=nil },
 	["Ta152"] = { unitType=civ.getUnitType(18), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=13, moneyCostOfMunition=5, displayText=nil },
 	["Me110"] = { unitType=civ.getUnitType(20), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=8, moneyCostOfMunition=5, displayText=nil, },
@@ -1509,14 +1540,14 @@ local artilleryUnitTypes = {
 	["He277"] = { unitType=civ.getUnitType(32), munitionCreated=civ.getUnitType(99), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=23, moneyCostOfMunition=20, displayText=nil, quantity=healthMunitionQuantity, payload=true, lowAltNoAttack=true   },
 	["Arado234"] = { unitType=civ.getUnitType(33), munitionCreated=civ.getUnitType(99), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=10, moneyCostOfMunition=50, displayText=nil, quantity=3, payload=true  },
 	["Go229"] = { unitType=civ.getUnitType(34), munitionCreated=civ.getUnitType(100), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=12, moneyCostOfMunition=50, displayText=nil, quantity=6, payload=true, lowAltNoAttack=true   },
-	["SpitfireIX"] = { unitType=civ.getUnitType(35), munitionCreated=civ.getUnitType(77), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=10, moneyCostOfMunition=5, displayText=nil },
-	["SpitfireXII"] = { unitType=civ.getUnitType(36), munitionCreated=civ.getUnitType(77), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=11, moneyCostOfMunition=5, displayText=nil },
-	["SpitfireXIV"] = { unitType=civ.getUnitType(37), munitionCreated=civ.getUnitType(77), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=12, moneyCostOfMunition=5, displayText=nil },
+	["SpitfireIX"] = { unitType=civ.getUnitType(35), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=10, moneyCostOfMunition=5, displayText=nil },
+	["SpitfireXII"] = { unitType=civ.getUnitType(36), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=11, moneyCostOfMunition=5, displayText=nil },
+	["SpitfireXIV"] = { unitType=civ.getUnitType(37), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=12, moneyCostOfMunition=5, displayText=nil },
 	["HurricaneIV"] = { unitType=civ.getUnitType(38), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=8, moneyCostOfMunition=5, displayText=nil,  },
-	["Typhoon"] = { unitType=civ.getUnitType(39), munitionCreated=civ.getUnitType(77), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=10, moneyCostOfMunition=5, displayText=nil },
-	["Tempest"] = { unitType=civ.getUnitType(40), munitionCreated=civ.getUnitType(77), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=13, moneyCostOfMunition=5, displayText=nil },
+	["Typhoon"] = { unitType=civ.getUnitType(39), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=10, moneyCostOfMunition=5, displayText=nil },
+	["Tempest"] = { unitType=civ.getUnitType(40), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=13, moneyCostOfMunition=5, displayText=nil },
 	["Meteor"] = { unitType=civ.getUnitType(41), munitionCreated=civ.getUnitType(97), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=8, moneyCostOfMunition=50, displayText=nil },
-	["Beaufighter"] = { unitType=civ.getUnitType(42), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=20, moneyCostOfMunition=10, displayText=nil },
+	["Beaufighter"] = { unitType=civ.getUnitType(42), munitionCreated=civ.getUnitType(95), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=20, moneyCostOfMunition=10, displayText=nil },
 	["MosquitoII"] = { unitType=civ.getUnitType(43), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=20, moneyCostOfMunition=10, displayText=nil },
 	["MosquitoXIII"] = { unitType=civ.getUnitType(44), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=23, moneyCostOfMunition=10, displayText=nil },
 	["P47D11"] = { unitType=civ.getUnitType(50), munitionCreated=civ.getUnitType(95), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=15, moneyCostOfMunition=5, displayText=nil },
@@ -1538,15 +1569,15 @@ local artilleryUnitTypes = {
 	["B17F"] = { unitType=civ.getUnitType(66), munitionCreated=civ.getUnitType(98), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=20, moneyCostOfMunition=20, displayText=nil, quantity=healthMunitionQuantity, payload=true, lowAltNoAttack=true  },
 	["B24J"] = { unitType=civ.getUnitType(67), munitionCreated=civ.getUnitType(99), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=30, moneyCostOfMunition=20, displayText=nil, quantity=healthMunitionQuantity, payload=true, lowAltNoAttack=true   },
 	["B17G"] = { unitType=civ.getUnitType(68), munitionCreated=civ.getUnitType(98), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=22, moneyCostOfMunition=20, displayText=nil, quantity=healthMunitionQuantity, payload=true, lowAltNoAttack=true   },
-	["EgonMayer"] = { unitType=civ.getUnitType(71), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=9, moneyCostOfMunition=5, displayText=nil },
-	["HermannGraf"] = { unitType=civ.getUnitType(78), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=9, moneyCostOfMunition=5, displayText=nil },
-	["JosefPriller"] = { unitType=civ.getUnitType(79), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=10, moneyCostOfMunition=0, displayText=nil },
-	["hwSchnaufer"] = { unitType=civ.getUnitType(102), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=9, moneyCostOfMunition=10, displayText=nil },
-	["AdolfGalland"] = { unitType=civ.getUnitType(80), munitionCreated=civ.getUnitType(97), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=8, moneyCostOfMunition=25, displayText=nil },
-	["Experten"] = { unitType=civ.getUnitType(53), munitionCreated=civ.getUnitType(96), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=9, moneyCostOfMunition=5, displayText=nil },
+	["EgonMayer"] = { unitType=civ.getUnitType(71), munitionCreated=civ.getUnitType(77), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=9, moneyCostOfMunition=5, displayText=nil },
+	["HermannGraf"] = { unitType=civ.getUnitType(78), munitionCreated=civ.getUnitType(77), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=9, moneyCostOfMunition=5, displayText=nil },
+	["JosefPriller"] = { unitType=civ.getUnitType(79), munitionCreated=civ.getUnitType(77), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=10, moneyCostOfMunition=0, displayText=nil },
+	["hwSchnaufer"] = { unitType=civ.getUnitType(102), munitionCreated=civ.getUnitType(77), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=9, moneyCostOfMunition=10, displayText=nil },
+	["AdolfGalland"] = { unitType=civ.getUnitType(80), munitionCreated=civ.getUnitType(77), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=8, moneyCostOfMunition=25, displayText=nil },
+	["Experten"] = { unitType=civ.getUnitType(53), munitionCreated=civ.getUnitType(77), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=9, moneyCostOfMunition=5, displayText=nil },
 	["He111"] = { unitType=civ.getUnitType(73), munitionCreated=civ.getUnitType(98), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=18, moneyCostOfMunition=10, displayText=nil, quantity=healthMunitionQuantity, payload=true, lowAltNoAttack=true   },
 	["Fw200"] = { unitType=civ.getUnitType(5), munitionCreated=civ.getUnitType(98), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=60, moneyCostOfMunition=20, displayText=nil, quantity=1, payload=true  },
-	["Sunderland"] = { unitType=civ.getUnitType(76), munitionCreated=civ.getUnitType(98), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=60, moneyCostOfMunition=10, displayText=nil, quantity=1, payload=true  },
+	["Sunderland"] = { unitType=civ.getUnitType(76), munitionCreated=civ.getUnitType(48), allowedTerrain={10}, movementCostOfMunition=60, moneyCostOfMunition=10, displayText=nil, quantity=1, payload=true  },
 	--["Artillery2"] = { unitType=civ.getUnitType(77), munitionCreated=civ.getUnitType(112), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=4, moneyCostOfMunition=0, displayText=nil },
 	["UBoat"] = { unitType=civ.getUnitType(126), munitionCreated=civ.getUnitType(110), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=6, moneyCostOfMunition=0, displayText=nil },
 	--["GermanTaskForce"] = { unitType=civ.getUnitType(81), munitionCreated=civ.getUnitType(114), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=6, moneyCostOfMunition=0, displayText=nil },
@@ -1604,6 +1635,7 @@ local secondaryAttackUnitTypes = {
 --	["WurzburgRadar"] = { unitType=civ.getUnitType(4), munitionCreated=unitAliases.Wurzburg, allowedTerrain={7, -121}, movementCostOfMunition=2, moneyCostOfMunition=0, displayText=nil, altMap=2  },
 	--["GermanFlak"] = { unitType=civ.getUnitType(10), munitionCreated=unitAliases.Flak, allowedTerrain={0,7, -121, -128,6,4,8,9,12,13,14}, movementCostOfMunition=1, moneyCostOfMunition=0, displayText=nil, altMap = 2 },
 	--["AlliedFlak"] = { unitType=civ.getUnitType(72), munitionCreated=unitAliases.Flak, allowedTerrain={0,7, -121, -128,6,4,8,9,12,13,14}, movementCostOfMunition=1, moneyCostOfMunition=0, displayText=nil,altMap = 2 },
+	["B24J"] = { unitType=civ.getUnitType(64), munitionCreated=civ.getUnitType(48), allowedTerrain={10}, movementCostOfMunition=10, moneyCostOfMunition=100, displayText=nil, quantity=1, payload=true  },
 	["Me110"] = { unitType=civ.getUnitType(20), munitionCreated=civ.getUnitType(103), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=16, moneyCostOfMunition=5, displayText=nil, payload=true,nightAltNoAttack = true },
 	["Me410"] = { unitType=civ.getUnitType(21), munitionCreated=civ.getUnitType(103), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=18, moneyCostOfMunition=5, displayText=nil,  quantity=2, payload=true,nightAltNoAttack=true },
 	["Fw190F"] = { unitType=civ.getUnitType(29), munitionCreated=civ.getUnitType(100), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=1, moneyCostOfMunition=5, displayText=nil, quantity=1, payload=true, highAltNoAttack=true, nightAltNoAttack=true,},
@@ -1618,11 +1650,11 @@ local secondaryAttackUnitTypes = {
 	["He219"] = { unitType=civ.getUnitType(24), munitionCreated=civ.getUnitType(103), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=27, moneyCostOfMunition=10, displayText=nil,  quantity=1, payload=true, nightAltNoAttack=true },
 	["MosquitoII"] = { unitType=civ.getUnitType(43), munitionCreated=civ.getUnitType(98), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=0, moneyCostOfMunition=0, quantity = 1, payload = true, displayText=nil },
 	["MosquitoXIII"] = { unitType=civ.getUnitType(44), munitionCreated=civ.getUnitType(99), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=0, moneyCostOfMunition=0, quantity = 1, payload = true, displayText=nil },
-	["HurricaneIV"] = { unitType=civ.getUnitType(38), munitionCreated=civ.getUnitType(99), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=1, moneyCostOfMunition=5, displayText=nil, quantity=1, payload=true, highAltNoAttack=true},
+	["HurricaneIV"] = { unitType=civ.getUnitType(38), munitionCreated=civ.getUnitType(99), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118,  -117, -116, -115, -114}, movementCostOfMunition=1, moneyCostOfMunition=5, displayText=nil, quantity=1, payload=true, highAltNoAttack=true},
 	--["Light Cruiser"] = { unitType=civ.getUnitType(80), munitionCreated=unitAliases.Flak, allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=2, moneyCostOfMunition=0, displayText=nil },
 	--["Heavy Cruiser"] = { unitType=civ.getUnitType(81), munitionCreated=civ.getUnitType(110), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=4, moneyCostOfMunition=0, displayText=nil },
 	--["Battleship"] = { unitType=civ.getUnitType(82), munitionCreated=civ.getUnitType(110), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=3, moneyCostOfMunition=0, displayText=nil },
-	["Fw190A8"] = { unitType=civ.getUnitType(16), munitionCreated=civ.getUnitType(103), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=0, moneyCostOfMunition=5, displayText=nil, payload=true },
+	["Fw190A8"] = { unitType=civ.getUnitType(16), munitionCreated=civ.getUnitType(103), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=0, moneyCostOfMunition=5, displayText=nil, payload=true, nightAltNoAttack = true },
 	["Me262"] = { unitType=civ.getUnitType(27), munitionCreated=civ.getUnitType(103), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=40, moneyCostOfMunition=50, displayText=nil, payload=true },
 	["EgonMayer"] = { unitType=civ.getUnitType(71), munitionCreated=civ.getUnitType(103), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=0, moneyCostOfMunition=5, displayText=nil, quantity=2, payload=true },
 	["HermannGraf"] = { unitType=civ.getUnitType(78), munitionCreated=civ.getUnitType(103), allowedTerrain={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -128, -127, -126, -125, -124, -123, -122, -121, -120, -119, -118, -117, -116, -115, -114}, movementCostOfMunition=0, moneyCostOfMunition=5, displayText=nil, payload=true },
@@ -1706,6 +1738,7 @@ local survivingUnitTypes ={
 ----------------------------------------------------------------------------------------------------
 -- LIMIT UNITS WHICH CAN BE CONSTRUCTED IN A CITY
 local buildRestrictionsUnits = {
+    ["ConstructionTeam"] = {unit=civ.getUnitType(1), conditionMet=function (city, state) if city.size == 1 then return false end end},
 	["Me109G6"] = {unit=civ.getUnitType(12), conditionMet=function (city, state) if not(civ.hasImprovement(city, civ.getImprovement(17))) then return false end end},
 	["Me109G14"] = {unit=civ.getUnitType(13), conditionMet=function (city, state) if not(civ.hasImprovement(city, civ.getImprovement(17))) then return false end end},
 	["Me109K4"] = {unit=civ.getUnitType(14), conditionMet=function (city, state) if not(civ.hasImprovement(city, civ.getImprovement(17))) then return false end end},
@@ -1769,7 +1802,7 @@ local buildRestrictionsUnits = {
 	["GermanFlak"] = {unit=civ.getUnitType(10), conditionMet=function (city, state) if not(civ.hasImprovement(city, civ.getImprovement(8))) then return false end end},
 	["FlakTrain"] = {unit=civ.getUnitType(11), conditionMet=function (city, state) if not(civ.hasImprovement(city, civ.getImprovement(8))) then return false end end},
 	["ProtoI"] = {unit=civ.getUnitType(48), conditionMet=function (city, state) if not(civ.hasImprovement(city, civ.getImprovement(8))) then return false end end},
-	["ProtoII"] = {unit=civ.getUnitType(49), conditionMet=function (city, state) if not(civ.hasImprovement(city, civ.getImprovement(8))) then return false end end},
+	["BarageBalloons"] = {unit=civ.getUnitType(49), conditionMet=function (city, state) if not(civ.hasImprovement(city, civ.getImprovement(17))) then return false end end},
 	["AlliedFlak"] = {unit=civ.getUnitType(72), conditionMet=function (city, state) if not(civ.hasImprovement(city, civ.getImprovement(8))) then return false end end},
 	["He111"] = {unit=civ.getUnitType(73), conditionMet=function (city, state) if not(civ.hasImprovement(city, civ.getImprovement(17))) then return false end end},
 	["GunBattery"] = {unit=civ.getUnitType(94), conditionMet=function (city, state) if not(civ.hasImprovement(city, civ.getImprovement(8))) then return false end end},
@@ -1851,12 +1884,12 @@ local cityCoordinates = {
 						-- Outer key is a city ID
 								-- All nested (inner) keys are improvement IDs
 --[[ Brest ]]           [30] = {[15] = {{89,91}}, [6]  = {{98,100}}, [5]  = {{88,96}}, [4]  = {{88,92}, {91,93}}, [25] = {{102,98}},
-                                [16] = {{91,91}}, [12]  = {{99,93}}, [10] = {{89,97}}, [11] = {{90,92}, {89,91}},
+                                [16] = {{91,91}}, [12]  = {{99,93}}, [10] = {{89,97}}, [11] = {{90,92}, {94,92}},
                                 [29] = {{92,92}}, [26] = {{92,94}}, [22] = {{90,96}}, [14] = {{93,95}, {93,93}}, [34] = {{88,94}} },
 
  --[[ St. Nazaire ]]     [31] = {[15] = {{115,107}}, [6]  = {{113,105}}, [5]  = {{118,106}}, [4]  = {{120,108}, {116,106}}, [25] = {{122,102}},
                                 [16] = {{116,108}}, [12]  = {{110,106}}, [10] = {{120,106}}, [11] = {{119,107}, {117,105}},
-                                [29] = {{117,107}}, [26] = {{115,109}}, [22] = {{121,107}}, [14] = {{117,119}, {119,105}}, [34] = {{117,111}} },
+                                [29] = {{117,107}}, [26] = {{119,103}}, [22] = {{121,107}}, [14] = {{117,109}, {119,105}}, [34] = {{117,111}} },
 
 
 --[[ Nantes ]]          [32] = {[15] = {{126,114}}, [6]  = {{122,98}}, [5]  = {{124,108}}, [4]  = {{126,108}, {124,112}}, [25] = {{131,105}},
@@ -1884,9 +1917,9 @@ local cityCoordinates = {
                                 [29] = {{165,119}}, [26] = {{169,121}}, [22] = {{164,120}}, [14] = {{164,118}, {162,120}} },
 
 
---[[ Le Havre ]]        [36] = {[15] = {{164,92}}, [6]  = {{160,98}}, [5]  = {{165,93}}, [4]  = {{165,89}, {165,93}}, [25] = {{170,90}},
-                                [16] = {{163,93}}, [12]  = {{167,93}}, [10] = {{167,91}}, [11] = {{166,90}, {167,91}},
-                                [29] = {{162,92}}, [26] = {{168,98}}, [22] = {{167,89}}, [14] = {{166,88}, {167,89}}, [34] = {{163,89}} },
+--[[ Le Havre ]]        [36] = {[15] = {{164,92}}, [6]  = {{160,98}}, [5]  = {{165,93}}, [4]  = {{165,89}}, [25] = {{170,90}},
+                                [16] = {{163,93}}, [12]  = {{167,93}}, [10] = {{167,91}}, [11] = {{166,90}},
+                                [29] = {{162,92}}, [26] = {{168,98}}, [22] = {{167,89}}, [14] = {{166,88}}, [34] = {{163,89}} },
 
 
 --[[ Rouen ]]           [38] = {[15] = {{179,91}}, [6]  = {{178,92}}, [5]  = {{173,91}}, [4]  = {{175,93, 177,93}}, [25] = {{183,93}},
@@ -1917,9 +1950,9 @@ local cityCoordinates = {
                                 [29] = {{240,70}}, [26] = {{240,68}}, [22] = {{244,70}}, [14] = {{240,74}, {240,72}}, [34] = {{241,73}} },
 
 
---[[ The Hague ]]       [42] = {[15] = {{234,72}}, [6]  = {{232,70}}, [5]  = {{236,68}}, [4]  = {{236,70}, {232,70}}, [25] = {{236,74}},
-                                [16] = {{232,72}}, [12]  = {{233,69}}, [10] = {{237,69}}, [11] = {{236,72}, {233,69}},
-                                [29] = {{231,71}}, [26] = {{235,69}}, [22] = {{237,71}}, [14] = {{235,71}, {235,69}}, [34] = {{234,68}} },
+--[[ The Hague ]]       [42] = {[15] = {{234,72}}, [6]  = {{232,70}}, [5]  = {{236,68}}, [4]  = {{236,70}}, [25] = {{236,74}},
+                                [16] = {{232,72}}, [12]  = {{233,69}}, [10] = {{237,69}}, [11] = {{236,72}},
+                                [29] = {{231,71}}, [26] = {{235,69}}, [22] = {{237,71}}, [14] = {{235,71}}, [34] = {{234,68}} },
 
 
 --[[ Amsterdam ]]       [41] = {[15] = {{246,68}}, [6]  = {{252,62}}, [5]  = {{243,67}}, [4]  = {{245,63}, {244,68}}, [25] = {{241,67}},
@@ -1927,17 +1960,17 @@ local cityCoordinates = {
                                 [29] = {{246,66}}, [26] = {{256,66}}, [22] = {{245,67}}, [14] = {{243,65}, {242,64}}, [34] = {{246,64}} },
 
 --[[ Dusseldorf ]]      [11] = {[15] = {{268,78}}, [6]  = {{265,77}}, [5]  = {{271,81}}, [4]  = {{273,79}, {270,78}}, [25] = {{264,72}},
-                                [16] = {{269,77}}, [12]  = {{270,72}}, [10] = {{272,80}}, [11] = {{273,81}, {270,80}},
-                                [29] = {{270,76}}, [26] = {{274,70}}, [22] = {{272,82}}, [14] = {{272,78}, {270,82}} },
+                                [16] = {{269,77}}, [12]  = {{270,72}}, [10] = {{272,80}}, [11] = {{273,81}, {271,83}},
+                                [29] = {{270,76}}, [26] = {{274,70}}, [22] = {{272,82}}, [14] = {{272,78}, {270,80}} },
 
 
 --[[ Essen ]]           [13] = {[15] = {{272,74}}, [6]  = {{277,69}}, [5]  = {{276,76}}, [4]  = {{275,77}, {275,73}}, [25] = {{286,74}},
-                                [16] = {{273,73}}, [12]  = {{274,70}}, [10] = {{277,77}}, [11] = {{275,75}, {276,74}},
+                                [16] = {{273,73}}, [12]  = {{275,69}}, [10] = {{277,77}}, [11] = {{275,75}, {276,74}},
                                 [29] = {{274,74}}, [26] = {{278,66}}, [22] = {{276,78}}, [14] = {{273,75}, {277,75}} },
 
 
 --[[ Cologne ]]         [12] = {[15] = {{274,88}}, [6]  = {{271,87}}, [5]  = {{274,84}}, [4]  = {{273,85}, {272,84}}, [25] = {{269,89}},
-                                [16] = {{273,87}}, [12]  = {{270,86}}, [10] = {{273,83}}, [11] = {{271,83}, {270,84}},
+                                [16] = {{273,87}}, [12]  = {{270,86}}, [10] = {{273,83}}, [11] = {{276,84}, {270,84}},
                                 [29] = {{275,87}}, [26] = {{273,91}}, [22] = {{275,85}}, [14] = {{274,86}, {271,85}} },
 
 
@@ -1966,19 +1999,19 @@ local cityCoordinates = {
                                 [29] = {{299,113}}, [26] = {{300,110}}, [22] = {{296,112}}, [14] = {{300,108}, {297,107}} },
 
 
---[[ Mannheim ]]        [26] = {[15] = {{291,101}}, [6]  = {{293,101}}, [5]  = {{289,99}}, [4]  = {{293,99}, {293,101}}, [25] = {{295,103}},
-                                [16] = {{290,100}}, [12]  = {{294,100}}, [10] = {{292,98}}, [11] = {{294,98}, {294,100}},
-                                [29] = {{292,102}}, [26] = {{294,102}}, [22] = {{291,99}}, [14] = {{295,99}, {294,102}} },
+--[[ Mannheim ]]        [26] = {[15] = {{291,101}}, [6]  = {{290,90}}, [5]  = {{289,99}}, [4]  = {{293,99}, {293,101}}, [25] = {{295,103}},
+                                [16] = {{290,100}}, [12]  = {{298,102}}, [10] = {{292,98}}, [11] = {{294,98}, {294,100}},
+                                [29] = {{292,102}}, [26] = {{297,105}}, [22] = {{291,99}}, [14] = {{295,99}, {294,102}} },
 
 
 --[[ Frankfurt ]]       [22] = {[15] = {{292,96}}, [6]  = {{299,95}}, [5]  = {{296,98}}, [4]  = {{294,96}, {296,94}}, [25] = {{294,88}},
                                 [16] = {{294,94}}, [12]  = {{295,91}}, [10] = {{297,93}}, [11] = {{296,96}, {297,95}},
-                                [29] = {{294,92}}, [26] = {{292,92}}, [22] = {{296,92}}, [14] = {{295,93}, {294,94}} },
+                                [29] = {{294,92}}, [26] = {{292,92}}, [22] = {{296,92}}, [14] = {{295,93}, {292,94}} },
 
 
 --[[ Schweinfurt ]]     [21] = {[15] = {{314,100}}, [6]  = {{317,101}}, [5]  = {{316,98}}, [4]  = {{314, 102}, {313,103}}, [25] = {{312,104}},
                                 [16] = {{313,101}}, [12]  = {{315,105}}, [10] = {{317,99}}, [11] = {{316,102}, {315,103}},
-                                [29] = {{312,100}}, [26] = {{314,98}}, [22] = {{315,99}}, [14] = {{316,100}, {314,98}},
+                                [29] = {{312,100}}, [26] = {{309,101}}, [22] = {{315,99}}, [14] = {{316,100}, {314,98}},
                                 [improvementAliases.criticalIndustry.id]={overTwoHundred.criticalIndustryCitiesAndTiles[21]}},
 
 --[[ Friedrichshaven ]] [20] = {[15] = {{299,123}}, [6]  = {{301,123}}, [5]  = {{303,125}}, [4]  = {{301,125}}, [25] = {{305,121}},
@@ -1992,7 +2025,7 @@ local cityCoordinates = {
 
 
 --[[ Nurnburg ]]        [18] = {[15] = {{326,108}}, [6]  = {{332,102}}, [5]  = {{329,105}}, [4]  = {{327,105}, {327,107}}, [25] = {{329,99}},
-                                [16] = {{325,109}}, [12]  = {{331,107}}, [10] = {{325,103}}, [11] = {{325,105}, {325,105}},
+                                [16] = {{325,109}}, [12]  = {{331,107}}, [10] = {{325,103}}, [11] = {{325,105}, {325,107}},
                                 [29] = {{324,108}}, [26] = {{329,101}}, [22] = {{327,103}}, [14] = {{323,105}, {323,107}} },
 
 
@@ -2025,13 +2058,13 @@ local cityCoordinates = {
                                 [16] = {{345,83}}, [12]  = {{345,79}}, [10] = {{347,83}}, [11] = {{349,85}, {348,84}},
                                 [29] = {{345,87}}, [26] = {{341,87}}, [22] = {{348,82}}, [14] = {{348,86,}, {347,87}} },
 
---[[ Rostock ]]         [6] = {[15] = {{345,55}}, [6]  = {{344,60}}, [5]  = {{350,56}}, [4]  = {{346,54}, {345,55}}, [25] = {{346,60}},
-                                [16] = {{344,54}}, [12]  = {{347,53}}, [10] = {{350,54}}, [11] = {{348,54}, {349,55}},
-                                [29] = {{344,56}}, [26] = {{354,62}}, [22] = {{349,53}}, [14] = {{348,56}, {346,57}}, [34] = {{347,53}} },
+--[[ Rostock ]]         [6] = {[15] = {{345,55}}, [6]  = {{344,60}}, [5]  = {{350,56}}, [4]  = {{346,54}, {346,56}}, [25] = {{346,60}},
+                                [16] = {{344,54}}, [12]  = {{344,58}}, [10] = {{350,54}}, [11] = {{348,54}, {349,55}},
+                                [29] = {{344,56}}, [26] = {{354,62}}, [22] = {{349,53}}, [14] = {{348,56}, {347,57}}, [34] = {{347,53}} },
 
 
 --[[ Luneburg ]]        [7] = {[15] = {{323,71}}, [6]  = {{319,69}}, [5]  = {{320,74}}, [4]  = {{322,74}, {324,74}}, [25] = {{329,71}},
-                                [16] = {{324,70}}, [12]  = {{328,70}}, [10] = {{324,76}}, [11] = {{325,75}, {326,74}},
+                                [16] = {{324,70}}, [12]  = {{328,70}}, [10] = {{324,76}}, [11] = {{323,77}, {326,74}},
                                 [29] = {{326,72}}, [26] = {{317,79}}, [22] = {{321,73}}, [14] = {{323,75}, {325,75}} },
 
 
@@ -2057,14 +2090,14 @@ local cityCoordinates = {
 
 --[[ Kiel ]]            [16] = {[15] = {{323,47}}, [6]  = {{317,47}}, [5]  = {{325,53}}, [4]  = {{322,50}, {323,51}}, [25] = {{327,53}},
                                 [16] = {{322,48}}, [12]  = {{328,50}}, [10] = {{326,52}}, [11] = {{325,51}, {324,52}},
-                                [29] = {{323,53}}, [26] = {{323,47}}, [22] = {{326,50}}, [14] = {{323,49}, {325,49}}, [34] = {{324,48}} },
+                                [29] = {{323,53}}, [26] = {{319,49}}, [22] = {{326,50}}, [14] = {{323,49}, {325,49}}, [34] = {{324,48}} },
 
 
 --[[ Lubeck ]]          [17] = {[15] = {{331,57}}, [6]  = {{336,60}}, [5]  = {{331,53}}, [4]  = {{332,54}, {333,55}}, [25] = {{336,62}},
                                 [16] = {{332,58}}, [12]  = {{328,60}}, [10] = {{330,54}}, [11] = {{331,55}, {333,57}},
                                 [29] = {{331,59}}, [26] = {{332,52}}, [22] = {{329,55}}, [14] = {{333,53}, {335,57}}, [34] = {{334,56}} },
 
---[[ Aarhus ]]          [23] = {[15] = {{327,33}}, [6]  = {{326,118}}, [5]  = {{323,31}}, [4]  = {{328,32}, {328,31}}, [25] = {{320,32}},
+--[[ Aarhus ]]          [23] = {[15] = {{327,33}}, [6]  = {{326,118}}, [5]  = {{323,31}}, [4]  = {{328,32}, {329,31}}, [25] = {{320,32}},
                                 [16] = {{326,32}}, [12]  = {{328,38}}, [10] = {{327,29}}, [11] = {{328,30}, {327,31}},
                                 [29] = {{325,35}}, [26] = {{315,37}}, [22] = {{325,29}}, [14] = {{324,30}, {324,32}}, [34] = {{326,34}} },
                                 
@@ -2080,7 +2113,7 @@ local cityCoordinates = {
 
 
 --[[ Brunswick ]]       [48] = {[15] = {{338,78}}, [6]  = {{339,81}}, [5]  = {{341,73}}, [4]  = {{337, 75}, {338,76}}, [25] = {{343,69}},
-                                [16] = {{338,74}}, [12]  = {{335,81}}, [10] = {{340,72}}, [11] = {{339,75}, {341,75}},
+                                [16] = {{338,74}}, [12]  = {{335,81}}, [10] = {{340,72}}, [11] = {{339,77}, {341,75}},
                                 [29] = {{339,75}}, [26] = {{343,81}}, [22] = {{338,72}}, [14] = {{340,76}, {341,77}} },
 
 
@@ -2121,10 +2154,10 @@ local cityCoordinates = {
 
 --[[ Liverpool ]]       [56] = {[15] = {{137,45}}, [6]  = {{133,45}}, [5]  = {{137,43}}, [4]  = {{140,42}, {141,43}}, [25] = {{141,49}},
                                 [16] = {{138,46}}, [12]  = {{136,50}}, [10] = {{140,46}}, [11] = {{142,42}, {141,41}},
-                                [29] = {{139,47}}, [26] = {{145,51}}, [22] = {{141,47}}, [14] = {{141,45}, {142,44}}, [34] = {{149,43}} },
+                                [29] = {{139,47}}, [26] = {{145,51}}, [22] = {{141,47}}, [14] = {{141,45}, {142,44}}, [34] = {{139,43}} },
 
 
---[[ Birmingham ]]      [57] = {[15] = {{147,55}}, [6]  = {{146,52}}, [5]  = {{153,55}}, [4]  = {{147,53}, {148,52}}, [25] = {{162,56}},
+--[[ Birmingham ]]      [57] = {[15] = {{147,55}}, [6]  = {{146,52}}, [5]  = {{153,55}}, [4]  = {{147,53}, {148,50}}, [25] = {{162,56}},
                                 [16] = {{148,56}}, [12]  = {{150,50}}, [10] = {{152,56}}, [11] = {{151,53}, {149,53}},
                                 [29] = {{149,57}}, [26] = {{150,58}}, [22] = {{151,57}}, [14] = {{149,51}, {151,51}} },
 
@@ -2139,13 +2172,13 @@ local cityCoordinates = {
                                 [29] = {{161,49}}, [26] = {{170,50}}, [22] = {{166,50}}, [14] = {{166,48}, {165,49}} },
 
 
---[[ Sheffield ]]       [60] = {[15] = {{167,39}}, [6]  = {{167,43}}, [5]  = {{165,41}}, [4]  = {{166,40}, {166,42}}, [25] = {{174,40}},
+--[[ Sheffield ]]       [60] = {[15] = {{167,39}}, [6]  = {{167,43}}, [5]  = {{165,41}}, [4]  = {{166,40}, {170,42}}, [25] = {{174,40}},
                                 [16] = {{168,38}}, [12]  = {{168,44}}, [10] = {{164,42}}, [11] = {{168,40}, {166,42}},
                                 [29] = {{169,39}}, [26] = {{172,44}}, [22] = {{165,43}}, [14] = {{169,43}, {169,41}} },
 
 
 --[[ Colchester ]]      [61] = {[15] = {{192,62}}, [6]  = {{199,63}}, [5]  = {{190,66}}, [4]  = {{191,65}, {192,64}}, [25] = {{187,65}},
-                                [16] = {{191,63}}, [12]  = {{194,60}}, [10] = {{191,67}}, [11] = {{191,67}, {192,66}},
+                                [16] = {{191,63}}, [12]  = {{194,60}}, [10] = {{191,67}}, [11] = {{192,66}},
                                 [29] = {{190,64}}, [26] = {{190,60}}, [22] = {{192,68}}, [14] = {{193,63}, {194,64}} },
 
 
@@ -2165,7 +2198,7 @@ local cityCoordinates = {
 
 --[[ Glasgow ]]         [65] = {[15] = {{134,10}}, [6]  = {{133,19}}, [5]  = {{137,9}}, [4]  = {{135,13}, {136,12}}, [25] = {{142,12}},
                                 [16] = {{135,9}}, [12]  = {{145,17}}, [10] = {{138,8}}, [11] = {{138,10}, {139,11}},
-                                [29] = {{136,8}}, [26] = {{142,8}}, [22] = {{139,9}}, [14] = {{138,14}, {139.13}}, [34] = {{135,11}} },
+                                [29] = {{136,8}}, [26] = {{142,8}}, [22] = {{139,9}}, [14] = {{138,14}, {139,13}}, [34] = {{135,11}} },
 
 
 --[[ Belfast ]]         [66] = {[15] = {{113,21}}, [6]  = {{107,17}}, [5]  = {{111,25}}, [4]  = {{113,23}, {112,24}}, [25] = {{108,20}},
@@ -2182,8 +2215,8 @@ local cityCoordinates = {
                                 [29] = {{149,25}}, [26] = {{153,29}}, [22] = {{155,25}}, [14] = {{152,26}, {153,25}} },
                                 
 --[[ Lille ]]           [45] = {[15] = {{212,84}}, [6]  = {{213,95}}, [5]  = {{209,87}}, [4]  = {{213,87}, {212,88}}, [25] = {{216,84}},
-                                [16] = {{211,85}}, [12]  = {{208,94}}, [10] = {{210,88}}, [11] = {{213,85}, {212,86}},
-                                [29] = {{210,86}}, [26] = {{219,91}}, [22] = {{211,89}}, [14] = {{211,89}, {210,88}} },
+                                [16] = {{211,85}}, [12]  = {{208,94}}, [10] = {{210,84}}, [11] = {{213,85}, {212,86}},
+                                [29] = {{210,86}}, [26] = {{219,91}}, [22] = {{209,85}}, [14] = {{211,89}, {210,88}} },
                       
 --[[ Dover ]]           [99] = {[15] = {{183,73}}, [6]  = {{178,74}}, [5]  = {{184,74}}, [4]  = {{186,74}}, [25] = {{181,73}},
                                 [16] = {{182,74}}, [12]  = {{184,68}}, [10] = {{185,73}}, [11] = {{187,75}},
@@ -2195,6 +2228,46 @@ local cityCoordinates = {
 
 
 }
+
+-- the overTwoHundred.listOfImprovementTiles is a table of tiles indexed by integers,
+-- and lists all the tiles that are linked to an improvement
+--
+-- overTwoHundred.tileLinkedToImprovement[tileID] is
+-- 	nil if the tile is not associated with a city and improvement
+-- 	table with these keys and values if the tile is linked to a city and improvement
+-- 		.city = city object where the improvement that changes the tile is built
+-- 		.improvement = improvementObject linked to the tile
+
+overTwoHundred.listOfImprovementTiles = {}
+
+overTwoHundred.tileLinkedToImprovement = {}
+
+for cityID,infoTable in pairs(cityCoordinates) do
+	local city = civ.getCity(cityID)
+    for improvID,coordTable in pairs(infoTable) do
+        local improvement = civ.getImprovement(improvID)
+        for __,xyTable in pairs(coordTable) do
+            for map = 0,2 do
+                local iTile = civ.getTile(xyTable[1],xyTable[2],map)
+                if not iTile then
+                    print(xyTable[1],xyTable[2],map)
+                end
+                overTwoHundred.listOfImprovementTiles[#overTwoHundred.listOfImprovementTiles+1] = iTile
+                if overTwoHundred.tileLinkedToImprovement[gen.getTileID(iTile)] and iTile.z == 0 then
+                    print(iTile.x,iTile.y,city.name," associated with two improvements: ", improvement.name, overTwoHundred.tileLinkedToImprovement[gen.getTileID(iTile)].improvement.name)
+                end
+                if improvement.id ~= 34 and iTile.terrainType % 16 == 10 and iTile.z == 0 then
+                    print(iTile.x,iTile.y,city.name,improvement.name, "is on the ocean.")
+                end
+                overTwoHundred.tileLinkedToImprovement[gen.getTileID(iTile)]={city = city,improvement = improvement}
+            end
+        end
+    end
+end
+-- 12345678
+
+                
+	
 
 -- Defines relationships between improvements, units, and terrain types
 -- ID numbers are used for table keys and values so we don't have to worry about renamed improvements, unit types, or terrain types
@@ -2223,6 +2296,113 @@ local improvementUnitTerrainLinks = {
 --[[Critical Industry]]         [improvementAliases.criticalIndustry.id] = {unitTypeId=unitAliases.SpecialTarget.id,buildTerrainTypeMap0=nil, buildTerrainTypeMap1=nil,  buildTerrainTypeMap2=nil, destroyTerrainTypeMap0=nil, destroyTerrainTypeMap1=nil, destroyTerrainTypeMap2=nil},
 }
 
+function overTwoHundred.tileImprovementStatus(tile)
+    -- returns either "unbuilt", "built" or "destroyed"
+    local tileInfo = overTwoHundred.tileLinkedToImprovement[gen.getTileID(tile)]
+    local improvementInfo = improvementUnitTerrainLinks[tileInfo.improvement.id]
+    local buildTerrainType = improvementInfo["buildTerrainTypeMap"..tostring(tile.z)]
+    local destroyTerrainType = improvementInfo["destroyTerrainTypeMap"..tostring(tile.z)]
+    -- military ports, railyards and critical industry are always either built or destroyed, and ignore the terrain type checks
+    local improvementID = tileInfo.improvement.id
+    if improvementID == 25 --[[Railyards]] or
+        improvementID == 34 --[[Military Port]] or
+        improvementID == improvementAliases.criticalIndustry.id then
+        if tileInfo.city:hasImprovement(civ.getImprovement(improvementID)) then
+            return "built"
+        else
+            return "destroyed"
+        end
+    end
+    if tile.terrainType % 16 == buildTerrainType then
+        return "built"
+    elseif tile.terrainType % 16 == destroyTerrainType then
+        return "destroyed"
+    else
+        return "unbuilt"
+    end
+end
+    
+function overTwoHundred.markUnbuiltImprovements(tribe)
+    local radarSafeTile = civ.getTile(specialNumbers.radarSafeTile[1],
+                                        specialNumbers.radarSafeTile[2],
+                                        specialNumbers.radarSafeTile[3])
+    for tileID, infoTable in pairs(overTwoHundred.tileLinkedToImprovement) do
+        if infoTable.city.owner == tribe then
+            local tile = gen.getTileFromId(tileID)
+            if overTwoHundred.tileImprovementStatus(tile) == "unbuilt" then
+                radar.placeRadarMarker(tile,tribe,specialNumbers.improvementMarkerType,radarSafeTile,state.improvementRemovalInfo,
+                                        unitAliases.spotterUnit)
+            end
+        end
+    end
+end
+
+function overTwoHundred.markAllImprovements(tribe)
+    -- mark all improvements for the owner's tribe, except railyards, which already
+    -- have switchyards, that we don't want to remove
+    local radarSafeTile = civ.getTile(specialNumbers.radarSafeTile[1],
+                                        specialNumbers.radarSafeTile[2],
+                                        specialNumbers.radarSafeTile[3])
+    for tileID, infoTable in pairs(overTwoHundred.tileLinkedToImprovement) do
+        if infoTable.city.owner == tribe then
+            local tile = gen.getTileFromId(tileID)
+            if infoTable.improvement ~= improvementAliases.railyards then
+                radar.placeRadarMarker(tile,tribe,specialNumbers.improvementMarkerType,radarSafeTile,state.improvementRemovalInfo,
+                                        unitAliases.spotterUnit)
+            end
+        end
+    end
+end
+
+function overTwoHundred.clearImprovementMarkers()
+    local radarSafeTile = civ.getTile(specialNumbers.radarSafeTile[1],
+                                        specialNumbers.radarSafeTile[2],
+                                        specialNumbers.radarSafeTile[3])
+    for tileID, infoTable in pairs(overTwoHundred.tileLinkedToImprovement) do
+        radar.removeRadarMarker(gen.getTileFromId(tileID),specialNumbers.improvementMarkerType,radarSafeTile,state.improvementRemovalInfo,unitAliases.spotterUnit)
+    end
+end
+
+function overTwoHundred.tileImprovementInformation(tile,tribe) --> string
+    local infoTable = overTwoHundred.tileLinkedToImprovement[gen.getTileID(tile)]
+    if infoTable and infoTable.city.owner == tribe then
+        local city = infoTable.city
+        if overTwoHundred.tileImprovementStatus(tile) == "built" then
+            return "The tile ("..tostring(tile.x)..","..tostring(tile.y)..","..tostring(tile.z)..") is associated with the "..infoTable.improvement.name.." in "..city.name.."."
+        else
+            return"The tile ("..tostring(tile.x)..","..tostring(tile.y)..","..tostring(tile.z)..") is associated with the "..infoTable.improvement.name.." that can be built in "..city.name.."."
+        end
+    end
+    return "The tile ("..tostring(tile.x)..","..tostring(tile.y)..","..tostring(tile.z)..") is not linked to any improvement that can be built by any of our cities."
+end
+function overTwoHundred.tileImprovementDialog(tile,tribe)
+    local menuText = overTwoHundred.tileImprovementInformation(tile,tribe)
+    local menuTable = {}
+    menuTable[1] = "Thanks for the information."
+    menuTable[2] = "Please show on the map the proposed locations for industrial expansion."
+    menuTable[3] = "Please show on the map all industrial locations, constructed, damaged, and proposed (except Railyards)."
+    menuTable[4] = "Please clear the map of industrial location markings."
+    local choice = text.menu(menuTable,menuText,"Minister of Industry")
+    if choice == 1 then
+        return
+    elseif choice == 2 then
+        overTwoHundred.markUnbuiltImprovements(tribe)
+        return
+    elseif choice == 3 then
+        overTwoHundred.markAllImprovements(tribe)
+        return 
+    elseif choice == 4 then
+        overTwoHundred.clearImprovementMarkers()
+        return
+    end
+end
+    
+
+
+
+
+
+        
 
 
 -- help.helpKey tables and definitions
@@ -3578,7 +3758,7 @@ local function germanOccupationBonus()
         end
     end
     local extractionChangeMenu = {}
-    if counterValue("GermanExtractionLevel") > 1 then
+    if counterValue("GermanExtractionLevel") > 0 then
         extractionChangeMenu[1] = "Reduce the Occupation Levy to "..tostring(counterValue("GermanExtractionLevel")-1).."."
     end
     extractionChangeMenu[2] = "Maintain the Occupation Levy at "..tostring(counterValue("GermanExtractionLevel")).."."
@@ -4029,7 +4209,9 @@ canReact[unitAliases.FlakTrain.id] = {maxAttacks = 2, range = 2, anyMap = reacti
 canReact[unitAliases.GermanFlak.id] = {maxAttacks = 4, range = 2, anyMap = reactionGroups.allButJets}
 canReact[unitAliases.AlliedFlak.id] = {maxAttacks = 4, range = 2, anyMap = reactionGroups.allButJets}
 canReact[unitAliases.GermanLightFlak.id] = {maxAttacks = 6, range = 2, sameMap = reactionGroups.allButJets}
-canReact[unitAliases.AlliedLightFlak.id] = {maxAttacks = 6, range = 2, sameMap = reactionGroups.germanInterceptors}
+--canReact[unitAliases.AlliedLightFlak.id] = {maxAttacks = 6, range = 2, sameMap = reactionGroups.germanInterceptors}
+canReact[unitAliases.AlliedLightFlak.id] = {maxAttacks = 6, range = 2, sameMap = reactionGroups.allButJets}
+canReact[unitAliases.BarrageBalloons.id] = {maxAttacks = 6, range = 1, sameMap = reactionGroups.allAir}
 canReact[unitAliases.Sdkfz.id] = {maxAttacks = 3, range = 2, lowMap = reactionGroups.allButJets}
 
 canReact[unitAliases.AlliedTaskForce.id] = {maxAttacks = 2, range = 2, lowMap = reactionGroups.allButJets}
@@ -4180,6 +4362,8 @@ ds.lowFlak = {{.9, 5},{.5,3},{.2,7},{.1,5}}
 
 ds.lightFlak = {{1, 7},{.4,3},{.2,7},{.05,3}}
 ds.lightFlakJabo = {{1, 2},{.4,2},{.2,3},{.05,4}}
+ds.barrageBalloonsDay = {{.2,20}}
+ds.barrageBalloonsNight = {{.3,20}}
 
 ds.depthCharge = {{1, 10},{.2,10},}
 
@@ -4564,6 +4748,8 @@ reactionDamage[unitAliases.AlliedFlak.id] = {high = {triggerTypes = reactionGrou
 low = {triggerTypes = reactionGroups.allButJabo, damageSchedule = ds.lowFlak}, 
 night = {triggerTypes = reactionGroups.allButJets, damageSchedule = ds.nightFlak}}
 
+reactionDamage[unitAliases.BarrageBalloons.id] = {low = {triggerTypes = reactionGroups.allAir, damageSchedule = ds.barrageBalloonsDay}, 
+night = {triggerTypes = reactionGroups.allAir, damageSchedule = ds.barrageBalloonsNight}}
 --Low altitude flak reaction.  Most aircraft take heavy damage.  Jabo likely to take light damage.  Medium bombers take no damage from light flak on attack.
 
 reactionDamage[unitAliases.GermanLightFlak.id] ={low = {{triggerTypes = reactionGroups.allButJabo, damageSchedule = ds.lightFlak},{triggerTypes=reactionGroups.jabo, damageSchedule = ds.lightFlakJabo}} }
@@ -5424,6 +5610,13 @@ local function getRangeAndProbability(unitType,dataTable,defaultRange)
     end
 end
 
+overTwoHundred.balloonReactingAlready = false
+function overTwoHundred.ifBalloonSet(reactingUnit)
+    if reactingUnit.type == unitAliases.BarrageBalloons then
+        overTwoHundred.balloonReactingAlready = true
+    end
+end
+
 local function canReactFunction(triggerUnit,reactingUnit)
     if debugFeatures then
         print("canReactFunction for reacting unit")
@@ -5439,6 +5632,10 @@ local function canReactFunction(triggerUnit,reactingUnit)
         debugPrint("NoEntryInTable")
         return false
     end
+    -- only one barrage balloon can react to an attack
+    --if reactingUnit.type == unitAliases.BarrageBalloons and overTwoHundred.ballonReactingAlready then
+    --    return false
+    --end
     if reactingUnit.location.city and reactingUnit.type.domain == 1 then
         debugPrint("Air unit in city/airfield")
         return false
@@ -5463,6 +5660,7 @@ local function canReactFunction(triggerUnit,reactingUnit)
             debugPrint("All Reactions Used")
             return false
     end
+    
     local function horizontalDistance(unitA,unitB)
         local lA = unitA.location
         local lB = unitB.location
@@ -5484,6 +5682,7 @@ local function canReactFunction(triggerUnit,reactingUnit)
             debugPrint(rAndP.prob)
             if rAndP.range >= horizontalDistance(triggerUnit,reactingUnit) and probOutcome <= rAndP.prob then
                 debugPrint("Can React")
+                overTwoHundred.ifBalloonSet(reactingUnit)
                 return true
             end
         end
@@ -5493,6 +5692,7 @@ local function canReactFunction(triggerUnit,reactingUnit)
         if rAndP then
             if rAndP.range >= horizontalDistance(triggerUnit,reactingUnit) and probOutcome <=rAndP.prob then
                 debugPrint("CanReact")
+                overTwoHundred.ifBalloonSet(reactingUnit)
                 return true
             end
         end
@@ -5503,6 +5703,7 @@ local function canReactFunction(triggerUnit,reactingUnit)
         local rAndP = getRangeAndProbability(triggerUnit.type,reactionEntry.sameTime,reactionEntry.range)
         if rAndP then
             if rAndP.range >= horizontalDistance(triggerUnit,reactingUnit) and probOutcome <=rAndP.prob then
+                overTwoHundred.ifBalloonSet(reactingUnit)
                 return true
             end
         end
@@ -5511,6 +5712,7 @@ local function canReactFunction(triggerUnit,reactingUnit)
         local rAndP = getRangeAndProbability(triggerUnit.type,reactionEntry.lowerAltitude,reactionEntry.range)
         if rAndP then
             if rAndP.range >= horizontalDistance(triggerUnit,reactingUnit) and probOutcome <=rAndP.prob then
+                overTwoHundred.ifBalloonSet(reactingUnit)
                 return true
             end
         end
@@ -5522,6 +5724,7 @@ local function canReactFunction(triggerUnit,reactingUnit)
         local rAndP = getRangeAndProbability(triggerUnit.type,reactionEntry.lowMap,reactionEntry.range)
         if rAndP then
             if rAndP.range >= horizontalDistance(triggerUnit,reactingUnit) and probOutcome <=rAndP.prob then
+                overTwoHundred.ifBalloonSet(reactingUnit)
                 return true
             end
         end    
@@ -5530,6 +5733,7 @@ local function canReactFunction(triggerUnit,reactingUnit)
         local rAndP = getRangeAndProbability(triggerUnit.type,reactionEntry.highMap,reactionEntry.range)
         if rAndP then
             if rAndP.range >= horizontalDistance(triggerUnit,reactingUnit) and probOutcome <=rAndP.prob then
+                overTwoHundred.ifBalloonSet(reactingUnit)
                 return true
             end
         end    
@@ -5538,6 +5742,7 @@ local function canReactFunction(triggerUnit,reactingUnit)
         local rAndP = getRangeAndProbability(triggerUnit.type,reactionEntry.nightMap,reactionEntry.range)
         if rAndP then
             if rAndP.range >= horizontalDistance(triggerUnit,reactingUnit) and probOutcome <=rAndP.prob then
+                overTwoHundred.ifBalloonSet(reactingUnit)
                 return true
             end
         end    
@@ -5977,6 +6182,7 @@ end
 local function postReactionFunction(triggerUnit,reactingUnit)
     state.reactions[reactingUnit.id] = state.reactions[reactingUnit.id] or 0
     state.reactions[reactingUnit.id] = state.reactions[reactingUnit.id] + 1
+    overTwoHundred.ballonReactingAlready = false
     if postReactionInfo[reactingUnit.type.id] then
         if postReactionInfo[reactingUnit.type.id].fuel then
            reactingUnit.owner.money = math.max(reactingUnit.owner.money - postReactionInfo[reactingUnit.type.id].fuel,0)
@@ -6242,6 +6448,55 @@ local aircraftPointValues = {
 [unitAliases.damagedB17G.id]		= 1,
 }
 
+function overTwoHundred.cityHasFireVulnerableImprovement(city)
+    if city:hasImprovement(improvementAliases.airbase) then
+        return false
+    end
+    return  city:hasImprovement(improvementAliases.railyards) or 
+            city:hasImprovement(improvementAliases.refineryI) or 
+            city:hasImprovement(improvementAliases.refineryII) or 
+            city:hasImprovement(improvementAliases.refineryIII) or 
+            city:hasImprovement(improvementAliases.industryI) or 
+            city:hasImprovement(improvementAliases.industryII) or 
+            city:hasImprovement(improvementAliases.industryIII) or 
+            city:hasImprovement(improvementAliases.aircraftFactoryI) or 
+            city:hasImprovement(improvementAliases.aircraftFactoryII) or 
+            city:hasImprovement(improvementAliases.aircraftFactoryIII)
+end
+
+
+function overTwoHundred.fireProtectionNeeded()
+    local tribe = civ.getCurrentTribe()
+    local cityNames = {}
+    local lastUsedIndex = 0
+    for city in civ.iterateCities() do
+        if city.owner == tribe and not(city:hasImprovement(improvementAliases.firefighters))
+            and overTwoHundred.cityHasFireVulnerableImprovement(city) then
+            lastUsedIndex= lastUsedIndex+1
+            cityNames[lastUsedIndex] = city.name
+        end
+    end
+    if lastUsedIndex == 0 then
+        return "All "..tribe.adjective.." cities have adequate fire protection."
+    end
+    if lastUsedIndex == 1 then
+        return cityNames[lastUsedIndex].." needs firefighters."
+    end
+    if lastUsedIndex == 2 then
+        return cityNames[1].." and "..cityNames[2].." are both in need of firefighters."
+    end
+    local messageString = "The cities of "
+    for i=1,(lastUsedIndex-1) do
+        messageString = messageString..cityNames[i]..", "
+        if i%9== 0 then
+            messageString = messageString.."\n^"
+        end
+    end
+    messageString = messageString.."and "..cityNames[lastUsedIndex].." are all in need of firefighters."
+    return messageString
+end
+    
+
 local function displayScore()
     scoreTable = civ.ui.createDialog()
     scoreTable.title = "Scores for Allies and Germans"
@@ -6308,6 +6563,7 @@ local function displayScore()
     local ct = civ.getTurn()
     scoreTable:addText(func.splitlines(text.substitute("\n^%STRING1 Allied convoys are expected to enter the Atlantic on turn %STRING2, %STRING3 on turn %STRING4, and %STRING5 on turn %STRING6.",{countAlliedConvoys(ct+1),ct+1,countAlliedConvoys(ct+2),ct+2,countAlliedConvoys(ct+3),ct+3})))
     scoreTable:addText("The chance an Allied Convoy entering the Atlantic will be veteran is "..tostring(counterValue("ConvoyVetChance"))..".")
+    text.addMultiLineTextToDialog("\n^"..overTwoHundred.fireProtectionNeeded(),scoreTable)
     scoreTable:show() 
 end
 
@@ -6449,6 +6705,9 @@ local doVetSwap = vetswap.buildBasicVetSwap(vetSwapCategories,true,true,true,tru
 
 -- Wilde Sau wilde sau wildesau WildeSau
 
+overTwoHundred.wildeSauForbidden = {}
+overTwoHundred.wildeSauForbidden[unitAliases.Ju188.id] = true
+
 local function wildeSau(unit)
 	if unit.owner == tribeAliases.Allies then
 		local dialogBox = civ.ui.createDialog()
@@ -6486,6 +6745,18 @@ local function wildeSau(unit)
 		dialogBox:addText("This aircraft must be in an airfield in order to assign it to day operations.")
 		dialogBox:show()
 		return
+    elseif overTwoHundred.wildeSauForbidden[unit.type.id] then
+        local alternateTime = nil
+        if unit.location.z == 2 then
+            alternateTime = "day"
+        else
+            alternateTime = "night"
+        end
+		local dialogBox = civ.ui.createDialog()
+		dialogBox.title = "Wilde Sau"
+		dialogBox:addText("We cannot assign this "..unit.type.name.." unit to "..alternateTime.." operations.")
+		dialogBox:show()
+        return
 	elseif unit.location.z < 2 then			
 		local dialogBox = civ.ui.createDialog()
 		dialogBox.title = "Wilde Sau"
@@ -7498,6 +7769,7 @@ local function doTrainlift(unit)
     if unitCity:hasImprovement(improvementAliases.cityI) and
         not(unitCity:hasImprovement(improvementAliases.railyards)) then
         text.simple("The railyard in "..unitCity.name.." has suffered heavy damage.  It must be repaired before we can bring in enough trains to move this "..unit.type.name..".",textAliases.OTRConceptsTrainlift)
+        return
     end
     if state.cityHasDoneTrainlift[unitCity.id] then
         text.simple("The railyards near "..unitCity.name.." are already operating at capacity."..
@@ -7805,6 +8077,8 @@ overTwoHundred.canCityBuild = function (defaultBuildFunction, city, item)
 	end
 end
 civ.scen.onCanBuild(overTwoHundred.canCityBuild)
+reactionDamage[unitAliases.BarrageBalloons.id] = {low = {triggerTypes = reactionGroups.allAir, damageSchedule = ds.barrageBalloonsDay}, 
+night = {triggerTypes = reactionGroups.allAir, damageSchedule = ds.barrageBalloonsNight}}
 
 function overTwoHundred.canCityProduceItem(city,item)
     return overTwoHundred.canCityBuild(overTwoHundred.defaultBuildFn,city,item)
@@ -7906,6 +8180,12 @@ civ.scen.onCityProduction(function(city, prod)
             message:show()
 
         end
+        -- free barrage balloon with production of radar set
+        if civ.isUnit(prod) and (prod.type == unitAliases.EarlyRadar or prod.type == unitAliases.AdvancedRadar) then
+            local balloon = civ.createUnit(unitAliases.BarrageBalloons, prod.owner,prod.location)
+            balloon.homeCity = nil
+        end
+            
 		--resetProductionValues()
 
 
@@ -8099,15 +8379,20 @@ end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 civ.scen.onKeyPress(function(keyID)
-    if civ.getActiveUnit() and keyID == 80 --[[p]] then
-        lastKeyPAndActiveUnit = true
-        
-        return
-        -- return so that lastKeyPAndActiveUnit is not set to false
+    -- replaced p and direction with ctrl+shift+direction
+    --if civ.getActiveUnit() and keyID == 80 --[[p]] then
+    --    lastKeyPAndActiveUnit = true
+    --    
+    --    return
+    --    -- return so that lastKeyPAndActiveUnit is not set to false
+    --end
+    --if lastKeyPAndActiveUnit and civ.getActiveUnit() then
+    --    overTwoHundred.goInDirection(civ.getActiveUnit(),keyID)
+    --end
+    if keyID >= keyboard.ctrlOffset + keyboard.shiftOffset and civ.getActiveUnit() then
+        overTwoHundred.goInDirection(civ.getActiveUnit(),keyID%keyboard.shiftOffset)
     end
-    if lastKeyPAndActiveUnit and civ.getActiveUnit() then
-        overTwoHundred.goInDirection(civ.getActiveUnit(),keyID)
-    end
+    
     lastKeyPAndActiveUnit = false
     if keyID == 48 --[[zero above keys]] then
         overTwoHundred.setGoToHotKey()
@@ -8690,6 +8975,9 @@ civ.scen.onKeyPress(function(keyID)
                                                 specialNumbers.radarSafeTile[2],
                                                 specialNumbers.radarSafeTile[3]))
 	end
+    if keyID == keyboard.ctrl.tab and civ.getActiveUnit() == nil then
+        overTwoHundred.tileImprovementDialog(civ.getCurrentTile(),civ.getCurrentTribe())
+    end
 end) -- end function(keyID)
 
 
@@ -8698,6 +8986,7 @@ end) -- end function(keyID)
 -- The implementations given here should suffice as a basis for most scenarios.
 civ.scen.onLoad(function (buffer)
 	state = civlua.unserialize(lualzw.decompress(buffer) or buffer)
+    overTwoHundred.checkWorkerAllocation()
 	unitAliases.Torpedo.nativeTransport = 0
 	unitAliases.damagedB17F.nativeTransport = 1
 	unitAliases.damagedB17G.nativeTransport = 1
@@ -8720,12 +9009,14 @@ civ.scen.onLoad(function (buffer)
 	unitAliases.RAFAce.nativeTransport = 1 
 	unitAliases.USAAFAce.nativeTransport = 1 
 	state.radarRemovalInfo = state.radarRemovalInfo or {}
+    state.improvementRemovalInfo = state.improvementRemovalInfo or {}
 	if radar.radarMarkerOnMap(radarMarkerType) then
 	radar.askToRemoveRadarMarker(radarMarkerType,state.radarRemovalInfo, unitAliases.spotterUnit,
 	                                    civ.getTile(specialNumbers.radarSafeTile[1],
 	                                                 specialNumbers.radarSafeTile[2],
 	                                                 specialNumbers.radarSafeTile[3]))
 	end
+    overTwoHundred.clearImprovementMarkers()
 	--resetProductionValues()
     state.logState = state.logState or {}
     log.linkState(state.logState)
@@ -8754,6 +9045,7 @@ civ.scen.onLoad(function (buffer)
     state.mostRecentMunitionUserID = state.mostRecentMunitionUserID or 0
     state.alliedReinforcementTrack = state.alliedReinforcementTrack or {}
     state.alliedReinforcementsSent = state.alliedReinforcementsSent or 0
+    setFlagTrue("AlliesCanInvade")-- allies can always invade, but somehow flag might be set to false in the game
 end)
 
 civ.scen.onScenarioLoaded(function ()
@@ -8764,6 +9056,10 @@ civ.scen.onScenarioLoaded(function ()
         harbourUnitActivationFunction(civ.getActiveUnit())
     end
     --require("makeCSV")
+    --error(tostring(civ.getTile(197,63,0).city.workers))
+    --justOnce("resetBoxted",function ()
+    --    state.workerAllocations[civ.getTile(197,63,0).city.id] = 1048578
+    --end)
 
 
     justOnce("MakeTargetsVet",function ()
@@ -8773,10 +9069,14 @@ civ.scen.onScenarioLoaded(function ()
             end
         end
     end)
+    justOnce("BestowRegensburgCritInd", function()
+        civ.getTile(344,108,0).city:addImprovement(improvementAliases.criticalIndustry)
+    end)
     log.removeAllCombatMarkers()
 end)
 
 civ.scen.onSave(function ()
+    overTwoHundred.checkWorkerAllocation()
 --    return civlua.serialize(state)
 	return lualzw.compress(civlua.serialize(state))
 end)
@@ -10236,7 +10536,7 @@ local function afterProduction(turn,tribe)
     overTwoHundred.alliedReinforcementsAfterProduction()
     overTwoHundred.engineFailure(tribe)
     for unit in civ.iterateUnits() do
-        if unit.owner == tribe and unit.type.domain == 1 and unit.location.terrainType % 16 == 0 then
+    if unit.owner == tribe and unit.type.domain == 1 and unit.location.terrainType % 16 == 0 and (not gen.isDestroyedAfterAttacking(unit.type)) then
             unit.moveSpent = math.max(unit.moveSpent,unit.type.move-1)
             unit.damage = math.max(unit.damage,unit.hitpoints-1)
             text.simple("In Over the Reich, there is a distinction between \"airfields\" and \"cities\" (although they are both cities in the Civilization II mechanics sense).  Aircraft are supposed to operate from airfields and not cities.  Since this "..unit.type.name.." has landed in a city, it has been damaged and had its movement points reduced as a penalty.","Over the Reich Concepts: Cities and Airfields")
@@ -10262,14 +10562,14 @@ local function afterProduction(turn,tribe)
         
         if turn == 2 then
         	civ.ui.text(func.splitlines(textAliases.secondTurn1))
-        	civ.ui.text(func.splitlines(textAliases.secondTurn2))
-        	civ.ui.text(func.splitlines(textAliases.secondTurn3))
+        	--civ.ui.text(func.splitlines(textAliases.secondTurn2))-- flak events no longer there
+        	--civ.ui.text(func.splitlines(textAliases.secondTurn3))
         	civ.ui.text(func.splitlines(textAliases.secondTurn4))
         	civ.ui.text(func.splitlines(textAliases.secondTurn5))
         	civ.ui.text(func.splitlines(textAliases.secondTurn6))
             local archiveMessage =  textAliases.secondTurn1.."%PAGEBREAK"..
-                                    textAliases.secondTurn2.."%PAGEBREAK"..
-                                    textAliases.secondTurn3.."%PAGEBREAK"..
+                                    --textAliases.secondTurn2.."%PAGEBREAK"..
+                                    --textAliases.secondTurn3.."%PAGEBREAK"..
                                     textAliases.secondTurn4.."%PAGEBREAK"..
                                     textAliases.secondTurn5.."%PAGEBREAK"..
                                     textAliases.secondTurn6
@@ -10349,14 +10649,14 @@ local function afterProduction(turn,tribe)
 	
 	if tribe == tribeAliases.Germans and turn == 2 then
         civ.ui.text(func.splitlines(textAliases.secondTurn1))
-        civ.ui.text(func.splitlines(textAliases.secondTurn2))
-        civ.ui.text(func.splitlines(textAliases.secondTurn3))
+        --civ.ui.text(func.splitlines(textAliases.secondTurn2))-- flak no longer fortifies or detects aircraft
+        --civ.ui.text(func.splitlines(textAliases.secondTurn3))
         civ.ui.text(func.splitlines(textAliases.secondTurn4))
         civ.ui.text(func.splitlines(textAliases.secondTurn5))
         civ.ui.text(func.splitlines(textAliases.secondTurn6))
         local archiveMessage =  textAliases.secondTurn1.."%PAGEBREAK"..
-                                textAliases.secondTurn2.."%PAGEBREAK"..
-                                textAliases.secondTurn3.."%PAGEBREAK"..
+                                --textAliases.secondTurn2.."%PAGEBREAK"..
+                                --textAliases.secondTurn3.."%PAGEBREAK"..
                                 textAliases.secondTurn4.."%PAGEBREAK"..
                                 textAliases.secondTurn5.."%PAGEBREAK"..
                                 textAliases.secondTurn6
@@ -11764,6 +12064,11 @@ local firstCombatRound = true
         end
            
     end
+    if winner.type == unitAliases.BarrageBalloons then
+        if math.random()<specialNumbers.barrageBalloonKillChance then
+            civ.deleteUnit(winner)
+        end
+    end
     -- replacementUnit will be nil if no unit is replaced
     -- some stuff will use the returned unit of the unit killed function
     return replacementUnit
@@ -11836,6 +12141,21 @@ overTwoHundred.cityToDelete = nil
 overTwoHundred.checkForAirbase = nil
 overTwoHundred.checkForAirbaseOriginalTerrain = nil
 
+function overTwoHundred.canBuildAirfield(location)
+    if (location.terrainType % 16) ~= 2 then
+        return false
+    end
+    if overTwoHundred.tileLinkedToImprovement[gen.getTileId(location)] then
+        return false
+    end
+    for __,tile in pairs(gen.getAdjacentTiles(location)) do
+        if gen.hasTransporter(tile) then
+            return false
+        end
+    end
+    return true
+end
+
 civ.scen.onCityFounded(function (city)
 --[[
 if city.owner == tribeAliases.Germans and city.location.x >= 113 and city.location.x <= 247 and city.location.y >= 111 and city.location.y <= 145 then
@@ -11843,6 +12163,17 @@ if city.owner == tribeAliases.Germans and city.location.x >= 113 and city.locati
     civ.ui.text(textAliases.noAirfieldsInSouthFrance)
     return
 end--]]
+
+local deleteCity = false
+if (not overTwoHundred.canBuildAirfield(city.location)) and (not overTwoHundred.checkForAirbase) then
+    local improveInfo = overTwoHundred.tileLinkedToImprovement[gen.getTileId(city.location)]
+    if improveInfo and (city.location.terrainType % 16 == 2)  then
+        text.simple("The city of "..improveInfo.city.name.." intends to build its "..improveInfo.improvement.name.." at this location, so you must chose a different location for this airfield.  If you proceed in trying to build an airfield here, it will be deleted.")
+    else
+        text.simple("Airfields can only be built on grassland not adjacent to Switchyards.  If you proceed in trying to build this airfield, it will be deleted.")
+    end
+    deleteCity = true
+end
 
 
 tile = civ.getCurrentTile()
@@ -11907,7 +12238,9 @@ if city.location.z == 2 then --Night airfield constructed, so make day airfield 
         civ.deleteUnit(spotter) -- spotter makes new city visible on day map
     end
 end
-
+if deleteCity then
+    civ.deleteCity(city)
+end
 end)
 
 -- lower weight means "better" unit for next selection
@@ -11938,17 +12271,44 @@ local function customWeightFunction(unit,activeUnit)
     return weight
 end
 
+function overTwoHundred.checkWorkerAllocation()
+    state.workerAllocations = state.workerAllocations or {}
+    local message = "Worker allocations changed since last unit activation:\n"
+    local showMessage=false
+    for city in civ.iterateCities() do
+        if state.workerAllocations[city.id] and state.workerAllocations[city.id]~=city.workers then
+            if city.owner ~= civ.getCurrentTribe() then
+                message = message..city.name.."\n^"
+                showMessage = true
+                city.workers = state.workerAllocations[city.id]
+            end
+        end
+        state.workerAllocations[city.id] = city.workers
+    end
+    if showMessage then
+        text.simple(message,"")
+    end
+end
+
 -- doOnActivateUnit is a local variable, but I want to reference it earlier in the code,
 -- so I defined it as nil above
 doOnActivateUnit = function(unit,source)
+    --if unit.type == unitAliases.Photos then
+    --    for __,tile in pairs(gen.getAdjacentTiles(unit.location)) do
+    --        if tile.city then
+    --            gen.setCityInvestigated(tile.city)
+    --        end
+    --    end
+    --end
+    overTwoHundred.checkWorkerAllocation()
     -- gets better unit selection
     gen.selectNextActiveUnit(unit,source,customWeightFunction)
     --unit = gen.activateBetterUnit(unit,source)
     reHomePayloadUnit(unit)
     overTwoHundred.currentUnitGotoOrder = unit.gotoTile
     trainGoto.trainGotoOnActivate(unit)
-    if unit.type.domain == 1 and unit.location.terrainType % 16 == 0 then
-        unit.moveSpent = math.max(unit.moveSpent,unit.type.move-1)
+    if unit.type.domain == 1 and unit.location.terrainType % 16 == 0 and (not gen.isDestroyedAfterAttacking(unit.type))
+        then unit.moveSpent = math.max(unit.moveSpent,unit.type.move-1)
         unit.damage = math.max(unit.damage,unit.hitpoints-1)
         text.simple("In Over the Reich, there is a distinction between \"airfields\" and \"cities\" (although they are both cities in the Civilization II mechanics sense).  Aircraft are supposed to operate from airfields and not cities.  Since this "..unit.type.name.." has landed in a city, it has been damaged and had its movement points reduced as a penalty.","Over the Reich Concepts: Cities and Airfields")
     end
@@ -11974,8 +12334,17 @@ doOnActivateUnit = function(unit,source)
                     civ.deleteCity(civ.getTile(tile.x,tile.y,index).city)
                 end
                 civ.getTile(tile.x,tile.y,index).terrainType = value
-                print(civ.getTile(tile.x,tile.y,index), value)
-
+                --print(civ.getTile(tile.x,tile.y,index), value)
+            end
+        else
+            -- this changes the name of the extra airbase, so it doesn't have to be renamed manually
+            local lowTile = civ.getTile(tile.x,tile.y,0)
+            local nightTile = civ.getTile(tile.x,tile.y,2)
+            if lowTile.city and lowTile.city.name == "New Airfield" and nightTile.city then
+                lowTile.city.name = string.gsub(nightTile.city.name,"%(N%)","")
+            end
+            if nightTile.city and nightTile.city.name == "New Airfield" and lowTile.city then
+                nightTile.city.name = lowTile.city.name.." (N)"
             end
         end
         overTwoHundred.checkForAirbase = nil
@@ -12131,6 +12500,7 @@ doOnActivateUnit = function(unit,source)
         afterProduction(civ.getTurn(),activeTribe)
         setFlagFalse("AfterProdTribe"..tostring(activeTribe.id).."NotDone")
     end
+    --[==[ this stuff is no longer necessary, since flak no longer has offensive capability
     if unit.type == unitAliases.GermanFlak or unit.type == unitAliases.FlakTrain or unit.type == unitAliases.AlliedFlak --[[or unit.type == unitAliases.AlliedTaskForce or unit.type == unitAliases.GermanTaskForce]] then
         local inRange = {[0]=false,[1]=false,[2]=false}
         local diamondTiles = {}
@@ -12151,6 +12521,7 @@ doOnActivateUnit = function(unit,source)
             civ.ui.text(func.splitlines(lowText..highText..nightText))
         end
     end
+    --]==]
 end--End onActivateUnit instructions
 civ.scen.onActivateUnit(doOnActivateUnit)
 
@@ -12325,7 +12696,13 @@ function overTwoHundred.getSurvivalChance(defender,attacker)
         -- under this system, rockets can damage but not kill
     --    return 1
     --end
-    return overTwoHundred.unitSurvivalChance[defender.type.id] or 0
+    -- aces and experten fire munition 77, and these ignore survival chances.
+    -- also, attackers that are not munitions, also don't yield a survival chance
+    if attacker.type.id == 77 or not(gen.isDestroyedAfterAttacking(attacker.type)) then
+        return 0
+    else
+        return overTwoHundred.unitSurvivalChance[defender.type.id] or 0
+    end
 end
 
 local defenderMaxDamage = 999
@@ -12390,6 +12767,47 @@ local function combatResolutionFunction(defaultResolutionFunction,defender,attac
             attacker.damage = attacker.type.hitpoints
             return false
         end
+        --if defender.type == unitAliases.BarrageBalloons then
+        --    if math.random() < specialNumbers.barrageBalloonKillChance then
+        --        defender.damage = defender.type.hitpoints
+        --        return false
+        --    end
+        --end
+        if (attacker.type == unitAliases.DepthCharge and (not (defender.type == unitAliases.UBoat))) then
+            attacker.damage = attacker.type.hitpoints
+           local message = unitAliases.DepthCharge.name.." units can only do damage to "..unitAliases.UBoat.name.." units."
+           text.simple(message,"Over the Reich Concepts: Ineffective Munitions")
+           return false
+        end
+
+        if (defender.type == unitAliases.UBoat) and (attacker.type == unitAliases.TwoHundredFiftylb or attacker.type == unitAliases.FiveHundredlb or attacker.type == unitAliases.Thousandlb) then
+            attacker.damage = attacker.type.hitpoints
+           local message = "Regular bombs are not effective at sinking submarines.  We must use an aircraft armed with a "..unitAliases.DepthCharge.name.." to attack this "..unitAliases.UBoat.name.."."
+           text.simple(message,"Over the Reich Concepts: Ineffective Munitions")
+           return false
+        end
+        if attacker.type == unitAliases.A2ARockets then
+            local minRocketDmg = nil
+            local maxRocketDmg = nil
+            if attacker.veteran then
+                minRocketDmg = specialNumbers.minRocketDamageVeteran
+                maxRocketDmg = specialNumbers.maxRocketDamageVeteran
+            else
+                minRocketDmg = specialNumbers.minRocketDamageRookie
+                maxRocketDmg = specialNumbers.maxRocketDamageRookie
+            end
+            local rocketDamage = math.max(0,math.random(minRocketDmg,maxRocketDmg))
+            defender.damage = defender.damage+rocketDamage
+            if defender.hitpoints > 0 then -- defender didn't get killed
+                attacker.damage = attacker.type.hitpoints
+            end
+            -- no regular combat
+            return false
+        end
+        if defender.damage == 0 and math.random() < overTwoHundred.getSurvivalChance(defender,attacker) then
+            attacker.damage = attacker.type.hitpoints
+            return false
+        end
     end
     local dType = defender.type
     if defender.damage >= specialNumbers.maxMunitionDamageToArmyGroup 
@@ -12408,11 +12826,6 @@ local function combatResolutionFunction(defaultResolutionFunction,defender,attac
     if defender.damage >= defenderMaxDamage and (attacker.type.flags & 0x1000 == 0x1000) then
         defender.damage = defenderMaxDamage
         attacker.damage = attacker.type.hitpoints
-        return false
-    end
-    if defender.hitpoints <= 0 and math.random() < overTwoHundred.getSurvivalChance(defender,attacker) then
-        attacker.damage = attacker.type.hitpoints
-        defender.damage = defender.type.hitpoints - specialNumbers.survivalHP
         return false
     end
 

@@ -52,11 +52,12 @@ log.setGeographyTable = setGeographyTable
 
 local function setUnitTypeShortNameTable(table)
     if type(table) ~= "table" then
-        error("setUnitShortNameTable takes a table as an argument")
+        error("setUnitTypeShortNameTable takes a table as an argument")
     end
     unitTypeShortNameTable = table
     return
 end
+log.setUnitTypeShortNameTable = setUnitTypeShortNameTable
 
 local function setTribeShortNameTable(table)
     if type(table) ~= "table" then
@@ -65,6 +66,7 @@ local function setTribeShortNameTable(table)
     tribeShortNameTable = table
     return
 end
+log.setTribeShortNameTable = setTribeShortNameTable
 local logState = "logState not linked"
 local combatLog = "logState not linked"
 local citiesCapturedAndDestroyedLog = "logState not linked"

@@ -1078,7 +1078,7 @@ object.xProWestIntro3 = [[  ]]
 -- the object table, which could be helpful for debugging, but it
 -- means that no nil value can ever be returned for table object
 -- If you need that ability, comment out this section
-setmetatable(object,{__index = function(myTable,key)
-    error("The object table doesn't have a value associated with "..tostring(key)..".") end})
-
+--setmetatable(object,{__index = function(myTable,key)
+--    error("The object table doesn't have a value associated with "..tostring(key)..".") end})
+--
 return object

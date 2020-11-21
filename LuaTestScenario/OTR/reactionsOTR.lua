@@ -168,12 +168,27 @@ reactionGroups.gunBatteryVulnerable = {unitAliases.AlliedTaskForce,unitAliases.G
 -- make a reactionGroup of all air units
 -- this includes munitions, so newly generated munitions will also be damaged if this
 -- is used for area damage (that may be desirable or undesirable)
+local excludeFromAllAir = {}
+excludeFromAllAir[unitAliases.MossiePR.id]=true
+excludeFromAllAir[unitAliases.Ju188.id]=true
 reactionGroups.allAir = {}
 for i=0,128 do
-    if civ.getUnitType(i) and civ.getUnitType(i).domain == 1 then
+    if civ.getUnitType(i) and civ.getUnitType(i).domain == 1 and (not excludeFromAllAir[i]) then
         table.insert(reactionGroups.allAir,civ.getUnitType(i))
     end
 end
+
+
+local barrageBalloonImmune = {}
+barrageBalloonImmune[unitAliases.MossiePR.id]=true
+barrageBalloonImmune[unitAliases.Ju188.id]=true
+reactionGroups.barrageBalloon = {}
+for i=0,128 do
+    if civ.getUnitType(i) and civ.getUnitType(i).domain == 1 and not(barrageBalloonImmune[i]) then
+        table.insert(reactionGroups.barrageBalloon,civ.getUnitType(i))
+    end
+end
+
 
 local techAliases = {}
 techAliases.AdvancedRadarI = civ.getTech(17)
@@ -4830,6 +4845,16 @@ ri[unitAliases.B17F.id] ={
             hitChanceCloud = .38,
             damageSchedule = damageType.WeakBomberDefense
         },
+		{
+            targetTypes = reactionGroups.nightFighters,
+            maxDistance = 2,
+            hitChance = .75,
+            hitChanceCloud = .38,
+            damageSchedule = damageType.StrongBomberDefense
+        },
+		
+		
+		
 
     },
     
@@ -4881,6 +4906,14 @@ ri[unitAliases.B17G.id] ={
             hitChanceCloud = .4,
             damageSchedule = damageType.WeakBomberDefense
         },
+		
+		{
+            targetTypes = reactionGroups.nightFighters,
+            maxDistance = 2,
+            hitChance = .75,
+            hitChanceCloud = .38,
+            damageSchedule = damageType.StrongBomberDefense
+        },
 
     },
     
@@ -4931,6 +4964,14 @@ ri[unitAliases.B24J.id] ={
             hitChance = .75,
             hitChanceCloud = .38,
             damageSchedule = damageType.WeakBomberDefense
+        },
+		
+		{
+            targetTypes = reactionGroups.nightFighters,
+            maxDistance = 2,
+            hitChance = .75,
+            hitChanceCloud = .38,
+            damageSchedule = damageType.StrongBomberDefense
         },
 
     },
@@ -7811,6 +7852,630 @@ ri[unitAliases.RedTails.id] ={
 
 }
 
+ri[unitAliases.SpitfireIX.id] ={
+    reactionsPerTurn = 4,
+    killMunition = 0.6,-- 60% chance to kill munition set to true to kill munition 100% of time
+    low = {
+        {
+            targetTypes = reactionGroups.heavyBombers,
+            maxDistance = 2,
+            hitChance = .7,
+            hitChanceCloud = .35,
+            damageSchedule = damageType.WeakFightervsBomberAttack
+        },--reactionDetail 1
+        {
+            targetTypes = reactionGroups.mediumBombers,
+            maxDistance = 2,
+            hitChance = .6,
+            hitChanceCloud = .3,
+            damageSchedule = damageType.WeakFightervsBomberAttack 
+        },-- reactionDetail 2
+		{
+            targetTypes = reactionGroups.lightCloseAirSupport,
+            maxDistance = 2,
+            hitChance = .8,
+            hitChanceCloud = .4,
+            damageSchedule = damageType.MediumFightervsBomberAttack 
+			},-- reactionDetail 3
+		{
+            targetTypes = reactionGroups.heavyCloseAirSupport,
+            maxDistance = 2,
+            hitChance = .5,
+            hitChanceCloud = .25,
+            damageSchedule = damageType.WeakFightervsBomberAttack
+        },-- reactionDetail 4
+		--[[{
+            targetTypes = reactionGroups.jetBombers,
+            maxDistance = 1,
+            hitChance = .05
+            hitChanceCloud = .025
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },-- reactionDetail 5]]
+		{
+            targetTypes = reactionGroups.highAltFighters,
+            maxDistance = 2,
+            hitChance = .5,
+            hitChanceCloud = .25,
+            damageSchedule = damageType.MediumFightervsFighterAttack
+        },-- reactionDetail 6
+		{
+            targetTypes = reactionGroups.lowAltFighters,
+            maxDistance = 2,
+            hitChance = .25,
+            hitChanceCloud = .12,
+            damageSchedule = damageType.WeakFightervsFighterAttack
+        },-- reactionDetail 7
+		{
+            targetTypes = reactionGroups.bothAltFighters,
+            maxDistance = 2,
+            hitChance = .25,
+            hitChanceCloud = .12,
+            damageSchedule = damageType.WeakFightervsFighterAttack
+        },-- reactionDetail 8
+		{
+            targetTypes = reactionGroups.nightFighters,
+            maxDistance = 2,
+            hitChance = .5,
+            hitChanceCloud = .25,
+            damageSchedule = damageType.StrongFightervsFighterAttack
+        },-- reactionDetail 9
+		--[[{
+            targetTypes = reactionGroups.specialFighters,
+            maxDistance = 2,
+            hitChance = {[1]=1,[2]=.4},
+            hitChanceCloud = {[1]=.5,[2]=.2},
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },]]-- reactionDetail 10
+		--[[{
+            targetTypes = reactionGroups.jetFighters,
+            maxDistance = 2,
+            hitChance = {[1]=1,[2]=.4},
+            hitChanceCloud = {[1]=.5,[2]=.2},
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },]]-- reactionDetail 11
+		{
+            targetTypes = reactionGroups.bomberDestroyer,
+            maxDistance = 2,
+            hitChance = .5,
+            hitChanceCloud = .25,
+            damageSchedule = damageType.StrongFightervsFighterAttack
+        },-- reactionDetail 12
+
+    },
+    high = {
+        {
+            targetTypes = reactionGroups.heavyBombers,
+            maxDistance = 2,
+            hitChance = .7,
+            hitChanceCloud = .35,
+            damageSchedule = damageType.WeakFightervsBomberAttack 
+        },--reactionDetail 1
+        {
+            targetTypes = reactionGroups.mediumBombers,
+            maxDistance = 2,
+            hitChance = .6,
+            hitChanceCloud = .3,
+            damageSchedule = damageType.WeakFightervsBomberAttack 
+        },-- reactionDetail 2
+		{
+            targetTypes = reactionGroups.lightCloseAirSupport,
+            maxDistance = 2,
+            hitChance = .8,
+            hitChanceCloud = .4,
+            damageSchedule = damageType.MediumFightervsBomberAttack 
+        },-- reactionDetail 3
+		{
+            targetTypes = reactionGroups.heavyCloseAirSupport,
+            maxDistance = 2,
+            hitChance = .5,
+            hitChanceCloud = .25,
+            damageSchedule = damageType.WeakFightervsBomberAttack
+        },-- reactionDetail 4
+		--[[{
+            targetTypes = reactionGroups.jetBombers,
+            maxDistance = 1,
+            hitChance = .05
+            hitChanceCloud = .025
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },-- reactionDetail 5]]
+		{
+            targetTypes = reactionGroups.highAltFighters,
+            maxDistance = 2,
+            hitChance = .5,
+            hitChanceCloud = .25,
+            damageSchedule = damageType.MediumFightervsFighterAttack
+        },-- reactionDetail 6
+		{
+            targetTypes = reactionGroups.lowAltFighters,
+            maxDistance = 2,
+            hitChance = .5,
+            hitChanceCloud = .25,
+            damageSchedule = damageType.StrongFightervsFighterAttack
+        },-- reactionDetail 7
+		{
+            targetTypes = reactionGroups.bothAltFighters,
+            maxDistance = 2,
+            hitChance = .5,
+            hitChanceCloud = .25,
+            damageSchedule = damageType.MediumFightervsFighterAttack
+        },-- reactionDetail 8
+		{
+            targetTypes = reactionGroups.nightFighters,
+            maxDistance = 2,
+            hitChance = .5,
+            hitChanceCloud = .25,
+            damageSchedule = damageType.StrongFightervsFighterAttack
+        },-- reactionDetail 9
+		--[[{
+            targetTypes = reactionGroups.specialFighters,
+            maxDistance = 2,
+            hitChance = {[1]=1,[2]=.4},
+            hitChanceCloud = {[1]=.5,[2]=.2},
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },]]-- reactionDetail 10
+		--[[{
+            targetTypes = reactionGroups.jetFighters,
+            maxDistance = 2,
+            hitChance = {[1]=1,[2]=.4},
+            hitChanceCloud = {[1]=.5,[2]=.2},
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },]]-- reactionDetail 11
+		{
+            targetTypes = reactionGroups.bomberDestroyer,
+            maxDistance = 2,
+            hitChance = .5,
+            hitChanceCloud = .25,
+            damageSchedule = damageType.StrongFightervsFighterAttack
+        },-- reactionDetail 12
+
+    },
+    
+    climb = {
+        --This unit will not climb.
+		
+    },
+    --]]
+    dive = {
+        {
+            targetTypes = reactionGroups.allAir,
+            maxDistance = 2,
+            hitChance = .8,
+            hitChanceCloud = .4,
+            damageSchedule = damageType.WeakDiveAttack
+        },--reactionDetail 1
+        
+    },
+    night = {
+		--Wilde Sau units will only react to bombers and will do so poorly.
+        {
+            targetTypes = reactionGroups.heavyBombers,
+            maxDistance = 1,
+            hitChance = .5,
+            hitChanceCloud = .25,
+            damageSchedule = damageType.WeakFightervsBomberAttack 
+        },--reactionDetail 1
+        
+
+    },
+
+}
+
+ri[unitAliases.SpitfireXII.id] ={
+    reactionsPerTurn = 4,
+    killMunition = 0.7,-- 70% chance to kill munition set to true to kill munition 100% of time
+    low = {
+        {
+            targetTypes = reactionGroups.heavyBombers,
+            maxDistance = 2,
+            hitChance = .75,
+            hitChanceCloud = .38,
+            damageSchedule = damageType.WeakFightervsBomberAttack
+        },--reactionDetail 1
+        {
+            targetTypes = reactionGroups.mediumBombers,
+            maxDistance = 2,
+            hitChance = .65,
+            hitChanceCloud = .33,
+            damageSchedule = damageType.WeakFightervsBomberAttack 
+        },-- reactionDetail 2
+		{
+            targetTypes = reactionGroups.lightCloseAirSupport,
+            maxDistance = 2,
+            hitChance = .85,
+            hitChanceCloud = .43,
+            damageSchedule = damageType.MediumFightervsBomberAttack 
+			},-- reactionDetail 3
+		{
+            targetTypes = reactionGroups.heavyCloseAirSupport,
+            maxDistance = 2,
+            hitChance = .55,
+            hitChanceCloud = .28,
+            damageSchedule = damageType.WeakFightervsBomberAttack
+        },-- reactionDetail 4
+		--[[{
+            targetTypes = reactionGroups.jetBombers,
+            maxDistance = 1,
+            hitChance = .05
+            hitChanceCloud = .025
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },-- reactionDetail 5]]
+		{
+            targetTypes = reactionGroups.highAltFighters,
+            maxDistance = 2,
+            hitChance = .55,
+            hitChanceCloud = .28,
+            damageSchedule = damageType.MediumFightervsFighterAttack
+        },-- reactionDetail 6
+		{
+            targetTypes = reactionGroups.lowAltFighters,
+            maxDistance = 2,
+            hitChance = .3,
+            hitChanceCloud = .15,
+            damageSchedule = damageType.WeakFightervsFighterAttack
+        },-- reactionDetail 7
+		{
+            targetTypes = reactionGroups.bothAltFighters,
+            maxDistance = 2,
+            hitChance = .3,
+            hitChanceCloud = .15,
+            damageSchedule = damageType.WeakFightervsFighterAttack
+        },-- reactionDetail 8
+		{
+            targetTypes = reactionGroups.nightFighters,
+            maxDistance = 2,
+            hitChance = .55,
+            hitChanceCloud = .28,
+            damageSchedule = damageType.StrongFightervsFighterAttack
+        },-- reactionDetail 9
+		--[[{
+            targetTypes = reactionGroups.specialFighters,
+            maxDistance = 2,
+            hitChance = {[1]=1,[2]=.4},
+            hitChanceCloud = {[1]=.5,[2]=.2},
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },]]-- reactionDetail 10
+		--[[{
+            targetTypes = reactionGroups.jetFighters,
+            maxDistance = 2,
+            hitChance = {[1]=1,[2]=.4},
+            hitChanceCloud = {[1]=.5,[2]=.2},
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },]]-- reactionDetail 11
+		{
+            targetTypes = reactionGroups.bomberDestroyer,
+            maxDistance = 2,
+            hitChance = .55,
+            hitChanceCloud = .28,
+            damageSchedule = damageType.StrongFightervsFighterAttack
+        },-- reactionDetail 12
+
+    },
+    high = {
+        {
+            targetTypes = reactionGroups.heavyBombers,
+            maxDistance = 2,
+            hitChance = .75,
+            hitChanceCloud = .38,
+            damageSchedule = damageType.WeakFightervsBomberAttack 
+        },--reactionDetail 1
+        {
+            targetTypes = reactionGroups.mediumBombers,
+            maxDistance = 2,
+            hitChance = .65,
+            hitChanceCloud = .33,
+            damageSchedule = damageType.WeakFightervsBomberAttack 
+        },-- reactionDetail 2
+		{
+            targetTypes = reactionGroups.lightCloseAirSupport,
+            maxDistance = 2,
+            hitChance = .85,
+            hitChanceCloud = .43,
+            damageSchedule = damageType.MediumFightervsBomberAttack 
+        },-- reactionDetail 3
+		{
+            targetTypes = reactionGroups.heavyCloseAirSupport,
+            maxDistance = 2,
+            hitChance = .55,
+            hitChanceCloud = .28,
+            damageSchedule = damageType.WeakFightervsBomberAttack
+        },-- reactionDetail 4
+		--[[{
+            targetTypes = reactionGroups.jetBombers,
+            maxDistance = 1,
+            hitChance = .05
+            hitChanceCloud = .025
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },-- reactionDetail 5]]
+		{
+            targetTypes = reactionGroups.highAltFighters,
+            maxDistance = 2,
+            hitChance = .55,
+            hitChanceCloud = .28,
+            damageSchedule = damageType.MediumFightervsFighterAttack
+        },-- reactionDetail 6
+		{
+            targetTypes = reactionGroups.lowAltFighters,
+            maxDistance = 2,
+            hitChance = .75,
+            hitChanceCloud = .28,
+            damageSchedule = damageType.StrongFightervsFighterAttack
+        },-- reactionDetail 7
+		{
+            targetTypes = reactionGroups.bothAltFighters,
+            maxDistance = 2,
+            hitChance = .55,
+            hitChanceCloud = .28,
+            damageSchedule = damageType.MediumFightervsFighterAttack
+        },-- reactionDetail 8
+		{
+            targetTypes = reactionGroups.nightFighters,
+            maxDistance = 2,
+            hitChance = .55,
+            hitChanceCloud = .28,
+            damageSchedule = damageType.StrongFightervsFighterAttack
+        },-- reactionDetail 9
+		--[[{
+            targetTypes = reactionGroups.specialFighters,
+            maxDistance = 2,
+            hitChance = {[1]=1,[2]=.4},
+            hitChanceCloud = {[1]=.5,[2]=.2},
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },]]-- reactionDetail 10
+		--[[{
+            targetTypes = reactionGroups.jetFighters,
+            maxDistance = 2,
+            hitChance = {[1]=1,[2]=.4},
+            hitChanceCloud = {[1]=.5,[2]=.2},
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },]]-- reactionDetail 11
+		{
+            targetTypes = reactionGroups.bomberDestroyer,
+            maxDistance = 2,
+            hitChance = .55,
+            hitChanceCloud = .28,
+            damageSchedule = damageType.StrongFightervsFighterAttack
+        },-- reactionDetail 12
+
+    },
+    
+    climb = {
+        --This unit will not climb
+		
+    },
+    --]]
+    dive = {
+        {
+            targetTypes = reactionGroups.allAir,
+            maxDistance = 2,
+            hitChance = .85,
+            hitChanceCloud = .43,
+            damageSchedule = damageType.WeakDiveAttack
+        },--reactionDetail 1
+        
+    },
+    night = {
+		--Wilde Sau units will only react to bombers and will do so poorly.
+        {
+            targetTypes = reactionGroups.heavyBombers,
+            maxDistance = 1,
+            hitChance = .55,
+            hitChanceCloud = .28,
+            damageSchedule = damageType.WeakFightervsBomberAttack 
+        },--reactionDetail 1
+        
+
+    },
+
+}
+
+ri[unitAliases.SpitfireXIV.id] ={
+    reactionsPerTurn = 4,
+    killMunition = 0.7,-- 70% chance to kill munition set to true to kill munition 100% of time
+    low = {
+        {
+            targetTypes = reactionGroups.heavyBombers,
+            maxDistance = 2,
+            hitChance = .8,
+            hitChanceCloud = .4,
+            damageSchedule = damageType.WeakFightervsBomberAttack
+        },--reactionDetail 1
+        {
+            targetTypes = reactionGroups.mediumBombers,
+            maxDistance = 2,
+            hitChance = .7,
+            hitChanceCloud = .35,
+            damageSchedule = damageType.WeakFightervsBomberAttack 
+        },-- reactionDetail 2
+		{
+            targetTypes = reactionGroups.lightCloseAirSupport,
+            maxDistance = 2,
+            hitChance = .9,
+            hitChanceCloud = .45,
+            damageSchedule = damageType.MediumFightervsBomberAttack 
+			},-- reactionDetail 3
+		{
+            targetTypes = reactionGroups.heavyCloseAirSupport,
+            maxDistance = 2,
+            hitChance = .6,
+            hitChanceCloud = .3,
+            damageSchedule = damageType.WeakFightervsBomberAttack
+        },-- reactionDetail 4
+		--[[{
+            targetTypes = reactionGroups.jetBombers,
+            maxDistance = 1,
+            hitChance = .05
+            hitChanceCloud = .025
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },-- reactionDetail 5]]
+		{
+            targetTypes = reactionGroups.highAltFighters,
+            maxDistance = 2,
+            hitChance = .6,
+            hitChanceCloud = .3,
+            damageSchedule = damageType.MediumFightervsFighterAttack
+        },-- reactionDetail 6
+		{
+            targetTypes = reactionGroups.lowAltFighters,
+            maxDistance = 2,
+            hitChance = .35,
+            hitChanceCloud = .18,
+            damageSchedule = damageType.WeakFightervsFighterAttack
+        },-- reactionDetail 7
+		{
+            targetTypes = reactionGroups.bothAltFighters,
+            maxDistance = 2,
+            hitChance = .35,
+            hitChanceCloud = .18,
+            damageSchedule = damageType.WeakFightervsFighterAttack
+        },-- reactionDetail 8
+		{
+            targetTypes = reactionGroups.nightFighters,
+            maxDistance = 2,
+            hitChance = .6,
+            hitChanceCloud = .3,
+            damageSchedule = damageType.StrongFightervsFighterAttack
+        },-- reactionDetail 9
+		--[[{
+            targetTypes = reactionGroups.specialFighters,
+            maxDistance = 2,
+            hitChance = {[1]=1,[2]=.4},
+            hitChanceCloud = {[1]=.5,[2]=.2},
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },]]-- reactionDetail 10
+		--[[{
+            targetTypes = reactionGroups.jetFighters,
+            maxDistance = 2,
+            hitChance = {[1]=1,[2]=.4},
+            hitChanceCloud = {[1]=.5,[2]=.2},
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },]]-- reactionDetail 11
+		{
+            targetTypes = reactionGroups.bomberDestroyer,
+            maxDistance = 2,
+            hitChance = .6,
+            hitChanceCloud = .3,
+            damageSchedule = damageType.StrongFightervsFighterAttack
+        },-- reactionDetail 12
+
+    },
+    high = {
+        {
+            targetTypes = reactionGroups.heavyBombers,
+            maxDistance = 2,
+            hitChance = .8,
+            hitChanceCloud = .4,
+            damageSchedule = damageType.WeakFightervsBomberAttack 
+        },--reactionDetail 1
+        {
+            targetTypes = reactionGroups.mediumBombers,
+            maxDistance = 2,
+            hitChance = .7,
+            hitChanceCloud = .35,
+            damageSchedule = damageType.WeakFightervsBomberAttack 
+        },-- reactionDetail 2
+		{
+            targetTypes = reactionGroups.lightCloseAirSupport,
+            maxDistance = 2,
+            hitChance = .9,
+            hitChanceCloud = .45,
+            damageSchedule = damageType.MediumFightervsBomberAttack 
+        },-- reactionDetail 3
+		{
+            targetTypes = reactionGroups.heavyCloseAirSupport,
+            maxDistance = 2,
+            hitChance = .6,
+            hitChanceCloud = .3,
+            damageSchedule = damageType.WeakFightervsBomberAttack
+        },-- reactionDetail 4
+		--[[{
+            targetTypes = reactionGroups.jetBombers,
+            maxDistance = 1,
+            hitChance = .05
+            hitChanceCloud = .025
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },-- reactionDetail 5]]
+		{
+            targetTypes = reactionGroups.highAltFighters,
+            maxDistance = 2,
+            hitChance = .6,
+            hitChanceCloud = .3,
+            damageSchedule = damageType.MediumFightervsFighterAttack
+        },-- reactionDetail 6
+		{
+            targetTypes = reactionGroups.lowAltFighters,
+            maxDistance = 2,
+            hitChance = .8,
+            hitChanceCloud = .4,
+            damageSchedule = damageType.StrongFightervsFighterAttack
+        },-- reactionDetail 7
+		{
+            targetTypes = reactionGroups.bothAltFighters,
+            maxDistance = 2,
+            hitChance = .6,
+            hitChanceCloud = .3,
+            damageSchedule = damageType.MediumFightervsFighterAttack
+        },-- reactionDetail 8
+		{
+            targetTypes = reactionGroups.nightFighters,
+            maxDistance = 2,
+            hitChance = .6,
+            hitChanceCloud = .3,
+            damageSchedule = damageType.StrongFightervsFighterAttack
+        },-- reactionDetail 9
+		--[[{
+            targetTypes = reactionGroups.specialFighters,
+            maxDistance = 2,
+            hitChance = {[1]=1,[2]=.4},
+            hitChanceCloud = {[1]=.5,[2]=.2},
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },]]-- reactionDetail 10
+		--[[{
+            targetTypes = reactionGroups.jetFighters,
+            maxDistance = 2,
+            hitChance = {[1]=1,[2]=.4},
+            hitChanceCloud = {[1]=.5,[2]=.2},
+            damageSchedule = gen.makeThresholdTable({[0]=6,[0.1]=3,[0.5]=1,}),
+        },]]-- reactionDetail 11
+		{
+            targetTypes = reactionGroups.bomberDestroyer,
+            maxDistance = 2,
+            hitChance = .6,
+            hitChanceCloud = .3,
+            damageSchedule = damageType.StrongFightervsFighterAttack
+        },-- reactionDetail 12
+
+    },
+    
+    climb = {
+        --This unit will not climb.
+		
+    },
+    --]]
+    dive = {
+        {
+            targetTypes = reactionGroups.allAir,
+            maxDistance = 2,
+            hitChance = .9,
+            hitChanceCloud = .45,
+            damageSchedule = damageType.WeakDiveAttack
+        },--reactionDetail 1
+        
+    },
+    night = {
+		--Wilde Sau units will only react to bombers and will do so poorly.
+        {
+            targetTypes = reactionGroups.heavyBombers,
+            maxDistance = 1,
+            hitChance = .6,
+            hitChanceCloud = .3,
+            damageSchedule = damageType.WeakFightervsBomberAttack 
+        },--reactionDetail 1
+        
+
+    },
+
+}
+
 ri[unitAliases.Sunderland.id] ={
     reactionsPerTurn = 2,
     killMunition = .99,
@@ -8411,7 +9076,139 @@ ri[unitAliases.MosquitoXIII.id] ={
 
 --**GETEND**
 
+ri[unitAliases.FlakTrain.id] ={
+    reactionsPerTurn = 4,
+    killMunition = 4,-- if plane killed, do 4 damage to each munition
+    reactInsideCity=true,
+    low = {
+        {
+            targetTypes = reactionGroups.FlakvsLightFighter,
+            maxDistance = 2,
+            hitChance = {[1]=.5,[2]=.25},
+            hitChanceCloud = {[1]=.25,[2]=.125},
+            damageSchedule = damageType.StrongFlakAttack,
+            --forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+        {
+            targetTypes = reactionGroups.FlakvsMediumFighter,
+            maxDistance = 2,
+            hitChance = {[1]=.5,[2]=.25},
+            hitChanceCloud = {[1]=.25,[2]=.125},
+            damageSchedule = damageType.MediumFlakAttack,
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsHeavyFighter,
+            maxDistance = 2,
+            hitChance = {[1]=.5,[2]=.25},
+            hitChanceCloud = {[1]=.25,[2]=.125},
+            damageSchedule = damageType.WeakFlakAttack,
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsJetFighter,
+            maxDistance = 2,
+            hitChance = {[1]=.4,[2]=.2},
+            hitChanceCloud = {[1]=.2,[2]=.1},
+            damageSchedule = damageType.MediumFlakAttack,
+         --   forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsMediumBomber,
+            maxDistance = 2,
+            hitChance = {[1]=.7,[2]=.35},
+            hitChanceCloud = {[1]=.35,[2]=.175},
+            damageSchedule = damageType.MediumFlakAttack,
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsHeavyBomber,
+            maxDistance = 2,
+            hitChance = {[1]=.8,[2]=.4},
+            hitChanceCloud = {[1]=.4,[2]=.2},
+            damageSchedule = damageType.MediumFlakAttack,
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsJetBomber,
+            maxDistance = 2,
+            hitChance = {[1]=.6,[2]=.3},
+            hitChanceCloud = {[1]=.3,[2]=.15},
+            damageSchedule = damageType.MediumFlakAttack,
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
 
+    },
+    climb = {
+        
+		
+		{
+            targetTypes = reactionGroups.FlakvsMediumBomber,
+            maxDistance = 2,
+            hitChance = {[1]=.4,[2]=.2},
+            hitChanceCloud = {[1]=.2,[2]=.1},
+			shooterTechMod = {{techAliases.ProximityFuses,.2},},
+            shooterTechCloud = {{techAliases.ProximityFuses,.2},},
+            damageSchedule = damageType.WeakFlakAttack,
+         --   forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsHeavyBomber,
+            maxDistance = 2,
+            hitChance = {[1]=.5,[2]=.25},
+            hitChanceCloud = {[1]=.25,[2]=.125},
+			shooterTechMod = {{techAliases.ProximityFuses,.2},},
+            shooterTechCloud = {{techAliases.ProximityFuses,.2},},
+            damageSchedule = damageType.WeakFlakAttack,
+         --   forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsJetBomber,
+            maxDistance = 2,
+            hitChance = {[1]=.3,[2]=.15},
+            hitChanceCloud = {[1]=.15,[2]=.075},
+			shooterTechMod = {{techAliases.ProximityFuses,.2},},
+            shooterTechCloud = {{techAliases.ProximityFuses,.2},},
+            damageSchedule = damageType.WeakFlakAttack,
+         --   forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+
+    },
+    --
+    groundToNight = {
+        {
+            targetTypes = reactionGroups.FlakvsMediumBomber,
+            maxDistance = 2,
+            hitChance = {[1]=.35,[2]=.15},
+            hitChanceCloud = {[1]=.175,[2]=.075},
+			shooterTechMod = {{techAliases.ProximityFuses,.2},},
+            shooterTechCloud = {{techAliases.ProximityFuses,.2},},
+            damageSchedule = damageType.WeakFlakAttack,
+         --   forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsHeavyBomber,
+            maxDistance = 2,
+            hitChance = {[1]=.45,[2]=.2},
+            hitChanceCloud = {[1]=.275,[2]=.1},
+			shooterTechMod = {{techAliases.ProximityFuses,.2},},
+            shooterTechCloud = {{techAliases.ProximityFuses,.2},},
+            damageSchedule = damageType.WeakFlakAttack,
+         --   forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsJetBomber,
+            maxDistance = 2,
+            hitChance = {[1]=.25,[2]=.1},
+            hitChanceCloud = {[1]=.125,[2]=.05},
+			shooterTechMod = {{techAliases.ProximityFuses,.2},},
+            shooterTechCloud = {{techAliases.ProximityFuses,.2},},
+            damageSchedule = damageType.WeakFlakAttack,
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+
+    },
+}
 
 ri[unitAliases.GermanFlak.id] ={
     reactionsPerTurn = 4,
@@ -8692,7 +9489,7 @@ ri[unitAliases.GermanLightFlak.id] ={
             hitChance = {[1]=.8,[2]=.4},
             hitChanceCloud = {[1]=.4,[2]=.2},
             damageSchedule = damageType.StrongFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+            --forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
         {
             targetTypes = reactionGroups.FlakvsMediumFighter,
@@ -8700,7 +9497,7 @@ ri[unitAliases.GermanLightFlak.id] ={
             hitChance = {[1]=.6,[2]=.3},
             hitChanceCloud = {[1]=.3,[2]=.15},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+            --forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsHeavyFighter,
@@ -8708,7 +9505,7 @@ ri[unitAliases.GermanLightFlak.id] ={
             hitChance = {[1]=.3,[2]=.15},
             hitChanceCloud = {[1]=.15,[2]=.075},
             damageSchedule = damageType.WeakFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsJetFighter,
@@ -8716,7 +9513,7 @@ ri[unitAliases.GermanLightFlak.id] ={
             hitChance = {[1]=.4,[2]=.2},
             hitChanceCloud = {[1]=.2,[2]=.1},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsMediumBomber,
@@ -8724,7 +9521,7 @@ ri[unitAliases.GermanLightFlak.id] ={
             hitChance = {[1]=.8,[2]=.4},
             hitChanceCloud = {[1]=.4,[2]=.2},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsHeavyBomber,
@@ -8732,7 +9529,7 @@ ri[unitAliases.GermanLightFlak.id] ={
             hitChance = {[1]=.9,[2]=.45},
             hitChanceCloud = {[1]=.45,[2]=.275},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsJetBomber,
@@ -8740,7 +9537,7 @@ ri[unitAliases.GermanLightFlak.id] ={
             hitChance = {[1]=.7,[2]=.35},
             hitChanceCloud = {[1]=.35,[2]=.175},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 
     },
@@ -8758,7 +9555,7 @@ ri[unitAliases.GermanLightFlak.id] ={
             hitChance = {[1]=.7,[2]=.35},
             hitChanceCloud = {[1]=.35,[2]=.175},
             damageSchedule = damageType.StrongFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
         {
             targetTypes = reactionGroups.FlakvsMediumFighter,
@@ -8766,7 +9563,7 @@ ri[unitAliases.GermanLightFlak.id] ={
             hitChance = {[1]=.5,[2]=.25},
             hitChanceCloud = {[1]=.25,[2]=.125},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsHeavyFighter,
@@ -8774,7 +9571,7 @@ ri[unitAliases.GermanLightFlak.id] ={
             hitChance = {[1]=.2,[2]=.1},
             hitChanceCloud = {[1]=.1,[2]=.5},
             damageSchedule = damageType.WeakFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsJetFighter,
@@ -8782,7 +9579,7 @@ ri[unitAliases.GermanLightFlak.id] ={
             hitChance = {[1]=.3,[2]=.15},
             hitChanceCloud = {[1]=.15,[2]=.075},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsMediumBomber,
@@ -8790,7 +9587,7 @@ ri[unitAliases.GermanLightFlak.id] ={
             hitChance = {[1]=.7,[2]=.35},
             hitChanceCloud = {[1]=.35,[2]=.175},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsHeavyBomber,
@@ -8798,7 +9595,7 @@ ri[unitAliases.GermanLightFlak.id] ={
             hitChance = {[1]=.8,[2]=.4},
             hitChanceCloud = {[1]=.4,[2]=.2},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsJetBomber,
@@ -8806,7 +9603,7 @@ ri[unitAliases.GermanLightFlak.id] ={
             hitChance = {[1]=.6,[2]=.3},
             hitChanceCloud = {[1]=.3,[2]=.15},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 
     },
@@ -8823,7 +9620,7 @@ ri[unitAliases.AlliedLightFlak.id] ={
             hitChance = {[1]=.8,[2]=.4},
             hitChanceCloud = {[1]=.4,[2]=.2},
             damageSchedule = damageType.StrongFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
         {
             targetTypes = reactionGroups.FlakvsMediumFighter,
@@ -8831,7 +9628,7 @@ ri[unitAliases.AlliedLightFlak.id] ={
             hitChance = {[1]=.6,[2]=.3},
             hitChanceCloud = {[1]=.3,[2]=.15},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsHeavyFighter,
@@ -8839,7 +9636,7 @@ ri[unitAliases.AlliedLightFlak.id] ={
             hitChance = {[1]=.3,[2]=.15},
             hitChanceCloud = {[1]=.15,[2]=.075},
             damageSchedule = damageType.WeakFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsJetFighter,
@@ -8847,7 +9644,7 @@ ri[unitAliases.AlliedLightFlak.id] ={
             hitChance = {[1]=.4,[2]=.2},
             hitChanceCloud = {[1]=.2,[2]=.1},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsMediumBomber,
@@ -8855,7 +9652,7 @@ ri[unitAliases.AlliedLightFlak.id] ={
             hitChance = {[1]=.8,[2]=.4},
             hitChanceCloud = {[1]=.4,[2]=.2},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsHeavyBomber,
@@ -8863,7 +9660,7 @@ ri[unitAliases.AlliedLightFlak.id] ={
             hitChance = {[1]=.9,[2]=.45},
             hitChanceCloud = {[1]=.45,[2]=.275},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsJetBomber,
@@ -8871,7 +9668,7 @@ ri[unitAliases.AlliedLightFlak.id] ={
             hitChance = {[1]=.7,[2]=.35},
             hitChanceCloud = {[1]=.35,[2]=.175},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 
     },
@@ -8889,7 +9686,7 @@ ri[unitAliases.AlliedLightFlak.id] ={
             hitChance = {[1]=.7,[2]=.35},
             hitChanceCloud = {[1]=.35,[2]=.175},
             damageSchedule = damageType.StrongFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
         {
             targetTypes = reactionGroups.FlakvsMediumFighter,
@@ -8897,7 +9694,7 @@ ri[unitAliases.AlliedLightFlak.id] ={
             hitChance = {[1]=.5,[2]=.25},
             hitChanceCloud = {[1]=.25,[2]=.125},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsHeavyFighter,
@@ -8905,7 +9702,7 @@ ri[unitAliases.AlliedLightFlak.id] ={
             hitChance = {[1]=.2,[2]=.1},
             hitChanceCloud = {[1]=.1,[2]=.5},
             damageSchedule = damageType.WeakFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsJetFighter,
@@ -8913,7 +9710,7 @@ ri[unitAliases.AlliedLightFlak.id] ={
             hitChance = {[1]=.3,[2]=.15},
             hitChanceCloud = {[1]=.15,[2]=.075},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsMediumBomber,
@@ -8921,7 +9718,7 @@ ri[unitAliases.AlliedLightFlak.id] ={
             hitChance = {[1]=.7,[2]=.35},
             hitChanceCloud = {[1]=.35,[2]=.175},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsHeavyBomber,
@@ -8929,7 +9726,7 @@ ri[unitAliases.AlliedLightFlak.id] ={
             hitChance = {[1]=.8,[2]=.4},
             hitChanceCloud = {[1]=.4,[2]=.2},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+         --   forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 		{
             targetTypes = reactionGroups.FlakvsJetBomber,
@@ -8937,13 +9734,169 @@ ri[unitAliases.AlliedLightFlak.id] ={
             hitChance = {[1]=.6,[2]=.3},
             hitChanceCloud = {[1]=.3,[2]=.15},
             damageSchedule = damageType.MediumFlakAttack,
-            forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+
+    },
+}
+
+ri[unitAliases.Sdkfz.id] ={
+    reactionsPerTurn = 2,
+    killMunition = 10,-- if plane killed, do 4 damage to each munition
+    reactInsideCity=true,
+    low = {
+        {
+            targetTypes = reactionGroups.FlakvsLightFighter,
+            maxDistance = 2,
+            hitChance = {[1]=.8,[2]=.4},
+            hitChanceCloud = {[1]=.4,[2]=.2},
+            damageSchedule = damageType.StrongFlakAttack,
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+        {
+            targetTypes = reactionGroups.FlakvsMediumFighter,
+            maxDistance = 2,
+            hitChance = {[1]=.6,[2]=.3},
+            hitChanceCloud = {[1]=.3,[2]=.15},
+            damageSchedule = damageType.MediumFlakAttack,
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsHeavyFighter,
+            maxDistance = 2,
+            hitChance = {[1]=.3,[2]=.15},
+            hitChanceCloud = {[1]=.15,[2]=.075},
+            damageSchedule = damageType.WeakFlakAttack,
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsJetFighter,
+            maxDistance = 2,
+            hitChance = {[1]=.4,[2]=.2},
+            hitChanceCloud = {[1]=.2,[2]=.1},
+            damageSchedule = damageType.MediumFlakAttack,
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsMediumBomber,
+            maxDistance = 2,
+            hitChance = {[1]=.8,[2]=.4},
+            hitChanceCloud = {[1]=.4,[2]=.2},
+            damageSchedule = damageType.MediumFlakAttack,
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsHeavyBomber,
+            maxDistance = 2,
+            hitChance = {[1]=.9,[2]=.45},
+            hitChanceCloud = {[1]=.45,[2]=.275},
+            damageSchedule = damageType.MediumFlakAttack,
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsJetBomber,
+            maxDistance = 2,
+            hitChance = {[1]=.7,[2]=.35},
+            hitChanceCloud = {[1]=.35,[2]=.175},
+            damageSchedule = damageType.MediumFlakAttack,
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+
+    },
+    climb = {
+        
+		--Light flak only fires at low altitude
+		
+
+    },
+    --
+    night = {
+        {
+            targetTypes = reactionGroups.FlakvsLightFighter,
+            maxDistance = 1,
+            hitChance = {[1]=.7,[2]=.35},
+            hitChanceCloud = {[1]=.35,[2]=.175},
+            damageSchedule = damageType.StrongFlakAttack,
+         --   forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+        {
+            targetTypes = reactionGroups.FlakvsMediumFighter,
+            maxDistance = 1,
+            hitChance = {[1]=.5,[2]=.25},
+            hitChanceCloud = {[1]=.25,[2]=.125},
+            damageSchedule = damageType.MediumFlakAttack,
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsHeavyFighter,
+            maxDistance = 1,
+            hitChance = {[1]=.2,[2]=.1},
+            hitChanceCloud = {[1]=.1,[2]=.5},
+            damageSchedule = damageType.WeakFlakAttack,
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsJetFighter,
+            maxDistance = 1,
+            hitChance = {[1]=.3,[2]=.15},
+            hitChanceCloud = {[1]=.15,[2]=.075},
+            damageSchedule = damageType.MediumFlakAttack,
+          --  forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsMediumBomber,
+            maxDistance = 1,
+            hitChance = {[1]=.7,[2]=.35},
+            hitChanceCloud = {[1]=.35,[2]=.175},
+            damageSchedule = damageType.MediumFlakAttack,
+           -- forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsHeavyBomber,
+            maxDistance = 1,
+            hitChance = {[1]=.8,[2]=.4},
+            hitChanceCloud = {[1]=.4,[2]=.2},
+            damageSchedule = damageType.MediumFlakAttack,
+         --   forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
+        },
+		{
+            targetTypes = reactionGroups.FlakvsJetBomber,
+            maxDistance = 2,
+            hitChance = {[1]=.6,[2]=.3},
+            hitChanceCloud = {[1]=.3,[2]=.15},
+            damageSchedule = damageType.MediumFlakAttack,
+         --   forbiddenShooterTerrain = {[1]=true,[2]=true,[3]=true,[5]=true,[10]=true}
         },
 
     },
 }
 
 
+ri[unitAliases.BarrageBalloon.id] ={
+    reactionsPerTurn = 6,
+    killMunition = 10,-- if plane killed, do 4 damage to each munition
+    reactInsideCity=true,
+    low = {
+        {
+            targetTypes = reactionGroups.barrageBalloon,
+            maxDistance = 1,
+            hitChance = 0.2,
+            hitChanceCloud = 0.2,
+            damageSchedule = gen.makeThresholdTable({[0]=20})
+        },
+
+    },
+    climb = {
+        
+		--Barrage Balloons only fires at low altitude
+		
+
+    },
+    --
+    night = {
+        -- barrage balloons not on night map
+    },
+}
 ri[unitAliases.GunBattery.id] ={
     reactionsPerTurn = 2,
     killMunition = 10,-- if plane killed, do 4 damage to each munition
@@ -9018,7 +9971,7 @@ ri[unitAliases.GunBattery.id] ={
 --
 --  You should not have to modify stuff below this line
 
-
+local balloonReacted = false
 
 
 
@@ -9029,6 +9982,21 @@ local function canReact(target,shooter)
     end
     if target.owner == shooter.owner then
         return false
+    end
+    -- only one balloon can react
+    if shooter.type == unitAliases.BarrageBalloon and balloonReacted then
+        return false
+    end
+    -- barrage balloon can't react if there is an air unit on the tile
+    -- but not city on the tile
+    -- this way, a barrage balloon can't protect a plane in the air
+    if shooter.type == unitAliases.BarrageBalloon and (not shooter.location.city) then
+        for unit in shooter.location.units do
+            if unit.type.domain == 1 then
+                balloonReacted = true
+                return false
+            end
+        end
     end
     local shooterMap = shooter.location.z
     local targetMap = target.location.z
@@ -9078,6 +10046,9 @@ local function canReact(target,shooter)
     end
     if (shooter.location.city or gen.unitTypeOnTile(shooter.location,unitAliases.Carrier)) and not (ri[shooter.type.id]["reactInsideCity"]) then
         return false
+    end
+    if shooter.type == unitAliases.BarrageBalloon then
+        balloonReacted=true
     end
     return shooter.type.name..reactionSuffix
 end
@@ -9204,6 +10175,7 @@ local function munitionEffect(targetBeforeDamage,shooter,munitionsTable,targetHi
 end
 
 local function afterReaction(targetAfterDamageBeforeDeletion,shooter,damageDone,targetHit,targetKilled,targetDemoted)
+    balloonReacted = false
     reactionBase.incrementReactions(shooter)
 end
 

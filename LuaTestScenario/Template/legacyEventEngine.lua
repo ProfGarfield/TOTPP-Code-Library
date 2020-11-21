@@ -16,7 +16,7 @@ local function supplyLegacyEventsTable(table)
         eventTable = table
     end
 end
-local civlua = require("civlua")
+local civlua = require("civluaModified")
 local func = require("functions")
 
 -- legacyEventEngine accesses the state table through the global variable 
@@ -1628,6 +1628,46 @@ end
 -- NO CAN BUILD TRIGGERS
 --
 --
+--
+
+-- Lua Trigger
+-- Allows Lua to trigger events in the Legacy Event Engine directly
+-- usage:
+-- @IF
+-- lua
+-- triggername=myluatrigger
+-- @AND
+-- ...
+--
+-- legacy.luaTrigger("myluatrigger","triggerAttackerNameOrNil","triggerDefenderNameOrNil","triggerReceiverNameOrNil")
+--      
+local function luaTriggerConditionMet(ANDIFTable,triggerName,spareArgument)
+    if not ANDIFTable["lua"] then
+        return false
+    end
+    if string.lower(triggerName) ~= ANDIFTable["triggername"] then
+        return false
+    end
+    -- if we get here, everything is correct
+    return true
+end
+
+
+-- triggerAttackerString, triggerDefenderString, and triggerReceiverString are either nil or the name
+-- of a tribe
+local function luaTrigger(triggerName,triggerAttackerString,triggerDefenderString,triggerReceiverString)
+    if triggerAttackerString then
+        triggerAttackerString = string.lower(triggerAttackerString)
+    end
+    if triggerDefenderString then
+        triggerDefenderString = string.lower(triggerDefenderString)
+    end
+    if triggerReceiverString then
+        triggerReceiverString = string.lower(triggerReceiverString)
+    end
+    doTriggerEventsFunction(luaTriggerConditionMet,triggerName,nil,triggerAttackerString,triggerDefenderString,triggerReceiverString)
+end
+
 return {setFlagOn=setFlagOn,
 clearFlagOff = clearFlagOff,
 setMaskOn = setMaskOn,
@@ -1647,4 +1687,5 @@ doNegotiationEvents = doNegotiationEvents,
 endTheGame = endTheGame,
 linkState = linkState,
 supplyLegacyEventsTable=supplyLegacyEventsTable,
+luaTrigger=luaTrigger
 }

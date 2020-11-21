@@ -26,6 +26,64 @@ end
 -- active unit
 -- keyID == 72 not needed unless payload restriction is used 
 
+
+-- we use the state table to keep track of the units (or, rather, the unit id numbers) that 
+-- generated munitions
+local munitionState = "munitionStateNotLinked"
+
+-- links the state table with this module
+local function linkState(tableInStateTable)
+    if type(tableInStateTable) == "table" then
+        munitionState = tableInStateTable
+        -- this table is indexed by the unit ID numbers of munitions that were generated,
+        munitionState.munitionIDGeneratorID = munitionState.munitionIDGeneratorID or {}
+        -- this table keeps track of the unit type that generated the munition,
+        -- as a backup check
+        munitionState.munitionIDGeneratorTypeID = munitionState.munitionIDGeneratorTypeID or {}
+    else
+        error("linkState: linkState takes a table as an argument.")
+    end
+end
+
+local function unitDeathMaintenance(dyingUnit)
+    local dyingUnitID = dyingUnit.id
+    munitionState.munitionIDGeneratorID[dyingUnit.id] = nil
+    munitionState.munitionIDGeneratorTypeID[dyingUnit.id] = nil
+    for unitID,generatorID in pairs(munitionState.munitionIDGeneratorID) do
+        if generatorID == dyingUnitID then
+            munitionState.munitionIDGeneratorID[unitID] = nil
+        end
+    end
+end
+
+-- returns the unit that generated the munition, if it exists
+-- returns nil if there is no unit (or the unit can't be confirmed)
+local function getShooter(unit)
+    local shooterID = munitionState.munitionIDGeneratorID[unit.id]
+    local shooterTypeID = munitionState.munitionIDGeneratorTypeID[unit.id]
+    if shooterID and civ.getUnit(shooterID) and shooterTypeID and
+        (civ.getUnit(shooterID) == civ.getUnitType(shooterTypeID)) then
+        return civ.getUnit(shooterID)
+    else
+        return nil
+    end
+end
+
+local function linkMunitionAndShooter(munition,shooter)
+    munitionState.munitionIDGeneratorID[munition.id]=shooter.id
+    munitionState.munitionIDGeneratorTypeID[munition.id]=shooter.type.id
+end
+
+
+
+
+
+
+
+
+
+
+
 --specificationTable[unitType.id]={
 --
 -- goldCost = integer or nil
@@ -368,6 +426,9 @@ local function spawnUnit(generatingUnit,specificationTable,onUnitActivateFn)
     if specification.successMessage then
         civ.ui.text(func.splitlines(specification.successMessage))
     end
+    for __,newMunitionUnit in pairs(unitTable) do
+        linkMunitionAndShooter(newMunitionUnit,generatingUnit)
+    end
     return unitTable
 end
 
@@ -475,6 +536,9 @@ local function activationReArm(unit,primarySpecificationTable,secondarySpecifica
 
 end
 return {
+    linkState=linkState,
+    unitDeathMaintenance=unitDeathMaintenance,
+    getShooter=getShooter,
     spawnUnit=spawnUnit,
     doMunition=spawnUnit,
     payloadRestrictionCheck=payloadRestrictionCheck,

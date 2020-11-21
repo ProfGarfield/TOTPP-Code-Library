@@ -26,16 +26,10 @@ local flag = require("flags")
 local kw = require("killWarrior")
 local text = require("text")
 local customMusic = require("customMusic")
+civ.ui.text(civ.scen.params.name)
 
 
-civ.ui.text(text.money(200))
-civ.ui.text(text.money(10000))
-civ.ui.text(text.groupDigits(12345678.9))
-text.setMoney("$%STRING1,000")
-civ.ui.text(text.money(5000).." was paid.")
-text.setMoney("%STRING1,000 Dollars")
-civ.ui.text(text.money(50000).." was delivered.")
---local tribeEvents = nil
+local tribeEvents = nil
 --if civ.getTribe(1).isHuman or civ.getTribe(2).isHuman or civ.getTribe(3).isHuman then
 --    tribeEvents = require("tribeA")
 --else
@@ -188,7 +182,7 @@ local WarriorsKilled = {
    deadUnit = nil
    deadUnitLoc = nil
   civ.scen.onUnitKilled(function (killed, killedBy)
-      print(killed,killedBy)
+      print(killed, killed.stackPrev,killed.stackNext)
       log.onUnitKilled(killedBy,killed)
       kw.legionMessage(killed)
       if killed.type.id == 2 then
@@ -211,6 +205,11 @@ local WarriorsKilled = {
      deadUnitLoc = killed.location
      print(deadUnit)
  end
+    if killed.type.id == 3 then
+        local demotee = civ.createUnit(civ.getUnitType(2),killed.owner,killed.location)
+        demotee.attributes = killed.attributes
+        demotee.moveSpent = killed.moveSpent
+    end
      
     end)
 --civ.scen.onActivateUnit(function (tribe,source) if deadUnit then print(deadUnit,deadUnit.id,deadUnit.attributes, deadUnit.owner,deadUnit.location) deadUnit:teleport(deadUnitLoc) print(deadUnit) deadUnit=nil deadUnitLoc=nil end end)
@@ -227,16 +226,21 @@ civ.scen.onCityDestroyed(function(city)
 end)
 
 civ.scen.onResolveCombat(function(defaultResolutionFunction, defender, attacker) 
-    print(defender,attacker)
+    --print(defender,attacker)
     if attacker.hitpoints <=0 or defender.hitpoints <=0 then end return defaultResolutionFunction(defender,attacker) end)
 
 local function doAfterProduction(tribe,turn)
     text.simple("After Production for "..tribe.name.." on turn "..civ.getTurn())
+    text.simple("Player tribe is "..civ.getPlayerTribe().name..".")
     text.displayAccumulatedMessages()
 
 end
 
 local function doOnActivateUnit(unit,source)
+    if unit.owner.id == 1 then
+        civ.getTribe(2).patience = 99
+    end
+    civ.ui.text(unit.type.name.." is activated")
     gen.clearAdjacentAirProtection(unit)
     if flag.value("tribe"..tostring(civ.getCurrentTribe().id).."AfterProductionNotComplete") then
         doAfterProduction(civ.getCurrentTribe(),civ.getTurn())
@@ -341,6 +345,18 @@ civ.scen.onKeyPress(function (keyCode)
             activeUnit:activate()
         end
         if not civ.getActiveUnit() then
+            local menuTable = {}
+            for i=0,7 do
+                menuTable[i+3] = civ.getTribe(i).name
+            end
+            menuTable[2] = "Between Turns"
+            local tribeChoice = text.menu(menuTable,"","")
+            tribeChoice = tribeChoice - 3
+            menuTable = {}
+            menuTable[1] = "Next opportunity"
+            for i=1,5 do
+                menuTable[i+2] = "On turn "..tostring(civ.getTurn()+i)
+            end
         --  text.simple(twentyLines)
         --  text.simple(thirtyLines,"ThirtyLines")
         --  civ.ui.text(tostring(text.menu(menuTableThirty,oneLineMenuText)))
@@ -391,6 +407,7 @@ text.linkState(state.textTable)
  civ.scen.onSave(function () 
      return civlua.serialize(state) end) 
  civ.scen.onScenarioLoaded(function ()
+     civ.ui.text(tostring(civ.game.humanPlayers))
      --civ.ui.text("civ.scen.onScenarioLoaded")
         --tribeEvents.onScenarioLoaded()
      --civ.sleep(45000)
@@ -402,3 +419,5 @@ text.linkState(state.textTable)
  --
  
  civ.scen.onBribeUnit(function(unit,previousOwner) civ.ui.text(unit.type.name) end)
+
+ civ.scen.onNegotiation(function(talker,listener) civ.ui.text(talker.name..listener.name) return true end)

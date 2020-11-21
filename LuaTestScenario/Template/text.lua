@@ -57,6 +57,10 @@
 --  text.setDigitGroupSeparator(string)-->void
 --  text.money(amount) --> string
 --  text.setMoney(string)-->void
+--  text.getVeteranTitle()-->string
+--  text.setVeteranTitle(string)-->void
+--  text.getShortVeteranTitle()-->string
+--  text.setShortVeteranTitle(string)-->void
 --
 -- Control Sequences:
 -- "%PAGEBREAK"
@@ -1162,6 +1166,39 @@ end
 text.setMoney = setMoney
 
 
+local veteranTitle = "Veteran"
+local shortVeteranTitle = "Vet"
+--  text.getVeteranTitle()-->string
+local function getVeteranTitle()
+    return veteranTitle
+end
+text.getVeteranTitle = getVeteranTitle
+
+--  text.setVeteranTitle(string)-->void
+-- sets the string that is returned by text.getVeteranTitle()
+local function setVeteranTitle(vetTitle)
+    if type(vetTile)~="string" then
+        error("text.setVeteranTitle: argument must be a string.")
+    end
+    veteranTitle = vetTitle
+end
+text.setVeteranTitle = setVeteranTitle
+
+
+--  text.getShortVeteranTitle()-->string
+local function getShortVeteranTitle()
+    return shortVeteranTitle
+end
+text.getShortVeteranTitle = getShortVeteranTitle
+--  text.setShortVeteranTitle(string)-->void
+--  sets the string returned by text.getShortVeteranTitle()
+local function setShortVeteranTitle(shortVetTitle)
+    if type(shortVetTitle) ~="string" then
+        error("text.setShortVeteranTitle: argument must be a string.")
+    end
+    shortVeteranTitle = shortVetTitle
+end
+text.setShortVeteranTitle = setShortVeteranTitle
 
 
 

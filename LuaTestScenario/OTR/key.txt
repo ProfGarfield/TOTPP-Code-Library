@@ -1,0 +1,9 @@
+reactionGroups.FlakvsLightFighter = {unitAliases.Me109G6,unitAliases.Me109G14,unitAliases.Me109K4,unitAliases.SpitfireIX,unitAliases.SpitfireXII,unitAliases.SpitfireXIV,unitAliases.HurricaneIV,unitAliases.P51B,unitAliases.P51D}
+reactionGroups.FlakvsMediumFighter = {unitAliases.Fw190A5,unitAliases.Fw190D9,unitAliases.Ta152,unitAliases.Me110,unitAliases.Me410,unitAliases.Ju88C,unitAliases.Ju88G,unitAliases.He219,unitAliases.Do335,unitAliases.P38H,unitAliases.P38J,unitAliases.P38L,unitAliases.Beaufighter,unitAliases.MosquitoII,unitAliases.MosquitoXIII,unitAliases.Typhoon,unitAliases.Tempest}
+reactionGroups.FlakvsHeavyFighter = {unitAliases.Fw190A8,unitAliases.Fw190F,unitAliases.P47D11,unitAliases.P47D25,unitAliases.P47D40}
+reactionGroups.FlakvsJetFighter = {unitAliases.P80,unitAliases.Meteor,unitAliases.He162,unitAliases.Me163,unitAliases.Me262}
+reactionGroups.FlakvsMediumBomber = {unitAliases.Ju87G,unitAliases.He111,unitAliases.A20,unitAliases.B26,unitAliases.A26}
+reactionGroups.FlakvsHeavyBomber = {unitAliases.Do217,unitAliases.He277,unitAliases.Fw200,unitAliases.B17F,unitAliases.B24J,unitAliases.B17G,unitAliases.Stirling,unitAliases.Halifax,unitAliases.Lancaster,unitAliases.Sunderland}
+reactionGroups.FlakvsJetBomber = {unitAliases.Arado234,unitAliases.Go229}
+
+techAliases.ProximityFuses = civ.getTech(83)

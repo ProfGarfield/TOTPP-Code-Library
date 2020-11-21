@@ -27,7 +27,7 @@ local function iterateTiles()
     for z = 0, maps - 1 do
       for y = 0, h - 1 do
         for x = y & 1, w - 1, 2 do
-          yield(civ.getTile(x, y,z))
+          yield(x, y)
         end
       end
     end
@@ -45,7 +45,7 @@ end
 
 -- Find a unit type by name.
 local function findUnitType(name)
-  for i = 0, civ.getCosmic().numberOfUnitTypes - 1 do
+  for i = 0, civ.cosmic.numberOfUnitTypes - 1 do
     local unittype = civ.getUnitType(i)
     if unittype.name == name then
       return unittype

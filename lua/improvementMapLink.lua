@@ -57,13 +57,83 @@ local improvementMapLink = {}
 --      INTERNAL DATA SYSTEMS
 --      End user doesn't need to understand these
 --
---      constructionTable[gen.getTileID(cityLocation)][improvementObject.id] = table of
---          {tile=tileObject,targetUnit=unitTypeObject or nil,targetHomeCity = bool or nil,
+--      constructionTable[gen.getTileID(cityLocation)][improvementObject or wonderObject] = table of
+--          {tile=tileObject,targetUnitType=unitTypeObject or nil,targetHomeCity = bool or nil,
 --          buildTerrain=integer or nil, buildFunction = function or nil}
+--          note: The second key is the userData of improvement or wonder, not an integer id.
+--          this is because the id numbers of these two things overlap, and table keys don't
+--          have to be integers or strings
+--          nil means the improvement/city has no associated changes
+--
 --
 --      destructionTable[gen.getTileID(location)][unitType.id] = table with keys
 --          .cityLocation = locationObject
---          .improvement = improvementObject
---          .tiles = table of {tile = tileObject, targetUnit = unitTypeObject,
+--          .improvement = improvementObject or wonderObject
+--          .tiles = table of {tile = tileObject, targetUnitType = unitTypeObject,
 --                              destroyTerrain = nil or integer,destroyFunction = nil or function}
+
+local function buildConstructionTable(targetTable)
+    local constructionTable = {}
+    for key,targetDetails in pairs(targetTable) do
+        local cityLocation = nil
+        local cityInfo = targetDetails.city
+        if civ.isCity(cityInfo) then
+            cityLocation = cityInfo.location
+        elseif civ.isTile(cityInfo) then
+            cityLocation = cityInfo
+        elseif type(cityInfo) == "table" then
+            local xVal = cityInfo[1]
+            local yVal = cityInfo[2]
+            local zVal = cityInfo[3] or 0
+            if not (type(xVal) == "number" and type(yVal) == "number" and type(zVal) == "number") then
+                error("buildConstructionTable: The target information table key "..tostring(key).." doesn't have a valid city or location specified.")
+            end
+            cityLocation = civ.getTile(xVal,yVal,zVal)
+        end
+        if not cityLocation then
+            error("buildConstructionTable: The target information table key "..tostring(key).." doesn't have a valid city or location specified.")
+        end
+        if not (civ.isImprovement(targetDetails.improvement) or civ.isWonder(targetDetails.improvement)) then
+            error("buildConstructionTable: The target information table key "..tostring(key).." doesn't have a valid improvement specified.")
+        end
+        local valueTable = {}
+        local vTIndex = 1
+        if targetDetails.targetTiles.tile then
+            -- a single tile of information is specified instead of a table of tables
+            valueTable[vTIndex] = {}
+            valueTable[vTIndex].tile = gen.toTile(targetDetails.targetTiles.tile)
+            valueTable[vTIndex].targetUnitType = targetDetails.targetTiles.targetUnitType
+            valueTable[vTIndex].targetHomeCity = targetDetails.targetTiles.targetHomeCity
+            valueTable[vTIndex].buildTerrain = targetDetails.targetTiles.buildTerrain
+            valueTable[vTIndex].buildFunction = targetDetails.targetTiles.buildFunction
+            vTIndex = vTIndex+1
+        else
+            -- there is a table of tiles
+            for index,targetTileInfo in pairs(targetDetails.targetTiles) do
+                valueTable[vTIndex] = {}
+                valueTable[vTIndex].tile = gen.toTile(targetTileInfo.tile)
+                valueTable[vTIndex].targetUnitType = targetTileInfo.targetUnitType
+                valueTable[vTIndex].targetHomeCity = targetTileInfo.targetHomeCity
+                valueTable[vTIndex].buildTerrain = targetTileInfo.buildTerrain
+                valueTable[vTIndex].buildFunction = targetTileInfo.buildFunction
+                vTIndex = vTIndex+1
+            end
+        end
+        constructionTable[gen.getTileID(cityLocation)][targetDetails.improvement] = valueTable
+    end
+    return constructionTable
+end
+
+            
+local function buildDestructionTable(targetTable)
+    local destructionTable = {}
+    for key,targetDetails in pairs(targetTable) do
+        local targetTiles = targetTable
+
+end
+
+
+
+
+        
 

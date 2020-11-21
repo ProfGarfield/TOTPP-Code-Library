@@ -55,6 +55,15 @@ Usage Information
 
 local reactionBase = {}
 
+local maximumReactionDistance = 6
+
+function reactionBase.setMaximumReactionDistance(integer)
+    if type(integer) ~= "number" or (math.floor(integer) ~= integer) then
+        error("reactionBase.setMaximumReactionDistance: argument must be an integer.")
+    end
+    maximumReactionDistance = integer
+end
+
 local function reactionEngine(theTriggerUnit,theTableOfMunitionsGenerated,canReact,hitProbability,damageSchedule,reactionPriority,munitionEffect,afterReaction,doWhenUnitKilled,maximumReactionsAgainstTriggerUnit)
 
     -- the units with these id numbers have already reacted to the triggerUnit
@@ -64,7 +73,7 @@ local function reactionEngine(theTriggerUnit,theTableOfMunitionsGenerated,canRea
     local function getReactionUnits(triggeringUnit,alreadyReactedTable)
         local reactingUnitsList = {}
         local index = 1
-        for unit in civ.iterateUnits() do
+        for unit in gen.nearbyUnits(triggeringUnit.location,maximumReactionDistance) do
             -- instead of true, canReact returns a string for the 'type' of reaction attack
             -- e.g. 'dive' from high altitude to low, 'climb' from lower altitude to high, etc.
         --
@@ -224,7 +233,7 @@ local function reactionEngine(theTriggerUnit,theTableOfMunitionsGenerated,canRea
             triggerUnit = unitReturned
             reactionsToTriggerUnit = reactionsToTriggerUnit + 1
         end
-    until (tableIsEmpty(tableOfReactingUnits) or not(triggerUnit) or (reactionsToTriggerUnit > maximumReactionsAgainstTriggerUnit))
+    until (tableIsEmpty(tableOfReactingUnits) or not(triggerUnit) or (reactionsToTriggerUnit >= maximumReactionsAgainstTriggerUnit))
 
     local tabulationData = {}
     tabulationData[0]={[1]="Tribe",[2]="Unit Type",[3]="Reaction Category"}

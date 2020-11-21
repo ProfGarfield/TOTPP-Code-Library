@@ -28,118 +28,244 @@
 --gen.makeThresholdTable(table or nil)-->thresholdTable
 --#applyWonderBonus(wonderObject or integer,tribeObject or integer)-->boolean
 --#gen.toTile(tile or table)-->tile
+--#gen.isMapFlat()-->boolean
+--#gen.isMapRound()-->boolean
+--#gen.declareMapFlat()-->void
+--#gen.declareMapRound()-->void
+--#gen.tileDist(locA,locB,zDist=0)-->integer
+--#gen.distance(tileUnitCityA,tileUnitCityB,zDist=0)-->integer
 --gen.hasIrrigation(tile)-->boolean
 --gen.placeIrrigation(tile)-->void
 --gen.removeIrrigation(tile)-->void
---*gen.hasMine(tile)-->boolean
---*gen.placeMine(tile)-->void
---*gen.removeMine(tile)-->void
---*gen.hasFarmland(tile)-->boolean
---*gen.placeFarmland(tile)-->void
---*gen.removeFarmland(tile)-->void
---*gen.hasRoad(tile)-->boolean
---*gen.placeRoad(tile)-->void
---*gen.removeRoad(tile)-->void
---*gen.hasRailroad(tile)-->boolean
---*gen.placeRailroad(tile)-->void
---*gen.removeRailroad(tile)-->void
---*gen.hasFortress(tile)-->boolean
---*gen.placeFortress(tile)-->void
---*gen.removeFortress(tile)-->void
---*gen.hasAirbase(tile)-->boolean
---*gen.placeAirbase(tile)-->void
---*gen.removeAirbase(tile)-->void
---*gen.hasPollution(tile)-->boolean
---*gen.placePollution(tile)-->void
---*gen.removePollution(tile)-->void
---*gen.hasTransporter(tile)-->boolean
---*gen.placeTransporter(tile)-->void
---*gen.removeTransporter(tile)-->void
---*gen.isFortifying(unit)-->boolean
---*gen.setToFortifying(unit)-->void
---*gen.isFortified(unit)-->boolean
---*gen.setToFortified(unit)-->void
---*gen.isSleeping(unit)-->boolean
---*gen.setToSleeping(unit)-->void
---*gen.isIrrigating(unit)-->boolean
---*gen.setToIrrigating(unit)-->void
---*gen.isMining(unit)-->boolean
---*gen.setToMining(unit)-->void
---*gen.isTransformingTerrain(unit)-->boolean
---*gen.setToTransformingTerrain(unit)-->void
---*gen.isBuildingAirbase(unit)-->boolean
---*gen.setToBuildingAirbase(unit)-->void
---*gen.isBuildingTransporter(unit)-->boolean
---*gen.setToBuildingTransporter(unit)-->void
---*gen.isGoingTo(unit)-->boolean
---*gen.setToGoingTo(unit,tile)-->void
---*gen.isNoOrder(unit)-->boolean
---*gen.setToNoOrders(unit)-->void
--- gen.isWaiting(unit)-->bool
--- gen.setToWaiting(unit)-->void
--- gen.clearWaiting(unit)-->void
--- gen.isParadropped(unit)-->void
--- gen.setParadropped(unit)-->void
--- gen.clearParadropped(unit)-->void
--- gen.isMoved(unit)-->boolean
--- gen.setMoved(unit)-->void
--- gen.clearMoved(unit)-->void
---*gen.isSeeTwoSpaces(unitType)-->boolean
---*gen.giveSeeTwoSpaces(unitType)-->void
---*gen.removeSeeTowSpaces(unitType)-->void
---*gen.isIgnoreZOC(unitType)-->boolean
---*gen.giveIgnoreZOC(unitType)-->void
---*gen.removeIgnoreZOC(unitType)-->void
---*gen.isAmphibious(unitType)-->boolean
---*gen.giveAmpibious(unitType)-->void
---*gen.removeAmphibious(unitType)-->void
---*gen.isSubmarine(unitType)-->boolean
---*gen.giveSubmarine(unitType)-->void
---*gen.removeSubmarine(unitType)-->void
---*gen.isAttackAir(unitType)-->boolean
---*gen.giveAttackAir(unitType)-->void
---*gen.removeAttackAir(unitType)-->void
+--#gen.hasMine(tile)-->boolean
+--#gen.placeMine(tile)-->void
+--#gen.placeMineUnderCity(tile)-->void
+--#gen.removeMine(tile)-->void
+--#gen.removeMineUnderCity(tile)-->void
+--#gen.hasFarmland(tile)-->boolean
+--#gen.placeFarmland(tile)-->void
+--#gen.removeFarmland(tile)-->void
+--#gen.hasAgriculture(tile)--> boolean
+--#gen.improveAgriculture(tile) --> void
+--#gen.degradeAgriculture(tile) --> void
+--#gen.removeAgriculture(tile)--> void
+--#gen.hasRoad(tile)-->boolean
+--#gen.placeRoad(tile)-->void
+--#gen.removeRoad(tile)-->void
+--#gen.hasRailroad(tile)-->boolean
+--#gen.placeRailroad(tile)-->void
+--#gen.removeRailroad(tile)-->void
+--#gen.hasTransportation(tile) --> boolean
+--#gen.upgradeTransportation(tile) --> void
+--#gen.degradeTransportation(tile) --> void
+--#gen.removeTransportation(tile) -->void
+--#gen.hasFortress(tile)-->boolean
+--#gen.placeFortress(tile)-->void
+--#gen.placeFortressForce(tile)-->void
+--#gen.removeFortress(tile)-->void
+--#gen.hasAirbase(tile)-->boolean
+--#gen.placeAirbase(tile)-->void
+--#gen.placeAirbaseForce(tile)-->void
+--#gen.removeAirbase(tile)-->void
+--#gen.hasPollution(tile)-->boolean
+--#gen.placePollution(tile)-->void
+--#gen.removePollution(tile)-->void
+--#gen.removePollutionForce(tile)-->void
+--#gen.hasTransporter(tile)-->boolean
+--# NOTE: Can't placeTransporter
+--#gen.removeTransporter(tile)-->void
+--#gen.setTerrainType(tile,terrain)-->void
+--#gen.isFortifying(unit)-->boolean
+--#gen.setToFortifying(unit)-->void
+--#gen.isFortified(unit)-->boolean
+--#gen.setToFortified(unit)-->void
+--#gen.isSleeping(unit)-->boolean
+--#gen.setToSleeping(unit)-->void
+--#gen.isBuildingFortress(unit) --> boolean
+--#gen.setToBuildingFortress(unit)-->void
+--#gen.isBuildingRoad(unit) --> boolean
+--#gen.setToBuildingRoad(unit)-->void
+--#gen.isIrrigating(unit)-->boolean
+--#gen.setToIrrigating(unit)-->void
+--#gen.isMining(unit)-->boolean
+--#gen.setToMining(unit)-->void
+--#gen.isTransformingTerrain(unit)-->boolean
+--#gen.setToTransformingTerrain(unit)-->void
+--#gen.isBuildingAirbase(unit)-->boolean
+--#gen.setToBuildingAirbase(unit)-->void
+--#gen.isBuildingTransporter(unit)-->boolean
+--#gen.setToBuildingTransporter(unit)-->void
+--#gen.isGoingTo(unit)-->boolean
+--#gen.setToGoingTo(unit,tile)-->void
+--#gen.isNoOrder(unit)-->boolean
+--#gen.setToNoOrders(unit)-->void
+--#gen.isWaiting(unit)-->bool
+--#gen.setToWaiting(unit)-->void
+--#gen.clearWaiting(unit)-->void
+--#gen.isParadropped(unit)-->void
+--#gen.setParadropped(unit)-->void
+--#gen.clearParadropped(unit)-->void
+--#gen.isMoved(unit)-->boolean
+--#gen.setMoved(unit)-->void
+--#gen.clearMoved(unit)-->void
+--#gen.isSeeTwoSpaces(unitType)-->boolean
+--#gen.giveSeeTwoSpaces(unitType)-->void
+--#gen.removeSeeTowSpaces(unitType)-->void
+--#gen.isIgnoreZOC(unitType)-->boolean
+--#gen.giveIgnoreZOC(unitType)-->void
+--#gen.removeIgnoreZOC(unitType)-->void
+--#gen.isAmphibious(unitType)-->boolean
+--#gen.giveAmpibious(unitType)-->void
+--#gen.removeAmphibious(unitType)-->void
+--#gen.isSubmarine(unitType)-->boolean
+--#gen.giveSubmarine(unitType)-->void
+--#gen.removeSubmarine(unitType)-->void
+--#gen.isAttackAir(unitType)-->boolean
+--#gen.giveAttackAir(unitType)-->void
+--#gen.removeAttackAir(unitType)-->void
 --#gen.isCoastal(unitType)-->boolean
---*gen.giveCoastal(unitType)-->void
---*gen.removeCoastal(unitType)-->void
---*gen.isIgnoreWalls(unitType)-->boolean
---*gen.giveIngoreWalls(unitType)-->void
---*gen.removeIgnoreWalls(unitType)-->void
---*gen.isCarryAir(unitType)-->boolean
---*gen.giveCarryAir(unitType)-->void
---*gen.removeCarryAir(unitType)-->void
---*gen.isParadrop(unitType)-->boolean
---*gen.giveParadrop(unitType)-->void
---*gen.removeParadrop(unitType)-->void
---*gen.isAlpine(unitType)-->boolean
---*gen.giveAlpine(unitType)-->void
---*gen.removeAlpine(unitType)-->void
---*gen.isBonusAgainstHorse(unitType)-->boolean
---*gen.giveBonusAgainstHorse(unitType)-->void
---*gen.removeBonusAgainstHorse(unitType)-->void
---*gen.isFreeSupportUnderFundamentalism(unitType)-->boolean
---*gen.giveFreeSupportUnderFundamentalism(unitType)-->void
---*gen.removeFreeSupportUnderFundamentalism(unitType)-->void
---*gen.isDestroyedAfterAttacking(unitType)-->boolean
---*gen.giveDestroyedAfterAttacking(unitType)-->void
---*gen.removeDestroyedAfterAttacking(unitType)-->void
---*gen.isBonusAgainstAir(unitType)-->boolean
---*gen.giveBonusAgainstAir(unitType)-->void
---*gen.removeBonusAgainstAir(unitType)-->void
---*gen.isSpotSubmarines(unitType)-->boolean
---*gen.giveSpotSubmarines(unitType)-->void
---*gen.removeSpotSubmarines(unitType)-->void
+--#gen.giveCoastal(unitType)-->void
+--#gen.removeCoastal(unitType)-->void
+--#gen.isIgnoreWalls(unitType)-->boolean
+--#gen.giveIngoreWalls(unitType)-->void
+--#gen.removeIgnoreWalls(unitType)-->void
+--#gen.isCarryAir(unitType)-->boolean
+--#gen.giveCarryAir(unitType)-->void
+--#gen.removeCarryAir(unitType)-->void
+--#gen.isParadrop(unitType)-->boolean
+--#gen.giveParadrop(unitType)-->void
+--#gen.removeParadrop(unitType)-->void
+--#gen.isAlpine(unitType)-->boolean
+--#gen.giveAlpine(unitType)-->void
+--#gen.removeAlpine(unitType)-->void
+--#gen.isBonusAgainstHorse(unitType)-->boolean
+--#gen.giveBonusAgainstHorse(unitType)-->void
+--#gen.removeBonusAgainstHorse(unitType)-->void
+--#gen.isFreeSupportUnderFundamentalism(unitType)-->boolean
+--#gen.giveFreeSupportUnderFundamentalism(unitType)-->void
+--#gen.removeFreeSupportUnderFundamentalism(unitType)-->void
+--#gen.isDestroyedAfterAttacking(unitType)-->boolean
+--#gen.giveDestroyedAfterAttacking(unitType)-->void
+--#gen.removeDestroyedAfterAttacking(unitType)-->void
+--#gen.isBonusAgainstAir(unitType)-->boolean
+--#gen.giveBonusAgainstAir(unitType)-->void
+--#gen.removeBonusAgainstAir(unitType)-->void
+--#gen.isSpotSubmarines(unitType)-->boolean
+--#gen.giveSpotSubmarines(unitType)-->void
+--#gen.removeSpotSubmarines(unitType)-->void
+--
+--#gen.isCivilDisorder(city)-->boolean
+--#gen.setCivilDisorder(city)-->void
+--#gen.clearCivilDisorder(city)-->void
+--#gen.isWeLoveTheKing(city)-->boolean
+--#gen.setWeLoveTheKing(city)-->void
+--#gen.clearWeLoveTheKing(city)-->void
+--#gen.isImprovementSold(city)-->boolean
+--#gen.setImprovementSold(city)-->void
+--#gen.clearImprovementSold(city)-->void
+--#gen.isTechnologyStolen(city)-->boolean
+--#gen.setTechnologyStolen(city)-->void
+--#gen.clearTechnologyStolen(city)-->void
+--#gen.isAutoBuild(city)-->boolean
+--#gen.setAutoBuild(city)-->void
+--#gen.clearAutoBuild(city)-->void
+--#gen.isAttribute6(city)-->boolean
+--#gen.setAttribute6(city)-->void
+--#gen.clearAttribute6(city)-->void
+--#gen.isAttribute7(city)-->boolean
+--#gen.setAttribute7(city)-->void
+--#gen.clearAttribute7(city)-->void
+--#gen.isBuildCoastal(city)-->boolean
+--#gen.setBuildCoastal(city)-->void
+--#gen.clearBuildCoastal(city)-->void
+--#gen.isAttribute9(city)-->boolean
+--#gen.setAttribute9(city)-->void
+--#gen.clearAttribute9(city)-->void
+--#gen.isAttribute10(city)-->boolean
+--#gen.setAttribute10(city)-->void
+--#gen.clearAttribute10(city)-->void
+--#gen.isAttribute11(city)-->boolean
+--#gen.setAttribute11(city)-->void
+--#gen.clearAttribute11(city)-->void
+--#gen.isBuildHydroPlant(city)-->boolean
+--#gen.setBuildHydroPlant(city)-->void
+--#gen.clearBuildHydroPlant(city)-->void
+--#gen.isAttribute13(city)-->boolean
+--#gen.setAttribute13(city)-->void
+--#gen.clearAttribute13(city)-->void
+--#gen.isAttribute14(city)-->boolean
+--#gen.setAttribute14(city)-->void
+--#gen.clearAttribute14(city)-->void
+--#gen.isAttribute15(city)-->boolean
+--#gen.setAttribute15(city)-->void
+--#gen.clearAttribute15(city)-->void
+--#gen.isAttribute16(city)-->boolean
+--#gen.setAttribute16(city)-->void
+--#gen.clearAttribute16(city)-->void
+--#gen.isUsedAirport(city)-->boolean
+--#gen.setUsedAirport(city)-->void
+--#gen.clearUsedAirport(city)-->void
+--#gen.isAttribute18(city)-->boolean
+--#gen.setAttribute18(city)-->void
+--#gen.clearAttribute18(city)-->void
+--#gen.isAttribute19(city)-->boolean
+--#gen.setAttribute19(city)-->void
+--#gen.clearAttribute19(city)-->void
+--#gen.isAttribute20(city)-->boolean
+--#gen.setAttribute20(city)-->void
+--#gen.clearAttribute20(city)-->void
+--#gen.isAttribute21(city)-->boolean
+--#gen.setAttribute21(city)-->void
+--#gen.clearAttribute21(city)-->void
+--#gen.isBuildShips(city)-->boolean
+--#gen.setBuildShips(city)-->void
+--#gen.clearBuildShips(city)-->void
+--#gen.isCityInvestigated(city)-->boolean
+--#gen.setCityInvestigated(city)-->void
+--#gen.clearCityInvestigated(city)-->void
+--#gen.isAttribute24(city)-->boolean
+--#gen.setAttribute24(city)-->void
+--#gen.clearAttribute24(city)-->void
+--#gen.isMilitaryAutoBuild(city)-->boolean
+--#gen.setMilitaryAutoBuild(city)-->void
+--#gen.clearMilitaryAutoBuild(city)-->void
+--#gen.isDomesticAutoBuild(city)-->boolean
+--#gen.setDomesticAutoBuild(city)-->void
+--#gen.clearDomesticAutoBuild(city)-->void
+--#gen.isObjective(city)-->boolean
+--#gen.setObjective(city)-->void
+--#gen.clearObjective(city)-->void
+--#gen.isAttribute28(city)-->boolean
+--#gen.setAttribute28(city)-->void
+--#gen.clearAttribute28(city)-->void
+--#gen.isMajorObjective(city)-->boolean
+--#gen.setMajorObjective(city)-->void
+--#gen.clearMajorObjective(city)-->void
+--#gen.isUsedTransporter(city)-->boolean
+--#gen.setUsedTransporter(city)-->void
+--#gen.clearUsedTransporter(city)-->void
+--#gen.isAttribute31(city)-->boolean
+--#gen.setAttribute31(city)-->void
+--#gen.clearAttribute31(city)-->void
+--#gen.isAttribute32(city)-->boolean
+--#gen.setAttribute32(city)-->void
+--#gen.clearAttribute32(city)-->void
+--
 --#gen.wonderModifiedMoves(unit)-->integer
 --#gen.maxMoves(unit) --> integer
 --#gen.moveRemaining(unit) --> integer
 --#gen.inPolygon(tile,tableOfCoordinates)-->bool
 --#gen.cityCanSupportAnotherUnit(city)-->bool
 --#gen.rehomeUnitsInCapturedCity(city,defender) --> void
+--#gen.homeToNearestCity(unit)-->void
 --#gen.activate(unit)-->void
 --#gen.activateWithSource(unit,source)-->void
 --#gen.linkActivationFunction(function(unit,source)-->void)-->void
+--#gen.getActivationFunction()-->function(unit,source)
 --#gen.getTileID(tileObject or int,int or nil,int or nil)-->int (by Knighttime, converts a tile/coordinates to a single integer as an ID number)
---#gen.distance(tileUnitCityA,tileUnitCityB,zDist=0)-->integer
+--#gen.getTileId(tileObject or int,int or nil,int or nil)-->int (by Knighttime, converts a tile/coordinates to a single integer as an ID number)
+-- gen.getTileFromID(tileID) --> tileObject -- undoes gen.getTileID
+-- gen.getTileFromId(tileID) --> tileObject -- undoes gen.getTileID
 --#gen.unitTypeOnTile(tile,unitTypeOrTableOfUnitType)-->bool
 --#gen.getAdjacentTiles(tile)-->tableOfTiles
 --#gen.moveUnitAdjacent(unit,destRankFn=suitableDefault)-->tile or bool
@@ -148,6 +274,26 @@
 --#gen.clearAdjacentAirProtection(unit) -->void clears air protection for tiles adjacent to the unit that are not owned by the unit's owner
 --#gen.inTable(object,table)--> bool
 --#gen.copyTable(table)-->table
+--#gen.errorForNilKey(table,tableName)-->void
+-- gen.noNewKey(table,tableName)-->void
+-- gen.noGlobal()
+-- gen.linkState(stateTable)
+-- gen.getState()-->table
+-- gen.cityRadiusTiles(cityOrTileOrCoordTable) --> table
+-- gen.getTilesInRadius(centre,radius,minRadius=0,maps=nil) --> table
+-- gen.clearGapsInArray(table,lowestValue=1)
+-- gen.playMusic(fileName)
+-- gen.setMusicDirectory(path)
+-- gen.getEphemeralTable()-->table
+-- gen.linkGeneralLibraryState(stateTable) --> void
+-- gen.limitedExecutions(key,maxTimes,limitedFunction)--> void
+--
+-- gen.isSinglePlayerGame() --> boolean
+-- gen.tableWrap(item)-->table
+-- gen.tableWrap(item,needsWrapFn)-->table
+--
+-- gen.copyUnitAttributes(parent,child)-->void
+-- gen.nearbyUnits(center,radius) --> iterator providing units
 
 --
 -- FUNCTION IMPLEMENTATIONS
@@ -372,6 +518,86 @@ end
 gen.toTile = toTile
 
 
+-- by default, the map is considered flat
+-- use gen.declareMapRound to say the map is round
+local flatMap = true
+-- gen.isMapFlat()-->boolean
+function gen.isMapFlat()
+    return flatMap
+end
+
+-- gen.isMapRound()-->boolean
+function gen.isMapRound()
+    return not flatMap
+end
+
+-- gen.declareMapFlat()-->void
+-- tells this module that the map should be considered flat
+-- for things like distances and adjacent squares
+function gen.declareMapFlat()
+    flatMap = true
+end
+
+-- gen.declareMapRound()-->void
+function gen.declareMapRound()
+    flatMap = false
+end
+
+-- tileDist(locA,locB,zDist=0)
+-- gen.tileDist(locA,locB,zDist=0)
+-- takes two tiles and a 'vertical distance' (0 if absent)
+-- and computes the distance (1-norm, not Euclidean) between them
+-- doesn't pre-process arguments like gen.distance, so might be slightly
+-- quicker (though this probably will never matter)
+local function tileDist(locA,locB,zDist)
+    zDist = zDist or 0
+    if flatMap then
+        return (math.abs(locA.x-locB.x)+math.abs(locA.y-locB.y)+2*zDist*math.abs(locA.z-locB.z))//2
+    else
+        local xMax,yMax,zMax=civ.getMapDimensions()
+        return math.min((math.abs(locA.x-locB.x)+math.abs(locA.y-locB.y)+2*zDist*math.abs(locA.z-locB.z))//2,
+            (xMax-math.abs(locA.x-locB.x)+math.abs(locA.y-locB.y)+2*zDist*math.abs(locA.z-locB.z))//2)
+    end
+end
+gen.tileDist = tileDist
+
+-- distance(tileUnitCityA,tileUnitCityB,zDist=0)-->integer
+-- gen.distance(tileUnitCityA,tileUnitCityB,zDist=0)-->integer
+-- returns the distance (1-norm, not Euclidean) (in terms of tiles, not coordinates) between 
+-- objects A and B, that have a natural location (also converts doubles and triples of tables)
+-- zDist is the number of tiles that one unit of z coordinate "distance" is equivalent to
+local function distance(tileUnitCityA,tileUnitCityB,zDist)
+    zDist = zDist or 0
+    local locA = nil
+    local locB = nil
+    if type(tileUnitCityA)=="table" then
+        locA=toTile(tileUnitCityA)
+    elseif civ.isUnit(tileUnitCityA) or civ.isCity(tileUnitCityA) then
+        locA=tileUnitCityA.location
+    elseif civ.isTile(tileUnitCityA) then
+        locA = tileUnitCityA
+    else
+        error("gen.distance: first argument must be a tile (or coordinates of a tile), or a unit or a city.")
+    end
+    if type(tileUnitCityB)=="table" then
+        locB=toTile(tileUnitCityB)
+    elseif civ.isUnit(tileUnitCityB) or civ.isCity(tileUnitCityB) then
+        locB=tileUnitCityB.location
+    elseif civ.isTile(tileUnitCityB) then
+        locB = tileUnitCityB
+    else
+        error("gen.distance: second argument must be a tile (or coordinates of a tile), or a unit or a city.")
+    end
+    if flatMap then
+        return (math.abs(locA.x-locB.x)+math.abs(locA.y-locB.y)+2*zDist*math.abs(locA.z-locB.z))//2
+    else
+        local xMax,yMax,zMax=civ.getMapDimensions()
+        return math.min((math.abs(locA.x-locB.x)+math.abs(locA.y-locB.y)+2*zDist*math.abs(locA.z-locB.z))//2,
+            (xMax-math.abs(locA.x-locB.x)+math.abs(locA.y-locB.y)+2*zDist*math.abs(locA.z-locB.z))//2)
+    end
+end
+gen.distance = distance
+
 -- gen.hasIrrigation(tile)-->boolean
 -- returns true if tile has irrigation but no farm
 -- returns false otherwise
@@ -379,11 +605,7 @@ function gen.hasIrrigation(tile)
     tile = toTile(tile)
     local improvements = tile.improvements
     -- irrigation, but no mining, so not farmland
-    if improvements & 0x04 == 0x04 and improvements & 0x08 == 0 then
-        return true
-    else
-        return false
-    end
+    return improvements & 0x04 == 0x04 and improvements & 0x08 == 0 
 end
 
 -- gen.placeIrrigation(tile)-->void
@@ -416,40 +638,256 @@ function gen.removeIrrigation(tile)
 end
 
 -- gen.hasMine(tile)-->boolean
--- function gen.hasMine(tile) end
+function gen.hasMine(tile) 
+    tile = toTile(tile)
+    local improvements = tile.improvements
+    -- mining, but no irrigation, so not farmland
+    return improvements & 0x08 == 0x08 and improvements & 0x04 == 0 
+end
 
 -- gen.placeMine(tile)-->void
--- function gen.placeMine(tile) end
+-- places mines on the tile provided
+-- removes irrigation and farmland if present
+-- does nothing if tile has city
+function gen.placeMine(tile) 
+    tile = toTile(tile)
+    if tile.city then
+        return
+    end
+    -- set mining bit to 1
+    tile.improvements = tile.improvements | 0x08
+    -- set irrigation bit to 0
+    tile.improvements = tile.improvements & ~0x04
+end
+
+-- gen.placeMineUnderCity(tile) --> void
+-- places mine on a tile, even if a city is present
+-- removes irrigation and farmland if present
+function gen.placeMineUnderCity(tile)
+    tile = toTile(tile)
+    -- set mining bit to 1
+    tile.improvements = tile.improvements | 0x08
+    -- set irrigation bit to 0
+    tile.improvements = tile.improvements & ~0x04
+end
 
 -- gen.removeMine(tile)-->void
--- function gen.removeMine end
+-- if tile has mining but no farmland, removes mines
+-- does nothing to farmland
+-- does nothing if tile has a city
+function gen.removeMine(tile) 
+    tile = toTile(tile)
+    -- if tile has a city or farmland, do nothing
+    if tile.city or tile.improvements & 0x0C == 0x0C then
+        return
+    end
+    -- set irrigation bit to 0
+    tile.improvements = tile.improvements & ~0x08
+end
 
+-- gen.removeMineUnderCity(tile)-->void
+-- if tile has mining but no farmland, removes mines
+-- does nothing to farmland
+function gen.removeMineUnderCity(tile) 
+    tile = toTile(tile)
+    -- if tile has a city or farmland, do nothing
+    if tile.improvements & 0x0C == 0x0C then
+        return
+    end
+    -- set mining bit to 0
+    tile.improvements = tile.improvements & ~0x08
+
+end
 -- gen.hasFarmland(tile)-->boolean
--- function gen.hasFarmland(tile) end
+function gen.hasFarmland(tile)
+    tile = toTile(tile)
+    return tile.improvements & 0x0C == 0x0C
+end
 
 -- gen.placeFarmland(tile)-->void
--- function gen.placeFarmland(tile) end
+-- places farmland on a tile (removing mining)
+-- does nothing if a city is present
+function gen.placeFarmland(tile) 
+    tile = toTile(tile)
+    if tile.city then
+        return
+    end
+    tile.improvements = tile.improvements | 0x0C
+end
 
 -- gen.removeFarmland(tile)-->void
--- function gen.removeFarmland(tile) end
+-- removes farmland if present
+-- does nothing to irrigation or mining
+-- does nothing if city present
+function gen.removeFarmland(tile) 
+    tile = toTile(tile)
+    if (not tile.city) and (tile.improvements & 0x0C == 0x0C) then
+        tile.improvements = tile.improvements & ~0x0C
+    end
+end
+
+-- gen.hasAgriculture(tile)-->bool
+-- returns true if tile has irrigation or farmland
+function gen.hasAgriculture(tile)
+    tile = toTile(tile)
+    return tile.improvements & 0x04 == 0x04
+end
+
+-- gen.improveAgriculture(tile) --> void
+-- if tile has no irrigation, place irrigation (even if mining present)
+-- if tile has irrigation, place farmland
+-- if city do nothing
+function gen.improveAgriculture(tile)
+    tile = toTile(tile)
+    if tile.city then
+        return
+    elseif gen.hasIrrigation(tile) then
+        gen.placeFarmland(tile)
+        return
+    else
+        gen.placeIrrigation(tile)
+        return
+    end
+end
+
+-- gen.degradeAgriculture(tile) --> void
+-- if tile has farmland, reduce to irrigation
+-- if tile has irrigation, remove
+-- does nothing if city present
+function gen.degradeAgriculture(tile)
+    tile = toTile(tile)
+    if tile.city then
+        return
+    elseif gen.hasFarmland(tile) then
+        gen.placeIrrigation(tile)
+        return
+    else
+        gen.removeIrrigation(tile)
+    end
+end
+
+-- gen.removeAgriculture(tile) --> void
+-- remove farmland and irrigation if present
+-- do nothing to mining
+-- do nothing if city present
+function gen.removeAgriculture(tile)
+    tile = toTile(tile)
+    if (not tile.city) and gen.hasAgriculture(tile) then
+        tile.improvements = tile.improvements & ~0x0C
+    end
+end
+
 
 -- gen.hasRoad(tile)-->boolean
--- function gen.hasRoad(tile) end
+-- returns true if tile has a road
+function gen.hasRoad(tile) 
+    tile = toTile(tile)
+    return tile.improvements & 0x10 == 0x10 
+end
 
 -- gen.placeRoad(tile)-->void
--- function gen.placeRoad(tile) end
+-- places a road on the tile
+-- does nothing if city present
+function gen.placeRoad(tile) 
+    tile=toTile(tile)
+    if tile.city then 
+        return
+    end
+    tile.improvements = tile.improvements | 0x10
+end
 
 -- gen.removeRoad(tile)-->void
--- function gen.removeRoad(tile) end
+-- removes a road if there is a road but no rail
+-- doesn't touch rail or cities
+function gen.removeRoad(tile)
+    tile = toTile(tile)
+    if tile.city or (tile.improvements & 0x30 == 0x30) then
+        return
+    end
+    tile.improvements = tile.improvements & ~0x10
+end
 
 -- gen.hasRailroad(tile)-->boolean
--- function gen.hasRailroad(tile) end
+-- returns true if a tile has a railroad (and road)
+function gen.hasRailroad(tile) 
+    tile = toTile(tile)
+    return tile.improvements & 0x30 == 0x30 
+
+end
 
 -- gen.placeRailroad(tile)-->void
--- function gen.placeRailroad(tile) end
+-- places a railroad (and road) on a tile
+-- does nothing if city is present
+function gen.placeRailroad(tile) 
+    tile = toTile(tile)
+    if tile.city then
+        return
+    end
+    tile.improvements = tile.improvements | 0x30
+end
 
 -- gen.removeRailroad(tile)-->void
--- function gen.removeRailroad(tile) end
+-- removes railroad from a tile if it exits,
+-- leaving road intact (if there is already road there)
+-- does nothing if a city is present
+function gen.removeRailroad(tile) 
+    tile = toTile(tile)
+    if (tile.improvements & 0x30 == 0x30) and (not tile.city) then
+        tile.improvements = tile.improvements & ~0x20
+    end
+end
+-- gen.hasTransportation(tile) --> boolean
+-- returns true if tile has road or rail 
+-- (but not if city, unless an event has placed a road)
+function gen.hasTransportation(tile)
+    tile = toTile(tile)
+    return tile.improvements & 0x10 == 0x10 
+end
+
+
+-- gen.upgradeTransportation(tile) --> void
+-- places railroad if road exists, otherwise places road
+-- does nothing if city present
+function gen.upgradeTransportation(tile)
+    tile = toTile(tile)
+    if tile.city then
+        return
+    elseif gen.hasRoad(tile) then
+        gen.placeRailroad(tile)
+        return
+    else
+        gen.placeRoad(tile)
+        return
+    end
+end
+
+-- gen.degradeTransportation(tile) --> void
+-- reduces railroad to road, if rail exists
+-- if no rail but road, removes road
+-- if no transportation, does nothing
+-- if city does nothing
+function gen.degradeTransportation(tile)
+    tile = toTile(tile)
+    if tile.city then
+        return
+    elseif gen.hasRailroad(tile) then
+        gen.removeRailroad(tile)
+    else
+        gen.removeRoad(tile)
+    end
+end
+
+-- gen.removeTransportation(tile) -->void
+-- removes road and rail, if it exists
+-- does nothing if city present
+function gen.removeTransportation(tile)
+    tile = toTile(tile)
+    if tile.city then
+        return
+    else
+        tile.improvements = tile.improvements & ~0x30
+    end
+end
 
 -- gen.hasFortress(tile)-->boolean
 function gen.hasFortress(tile)
@@ -458,11 +896,21 @@ function gen.hasFortress(tile)
     return checkBits(tile.improvements,"x1xxxx0x")
 end
 
-
 -- gen.placeFortress(tile)-->void
+-- places a fortress on a square, unless
+-- there is already a city, transporter, or airbase on the tile
+function gen.placeFortress(tile)
+    tile = toTile(tile)
+    if tile.city or isBit1(tile.improvements,2) then
+        return
+    end
+    tile.improvements = setBits(tile.improvements,"x1xxxx0x")
+end
+
+-- gen.placeFortressForce(tile)-->void
 -- places fortress (replacing airbase/transporter if necessary)
 -- If city on tile, nothing happens
-function gen.placeFortress(tile) 
+function gen.placeFortressForce(tile) 
     tile = toTile(tile)
     if tile.city then
         return
@@ -487,89 +935,254 @@ function gen.hasAirbase(tile)
     return checkBits(tile.improvements,"x1xxxx1x")
 end
 
--- gen.placeAirbase(tile)-->void
--- function gen.placeAirbase(tile) end
+-- gen.placeAirbase(tile)--> void
+-- places an airbase on a tile as long as there is not already
+-- pollution, fortress, or transporter on the tile
+-- does nothing if city present
+function gen.placeAirbase(tile)
+    tile = toTile(tile)
+    local tileImprovements = tile.improvements
+    if tile.city or isBit1(tileImprovements,7) or isBit1(tileImprovements,8) then
+        return
+    end
+    tile.improvements = setBits(tile.improvements,"x1xxxx1x")
+end
+
+-- gen.placeAirbaseForce(tile)-->void
+-- places airbase, removing fortress/transporter/pollution if necessary
+-- if city on tile, nothing happens
+function gen.placeAirbaseForce(tile) 
+    tile = toTile(tile)
+    if tile.city then
+        return
+    end
+    tile.improvements = setBits(tile.improvements,"01xxxx1x")
+end
 
 -- gen.removeAirbase(tile)-->void
--- function gen.removeAirbase(tile) end
+-- removes airbase, if one is on tile
+-- (so that something else doesn't get removed)
+-- nothing happens if tile is a city
+function gen.removeAirbase(tile) 
+    tile = toTile(tile)
+    if checkBits(tile.improvements,"x1xxxx1x") and (not tile.city) then
+        tile.improvements = setBits(tile.improvements,"00xxxx0x")
+    end
+end
 
 -- gen.hasPollution(tile)-->boolean
--- function gen.hasPollution(tile) end
+function gen.hasPollution(tile) 
+    tile = toTile(tile)
+    return checkBits(tile.improvements,"1xxxxx0x")
+
+end
 
 -- gen.placePollution(tile)-->void
--- function gen.placePollution(tile) end
+-- places pollution, unless the tile has a city, airbase
+-- or transporter already on the tile
+function gen.placePollution(tile) 
+    tile = toTile(tile)
+    if tile.city or isBit1(tile.improvements,2) then
+        return
+    end
+    tile.improvements = setBits(tile.improvements,"1xxxxx0x")
+end
 
+-- gen.placePollutionForce(tile)-->void
+-- places pollution, unless the tile has a city, 
+-- transporters and airbases are removed
+function gen.placePollution(tile) 
+    tile = toTile(tile)
+    if tile.city then
+        return
+    end
+    if gen.hasFortress(tile) then
+        tile.improvements = setBits(tile.improvements,"11xxxx0x")
+    else
+        tile.improvements = setBits(tile.improvements,"1xxxxx0x")
+    end
+end
 -- gen.removePollution(tile)-->void
--- function gen.removePollution(tile) end
+-- checks if tile has pollution, and if so, removes it
+function gen.removePollution(tile) 
+    tile = toTile(tile)
+    if checkBits(tile.improvements,"1xxxxx0x") then
+        tile.improvements = setBit0(tile.improvements,8)
+    end
+end
 
 -- gen.hasTransporter(tile)-->boolean
--- function gen.hasTransporter(tile) end
+function gen.hasTransporter(tile) 
+    tile = toTile(tile)
+    return checkBits(tile.improvements,"1xxxxx1x")
+end
 
--- gen.placeTransporter(tile)-->void
--- function gen.placeTransporter(tile) end
+-- placing transporters doesn't work
+--
 
 -- gen.removeTransporter(tile)-->void
--- function gen.removeTransporter(tile) end
+function gen.removeTransporter(tile) 
+    tile = toTile(tile)
+    if (not tile.city) and checkBits(tile.improvements,"1xxxxx1x") then
+        tile.improvements = setBits(tile.improvements,"0xxxxx0x")
+        return
+    end
+end
+
+-- gen.setTerrainType(tile,terrainID)-->void
+-- changes the terrain type of tile to terrainID
+-- have this function, so that if
+-- terrainType key functionality is changed, this
+-- function can change instead of all code everywhere
+function gen.setTerrainType(tile,terrainID)
+    tile = toTile(tile)
+    tile.terrainType = terrainID
+end
 --
 -- gen.isFortifying(unit)-->boolean
--- function gen.isFortifying(unit) end
+function gen.isFortifying(unit) 
+    return unit.order == 0x01
+end
 
 -- gen.setToFortifying(unit)-->void
--- function gen.setToFortifying(unit) end
+function gen.setToFortifying(unit) 
+    unit.order = 0x01
+end
 
 -- gen.isFortified(unit)-->boolean
--- function gen.isFortified(unit) end
+function gen.isFortified(unit) 
+    return unit.order == 0x02
+end
 
 -- gen.setToFortified(unit)-->void
--- function gen.setToFortified(unit) end
+function gen.setToFortified(unit) 
+    unit.order = 0x02
+end
 
 -- gen.isSleeping(unit)-->boolean
--- function gen.isSleeping(unit) end
+function gen.isSleeping(unit) 
+    return unit.order == 0x03
+end
 
 -- gen.setToSleeping(unit)-->void
--- function gen.setToSleeping(unit) end
+function gen.setToSleeping(unit) 
+    unit.order = 0x03
+end
+--
+-- gen.isBuildingFortress(unit) --> boolean
+function gen.isBuildingFortress(unit)
+    return unit.order == 0x04
+end
+
+
+-- gen.setToBuildingFortress(unit)-->void
+function gen.setToBuildingFortress(unit) 
+    unit.order = 0x04
+end
+--
+-- gen.isBuildingRoad(unit) --> boolean
+function gen.isBuildingRoad(unit)
+    return unit.order == 0x05
+end
+
+-- gen.setToBuildingRoad(unit)-->void
+function gen.setToBuildingRoad(unit) 
+    unit.order = 0x05
+end
+
 
 -- gen.isIrrigating(unit)-->boolean
--- function gen.isIrrigating(unit) end
+function gen.isIrrigating(unit) 
+    return unit.order == 0x06
+end
 
 -- gen.setToIrrigating(unit)-->void
--- function gen.setToIrrigating(unit) end
+function gen.setToIrrigating(unit) 
+    unit.order = 0x06
+end
 
 -- gen.isMining(unit)-->boolean
--- function gen.isMining(unit) end
+function gen.isMining(unit) 
+    return unit.order == 0x07
+end
 
 -- gen.setToMining(unit)-->void
--- function gen.setToMining(unit) end
+function gen.setToMining(unit) 
+    unit.order = 0x07
+end
 
 -- gen.isTransformingTerrain(unit)-->boolean
--- function gen.isTransformingTerrain(unit) end
+function gen.isTransformingTerrain(unit) 
+    return unit.order == 0x08
+end
 
 -- gen.setToTransformingTerrain(unit)-->void
--- function gen.setToTransformingTerrain(unit) end
+function gen.setToTransformingTerrain(unit) 
+    unit.order = 0x08
+end
 
+-- gen.isCleaningPollution(unit)-->boolean
+function gen.isCleaningPollution(unit) 
+    return unit.order == 0x09
+end
+
+-- gen.setToCleaningPollution(unit)-->void
+function gen.setToCleaningPollution(unit) 
+    unit.order = 0x09
+end
 -- gen.isBuildingAirbase(unit)-->boolean
--- function gen.isBuildingAirbase(unit) end
+function gen.isBuildingAirbase(unit) 
+    return unit.order == 0x0A
+end
 
 -- gen.setToBuildingAirbase(unit)-->void
--- function gen.setToBuildingAirbase(unit) end
+function gen.setToBuildingAirbase(unit) 
+    unit.order = 0x0a
+end
 
 -- gen.isBuildingTransporter(unit)-->boolean
--- function gen.isBuildingTransporter(unit) end
+function gen.isBuildingTransporter(unit) 
+    return unit.order == 0x0B
+end
 
 -- gen.setToBuildingTransporter(unit)-->void
--- function gen.setToBuildingTransporter(unit) end
+function gen.setToBuildingTransporter(unit) 
+    unit.order = 0x0B
+end
 
 -- gen.isGoingTo(unit)-->boolean
--- function gen.isGoingTo(unit) end
+function gen.isGoingTo(unit)
+    return not not unit.gotoTile
+end
 
--- gen.setToGoingTo(unit,tile)-->void
--- function gen.setToGoingTo(unit,tile) end
+-- gen.setToGoingTo(unit,tile or nil)-->void
+-- gives the unit a goto order for the tile
+-- if nil is submitted, and the unit already
+-- has a goto order, the unit will be changed to no orders
+-- (unit.gotoTile=nil results in an error)
+-- if the unit has some other order, it will keep that order
+-- note: this also accepts a table of coordinates as a tile
+-- (just as all other tile functions do here)
+function gen.setToGoingTo(unit,tile) 
+    if tile == nil and unit.gotoTile then
+        unit.order = 0xFF
+        return
+    elseif tile == nil then
+        return
+    end
+    tile = toTile(tile)
+    unit.gotoTile = tile
+end
 
 -- gen.isNoOrder(unit)-->boolean
--- function gen.isNoOrder(unit) end
+function gen.isNoOrder(unit) 
+    return unit.order == 0xFF
+end
 
 -- gen.setToNoOrders(unit)-->void
--- function gen.setToNoOrders(unit) end
+function gen.setToNoOrders(unit) 
+    unit.order = 0xFF
+end
 
 -- gen.isWaiting(unit)-->bool
 function gen.isWaiting(unit)
@@ -611,35 +1224,54 @@ function gen.clearMoved(unit)
 end
 --
 -- gen.isSeeTwoSpaces(unitType)-->boolean
---
--- function gen.isSeeTwoSpaces(unitType) end
+function gen.isSeeTwoSpaces(unitType) 
+    return isBit1(unitType.flags,1)
+end
 
 -- gen.giveSeeTwoSpaces(unitType)-->void
--- function gen.giveSeeTwoSpaces(unitType) end
+function gen.giveSeeTwoSpaces(unitType) 
+    unitType.flags = setBit1(unitType.flags,1)
+end
 
 -- gen.removeSeeTowSpaces(unitType)-->void
--- function gen.removeSeeTowSpaces(unitType) end
+function gen.removeSeeTowSpaces(unitType) 
+    unitType.flags = setBit0(unitType.flags,1)
+end
 
 -- gen.isIgnoreZOC(unitType)-->boolean
--- function gen.isIgnoreZOC(unitType) end
+function gen.isIgnoreZOC(unitType) 
+    return isBit1(unitType.flags,2)
+end
 
 -- gen.giveIgnoreZOC(unitType)-->void
--- function gen.giveIgnoreZOC(unitType) end
+function gen.giveIgnoreZOC(unitType) 
+    unitType.flags = setBit1(unitType.flags,2)
+end
 
 -- gen.removeIgnoreZOC(unitType)-->void
--- function gen.removeIgnoreZOC(unitType) end
+function gen.removeIgnoreZOC(unitType) 
+    unitType.flags = setBit0(unitType.flags,2)
+end
 
 -- gen.isAmphibious(unitType)-->boolean
--- function gen.isAmphibious(unitType) end
+function gen.isAmphibious(unitType) 
+    return isBit1(unitType.flags,3)
+end
 
 -- gen.giveAmpibious(unitType)-->void
--- function gen.giveAmpibious(unitType) end
+function gen.giveAmpibious(unitType) 
+    unitType.flags = setBit1(unitType.flags,3)
+end
 
 -- gen.removeAmphibious(unitType)-->void
--- function gen.removeAmphibious(unitType) end
+function gen.removeAmphibious(unitType) 
+    unitType.flags = setBit0(unitType.flags,3)
+end
 
 -- gen.isSubmarine(unitType)-->boolean
--- function gen.isSubmarine(unitType) end
+function gen.isSubmarine(unitType) 
+    return isBit1(unitType.flags,4)
+end
 
 -- gen.giveSubmarine(unitType)-->void
 function gen.giveSubmarine(unitType)
@@ -652,33 +1284,49 @@ function gen.removeSubmarine(unitType)
 end
 
 -- gen.isAttackAir(unitType)-->boolean
--- function gen.isAttackAir(unitType) end
+function gen.isAttackAir(unitType) 
+    return isBit1(unitType.flags,5)
+end
 
 -- gen.giveAttackAir(unitType)-->void
--- function gen.giveAttackAir(unitType) end
+function gen.giveAttackAir(unitType) 
+    unitType.flags = setBit1(unitType.flags,5)
+end
 
 -- gen.removeAttackAir(unitType)-->void
--- function gen.removeAttackAir(unitType) end
+function gen.removeAttackAir(unitType) 
+    unitType.flags = setBit0(unitType.flags,5)
+end
 
 -- gen.isCoastal(unitType)-->boolean
-function gen.isCoastal(unitType)
+function gen.isCoastal(unitType) 
     return isBit1(unitType.flags,6)
 end
 
 -- gen.giveCoastal(unitType)-->void
--- function gen.giveCoastal(unitType) end
+function gen.giveCoastal(unitType) 
+    unitType.flags = setBit1(unitType.flags,6)
+end
 
 -- gen.removeCoastal(unitType)-->void
--- function gen.removeCoastal(unitType) end
+function gen.removeCoastal(unitType) 
+    unitType.flags = setBit0(unitType.flags,6)
+end
 
 -- gen.isIgnoreWalls(unitType)-->boolean
--- function gen.isIgnoreWalls(unitType) end
+function gen.isIgnoreWalls(unitType) 
+    return isBit1(unitType.flags,7)
+end
 
 -- gen.giveIngoreWalls(unitType)-->void
--- function gen.giveIngoreWalls(unitType) end
+function gen.giveIngoreWalls(unitType) 
+    unitType.flags = setBit1(unitType.flags,7)
+end
 
 -- gen.removeIgnoreWalls(unitType)-->void
--- function gen.removeIgnoreWalls(unitType) end
+function gen.removeIgnoreWalls(unitType) 
+    unitType.flags = setBit0(unitType.flags,7)
+end
 
 -- gen.isCarryAir(unitType)-->boolean
  function gen.isCarryAir(unitType) 
@@ -686,73 +1334,617 @@ end
 end
 
 -- gen.giveCarryAir(unitType)-->void
--- function gen.giveCarryAir(unitType) end
+function gen.giveCarryAir(unitType) 
+    unitType.flags = setBit1(unitType.flags,8)
+end
 
 -- gen.removeCarryAir(unitType)-->void
--- function gen.removeCarryAir(unitType) end
+function gen.removeCarryAir(unitType) 
+    unitType.flags = setBit0(unitType.flags,8)
+end
 
 -- gen.isParadrop(unitType)-->boolean
--- function gen.isParadrop(unitType) end
+function gen.isParadrop(unitType) 
+    return isBit1(unitType.flags,9)
+end
 
 -- gen.giveParadrop(unitType)-->void
--- function gen.giveParadrop(unitType) end
+function gen.giveParadrop(unitType) 
+    unitType.flags = setBit1(unitType.flags,9)
+end
 
 -- gen.removeParadrop(unitType)-->void
--- function gen.removeParadrop(unitType) end
+function gen.removeParadrop(unitType) 
+    unitType.flags = setBit0(unitType.flags,9)
+end
 
 -- gen.isAlpine(unitType)-->boolean
--- function gen.isAlpine(unitType) end
+function gen.isAlpine(unitType) 
+    return isBit1(unitType.flags,10)
+end
 
 -- gen.giveAlpine(unitType)-->void
--- function gen.giveAlpine(unitType) end
+function gen.giveAlpine(unitType) 
+    unitType.flags = setBit1(unitType.flags,10)
+end
 
 -- gen.removeAlpine(unitType)-->void
--- function gen.removeAlpine(unitType) end
+function gen.removeAlpine(unitType) 
+    unitType.flags = setBit0(unitType.flags,10)
+end
 
 -- gen.isBonusAgainstHorse(unitType)-->boolean
--- function gen.isBonusAgainstHorse(unitType) end
+function gen.isBonusAgainstHorse(unitType) 
+    return isBit1(unitType.flags,11)
+end
 
 -- gen.giveBonusAgainstHorse(unitType)-->void
--- function gen.giveBonusAgainstHorse(unitType) end
+function gen.giveBonusAgainstHorse(unitType) 
+    unitType.flags = setBit1(unitType.flags,11)
+end
 
 -- gen.removeBonusAgainstHorse(unitType)-->void
--- function gen.removeBonusAgainstHorse(unitType) end
+function gen.removeBonusAgainstHorse(unitType) 
+    unitType.flags = setBit0(unitType.flags,11)
+end
 
 -- gen.isFreeSupportUnderFundamentalism(unitType)-->boolean
--- function gen.isFreeSupportUnderFundamentalism(unitType) end
+function gen.isFreeSupportUnderFundamentalism(unitType) 
+    return isBit1(unitType.flags,12)
+end
 
 -- gen.giveFreeSupportUnderFundamentalism(unitType)-->void
--- function gen.giveFreeSupportUnderFundamentalism(unitType) end
+function gen.giveFreeSupportUnderFundamentalism(unitType) 
+    unitType.flags = setBit1(unitType.flags,12)
+end
 
 -- gen.removeFreeSupportUnderFundamentalism(unitType)-->void
--- function gen.removeFreeSupportUnderFundamentalism(unitType) end
+function gen.removeFreeSupportUnderFundamentalism(unitType) 
+    unitType.flags = setBit0(unitType.flags,12)
+end
 
 -- gen.isDestroyedAfterAttacking(unitType)-->boolean
--- function gen.isDestroyedAfterAttacking(unitType) end
+function gen.isDestroyedAfterAttacking(unitType) 
+    return isBit1(unitType.flags,13)
+end
 
 -- gen.giveDestroyedAfterAttacking(unitType)-->void
--- function gen.giveDestroyedAfterAttacking(unitType) end
+function gen.giveDestroyedAfterAttacking(unitType) 
+    unitType.flags = setBit1(unitType.flags,13)
+end
 
 -- gen.removeDestroyedAfterAttacking(unitType)-->void
--- function gen.removeDestroyedAfterAttacking(unitType) end
+function gen.removeDestroyedAfterAttacking(unitType) 
+    unitType.flags = setBit0(unitType.flags,13)
+end
 
 -- gen.isBonusAgainstAir(unitType)-->boolean
--- function gen.isBonusAgainstAir(unitType) end
+function gen.isBonusAgainstAir(unitType) 
+    return isBit1(unitType.flags,14)
+end
 
 -- gen.giveBonusAgainstAir(unitType)-->void
--- function gen.giveBonusAgainstAir(unitType) end
+function gen.giveBonusAgainstAir(unitType) 
+    unitType.flags = setBit1(unitType.flags,14)
+end
 
 -- gen.removeBonusAgainstAir(unitType)-->void
--- function gen.removeBonusAgainstAir(unitType) end
+function gen.removeBonusAgainstAir(unitType) 
+    unitType.flags = setBit0(unitType.flags,14)
+end
 
 -- gen.isSpotSubmarines(unitType)-->boolean
--- function gen.isSpotSubmarines(unitType) end
+function gen.isSpotSubmarines(unitType) 
+    return isBit1(unitType.flags,15)
+end
 
 -- gen.giveSpotSubmarines(unitType)-->void
--- function gen.giveSpotSubmarines(unitType) end
+function gen.giveSpotSubmarines(unitType) 
+    unitType.flags = setBit1(unitType.flags,15)
+end
 
 -- gen.removeSpotSubmarines(unitType)-->void
--- function gen.removeSpotSubmarines(unitType) end
+function gen.removeSpotSubmarines(unitType) 
+    unitType.flags = setBit0(unitType.flags,15)
+end
+
+
+-- gen.isCivilDisorder(city)-->boolean
+function gen.isCivilDisorder(city)
+	return isBit1(city.attributes,1)
+end
+
+-- gen.setCivilDisorder(city)-->void
+function gen.setCivilDisorder(city)
+	 city.attributes = setBit1(city.attributes,1)
+end
+
+-- gen.clearCivilDisorder(city)-->void
+function gen.clearCivilDisorder(city)
+	 city.attributes = setBit0(city.attributes,1)
+end
+
+-- gen.isWeLoveTheKing(city)-->boolean
+function gen.isWeLoveTheKing(city)
+	return isBit1(city.attributes,2)
+end
+
+-- gen.setWeLoveTheKing(city)-->void
+function gen.setWeLoveTheKing(city)
+	 city.attributes = setBit1(city.attributes,2)
+end
+
+-- gen.clearWeLoveTheKing(city)-->void
+function gen.clearWeLoveTheKing(city)
+	 city.attributes = setBit0(city.attributes,2)
+end
+
+-- gen.isImprovementSold(city)-->boolean
+function gen.isImprovementSold(city)
+	return isBit1(city.attributes,3)
+end
+
+-- gen.setImprovementSold(city)-->void
+function gen.setImprovementSold(city)
+	 city.attributes = setBit1(city.attributes,3)
+end
+
+-- gen.clearImprovementSold(city)-->void
+function gen.clearImprovementSold(city)
+	 city.attributes = setBit0(city.attributes,3)
+end
+
+-- gen.isTechnologyStolen(city)-->boolean
+function gen.isTechnologyStolen(city)
+	return isBit1(city.attributes,4)
+end
+
+-- gen.setTechnologyStolen(city)-->void
+function gen.setTechnologyStolen(city)
+	 city.attributes = setBit1(city.attributes,4)
+end
+
+-- gen.clearTechnologyStolen(city)-->void
+function gen.clearTechnologyStolen(city)
+	 city.attributes = setBit0(city.attributes,4)
+end
+
+-- gen.isAutoBuild(city)-->boolean
+function gen.isAutoBuild(city)
+	return isBit1(city.attributes,5)
+end
+
+-- gen.setAutoBuild(city)-->void
+function gen.setAutoBuild(city)
+	 city.attributes = setBit1(city.attributes,5)
+end
+
+-- gen.clearAutoBuild(city)-->void
+function gen.clearAutoBuild(city)
+	 city.attributes = setBit0(city.attributes,5)
+end
+
+-- gen.isAttribute6(city)-->boolean
+function gen.isAttribute6(city)
+	return isBit1(city.attributes,6)
+end
+
+-- gen.setAttribute6(city)-->void
+function gen.setAttribute6(city)
+	 city.attributes = setBit1(city.attributes,6)
+end
+
+-- gen.clearAttribute6(city)-->void
+function gen.clearAttribute6(city)
+	 city.attributes = setBit0(city.attributes,6)
+end
+
+-- gen.isAttribute7(city)-->boolean
+function gen.isAttribute7(city)
+	return isBit1(city.attributes,7)
+end
+
+-- gen.setAttribute7(city)-->void
+function gen.setAttribute7(city)
+	 city.attributes = setBit1(city.attributes,7)
+end
+
+-- gen.clearAttribute7(city)-->void
+function gen.clearAttribute7(city)
+	 city.attributes = setBit0(city.attributes,7)
+end
+
+-- gen.isBuildCoastal(city)-->boolean
+function gen.isBuildCoastal(city)
+	return isBit1(city.attributes,8)
+end
+
+-- gen.setBuildCoastal(city)-->void
+function gen.setBuildCoastal(city)
+	 city.attributes = setBit1(city.attributes,8)
+end
+
+-- gen.clearBuildCoastal(city)-->void
+function gen.clearBuildCoastal(city)
+	 city.attributes = setBit0(city.attributes,8)
+end
+
+-- gen.isAttribute9(city)-->boolean
+function gen.isAttribute9(city)
+	return isBit1(city.attributes,9)
+end
+
+-- gen.setAttribute9(city)-->void
+function gen.setAttribute9(city)
+	 city.attributes = setBit1(city.attributes,9)
+end
+
+-- gen.clearAttribute9(city)-->void
+function gen.clearAttribute9(city)
+	 city.attributes = setBit0(city.attributes,9)
+end
+
+-- gen.isAttribute10(city)-->boolean
+function gen.isAttribute10(city)
+	return isBit1(city.attributes,10)
+end
+
+-- gen.setAttribute10(city)-->void
+function gen.setAttribute10(city)
+	 city.attributes = setBit1(city.attributes,10)
+end
+
+-- gen.clearAttribute10(city)-->void
+function gen.clearAttribute10(city)
+	 city.attributes = setBit0(city.attributes,10)
+end
+
+-- gen.isAttribute11(city)-->boolean
+function gen.isAttribute11(city)
+	return isBit1(city.attributes,11)
+end
+
+-- gen.setAttribute11(city)-->void
+function gen.setAttribute11(city)
+	 city.attributes = setBit1(city.attributes,11)
+end
+
+-- gen.clearAttribute11(city)-->void
+function gen.clearAttribute11(city)
+	 city.attributes = setBit0(city.attributes,11)
+end
+
+-- gen.isBuildHydroPlant(city)-->boolean
+function gen.isBuildHydroPlant(city)
+	return isBit1(city.attributes,12)
+end
+
+-- gen.setBuildHydroPlant(city)-->void
+function gen.setBuildHydroPlant(city)
+	 city.attributes = setBit1(city.attributes,12)
+end
+
+-- gen.clearBuildHydroPlant(city)-->void
+function gen.clearBuildHydroPlant(city)
+	 city.attributes = setBit0(city.attributes,12)
+end
+
+-- gen.isAttribute13(city)-->boolean
+function gen.isAttribute13(city)
+	return isBit1(city.attributes,13)
+end
+
+-- gen.setAttribute13(city)-->void
+function gen.setAttribute13(city)
+	 city.attributes = setBit1(city.attributes,13)
+end
+
+-- gen.clearAttribute13(city)-->void
+function gen.clearAttribute13(city)
+	 city.attributes = setBit0(city.attributes,13)
+end
+
+-- gen.isAttribute14(city)-->boolean
+function gen.isAttribute14(city)
+	return isBit1(city.attributes,14)
+end
+
+-- gen.setAttribute14(city)-->void
+function gen.setAttribute14(city)
+	 city.attributes = setBit1(city.attributes,14)
+end
+
+-- gen.clearAttribute14(city)-->void
+function gen.clearAttribute14(city)
+	 city.attributes = setBit0(city.attributes,14)
+end
+
+-- gen.isAttribute15(city)-->boolean
+function gen.isAttribute15(city)
+	return isBit1(city.attributes,15)
+end
+
+-- gen.setAttribute15(city)-->void
+function gen.setAttribute15(city)
+	 city.attributes = setBit1(city.attributes,15)
+end
+
+-- gen.clearAttribute15(city)-->void
+function gen.clearAttribute15(city)
+	 city.attributes = setBit0(city.attributes,15)
+end
+
+-- gen.isAttribute16(city)-->boolean
+function gen.isAttribute16(city)
+	return isBit1(city.attributes,16)
+end
+
+-- gen.setAttribute16(city)-->void
+function gen.setAttribute16(city)
+	 city.attributes = setBit1(city.attributes,16)
+end
+
+-- gen.clearAttribute16(city)-->void
+function gen.clearAttribute16(city)
+	 city.attributes = setBit0(city.attributes,16)
+end
+
+-- gen.isUsedAirport(city)-->boolean
+function gen.isUsedAirport(city)
+	return isBit1(city.attributes,17)
+end
+
+-- gen.setUsedAirport(city)-->void
+function gen.setUsedAirport(city)
+	 city.attributes = setBit1(city.attributes,17)
+end
+
+-- gen.clearUsedAirport(city)-->void
+function gen.clearUsedAirport(city)
+	 city.attributes = setBit0(city.attributes,17)
+end
+gen.isAttribute17 = gen.isUsedAirport
+gen.setAttribute17 = gen.setUsedAirport
+gen.clearAttribute17 = gen.clearUsedAirport
+
+-- gen.isAttribute18(city)-->boolean
+function gen.isAttribute18(city)
+	return isBit1(city.attributes,18)
+end
+
+-- gen.setAttribute18(city)-->void
+function gen.setAttribute18(city)
+	 city.attributes = setBit1(city.attributes,18)
+end
+
+-- gen.clearAttribute18(city)-->void
+function gen.clearAttribute18(city)
+	 city.attributes = setBit0(city.attributes,18)
+end
+
+-- gen.isAttribute19(city)-->boolean
+function gen.isAttribute19(city)
+	return isBit1(city.attributes,19)
+end
+
+-- gen.setAttribute19(city)-->void
+function gen.setAttribute19(city)
+	 city.attributes = setBit1(city.attributes,19)
+end
+
+-- gen.clearAttribute19(city)-->void
+function gen.clearAttribute19(city)
+	 city.attributes = setBit0(city.attributes,19)
+end
+
+-- gen.isAttribute20(city)-->boolean
+function gen.isAttribute20(city)
+	return isBit1(city.attributes,20)
+end
+
+-- gen.setAttribute20(city)-->void
+function gen.setAttribute20(city)
+	 city.attributes = setBit1(city.attributes,20)
+end
+
+-- gen.clearAttribute20(city)-->void
+function gen.clearAttribute20(city)
+	 city.attributes = setBit0(city.attributes,20)
+end
+
+-- gen.isAttribute21(city)-->boolean
+function gen.isAttribute21(city)
+	return isBit1(city.attributes,21)
+end
+
+-- gen.setAttribute21(city)-->void
+function gen.setAttribute21(city)
+	 city.attributes = setBit1(city.attributes,21)
+end
+
+-- gen.clearAttribute21(city)-->void
+function gen.clearAttribute21(city)
+	 city.attributes = setBit0(city.attributes,21)
+end
+
+-- gen.isBuildShips(city)-->boolean
+function gen.isBuildShips(city)
+	return isBit1(city.attributes,22)
+end
+
+-- gen.setBuildShips(city)-->void
+function gen.setBuildShips(city)
+	 city.attributes = setBit1(city.attributes,22)
+end
+
+-- gen.clearBuildShips(city)-->void
+function gen.clearBuildShips(city)
+	 city.attributes = setBit0(city.attributes,22)
+end
+
+-- gen.isCityInvestigated(city)-->boolean
+function gen.isCityInvestigated(city)
+	return isBit1(city.attributes,23)
+end
+
+-- gen.setCityInvestigated(city)-->void
+function gen.setCityInvestigated(city)
+	 city.attributes = setBit1(city.attributes,23)
+end
+
+-- gen.clearCityInvestigated(city)-->void
+function gen.clearCityInvestigated(city)
+	 city.attributes = setBit0(city.attributes,23)
+end
+gen.isAttribute23 = gen.isCityInvestigated
+gen.setAttribute23 = gen.setCityInvestigated
+gen.clearAttribute23 = gen.clearCityInvestigated
+
+-- gen.isAttribute24(city)-->boolean
+function gen.isAttribute24(city)
+	return isBit1(city.attributes,24)
+end
+
+
+-- gen.setAttribute24(city)-->void
+function gen.setAttribute24(city)
+	 city.attributes = setBit1(city.attributes,24)
+end
+
+-- gen.clearAttribute24(city)-->void
+function gen.clearAttribute24(city)
+	 city.attributes = setBit0(city.attributes,24)
+end
+
+-- gen.isMilitaryAutoBuild(city)-->boolean
+function gen.isMilitaryAutoBuild(city)
+	return isBit1(city.attributes,25)
+end
+
+-- gen.setMilitaryAutoBuild(city)-->void
+function gen.setMilitaryAutoBuild(city)
+	 city.attributes = setBit1(city.attributes,25)
+end
+
+-- gen.clearMilitaryAutoBuild(city)-->void
+function gen.clearMilitaryAutoBuild(city)
+	 city.attributes = setBit0(city.attributes,25)
+end
+
+-- gen.isDomesticAutoBuild(city)-->boolean
+function gen.isDomesticAutoBuild(city)
+	return isBit1(city.attributes,26)
+end
+
+-- gen.setDomesticAutoBuild(city)-->void
+function gen.setDomesticAutoBuild(city)
+	 city.attributes = setBit1(city.attributes,26)
+end
+
+-- gen.clearDomesticAutoBuild(city)-->void
+function gen.clearDomesticAutoBuild(city)
+	 city.attributes = setBit0(city.attributes,26)
+end
+
+-- gen.isObjective(city)-->boolean
+function gen.isObjective(city)
+	return isBit1(city.attributes,27)
+end
+
+-- gen.setObjective(city)-->void
+function gen.setObjective(city)
+	 city.attributes = setBit1(city.attributes,27)
+     -- objective flag overrides major objective flag, so 
+     -- remove major objective flag if it exists
+     city.attributes = setBit0(city.attributes,29)
+end
+
+-- gen.clearObjective(city)-->void
+function gen.clearObjective(city)
+	 city.attributes = setBit0(city.attributes,27)
+end
+
+-- gen.isAttribute28(city)-->boolean
+function gen.isAttribute28(city)
+	return isBit1(city.attributes,28)
+end
+
+-- gen.setAttribute28(city)-->void
+function gen.setAttribute28(city)
+	 city.attributes = setBit1(city.attributes,28)
+end
+
+-- gen.clearAttribute28(city)-->void
+function gen.clearAttribute28(city)
+	 city.attributes = setBit0(city.attributes,28)
+end
+
+-- gen.isMajorObjective(city)-->boolean
+function gen.isMajorObjective(city)
+	return isBit1(city.attributes,29)
+end
+
+-- gen.setMajorObjective(city)-->void
+function gen.setMajorObjective(city)
+	 city.attributes = setBit1(city.attributes,29)
+     -- objective flag overrides major objective flag, so 
+     -- remove it
+     city.attributes = setBit0(city.attributes,27)
+end
+
+-- gen.clearMajorObjective(city)-->void
+function gen.clearMajorObjective(city)
+	 city.attributes = setBit0(city.attributes,29)
+end
+
+-- gen.isUsedTransporter(city)-->boolean
+function gen.isUsedTransporter(city)
+	return isBit1(city.attributes,30)
+end
+gen.isAttribute30 = gen.isUsedTransporter
+
+-- gen.setUsedTransporter(city)-->void
+function gen.setUsedTransporter(city)
+	 city.attributes = setBit1(city.attributes,30)
+end
+gen.setAttribute30 = gen.setUsedTransporter
+
+-- gen.clearUsedTransporter(city)-->void
+function gen.clearUsedTransporter(city)
+	 city.attributes = setBit0(city.attributes,30)
+end
+gen.clearAttribute30 = gen.clearUsedTransporter
+
+-- gen.isAttribute31(city)-->boolean
+function gen.isAttribute31(city)
+	return isBit1(city.attributes,31)
+end
+
+-- gen.setAttribute31(city)-->void
+function gen.setAttribute31(city)
+	 city.attributes = setBit1(city.attributes,31)
+end
+
+-- gen.clearAttribute31(city)-->void
+function gen.clearAttribute31(city)
+	 city.attributes = setBit0(city.attributes,31)
+end
+
+-- gen.isAttribute32(city)-->boolean
+function gen.isAttribute32(city)
+	return isBit1(city.attributes,32)
+end
+
+-- gen.setAttribute32(city)-->void
+function gen.setAttribute32(city)
+	 city.attributes = setBit1(city.attributes,32)
+end
+
+-- gen.clearAttribute32(city)-->void
+function gen.clearAttribute32(city)
+	 city.attributes = setBit0(city.attributes,32)
+end
+
 --
 --
 -- gen.wonderModifiedMoves(unit)-->integer
@@ -802,13 +1994,12 @@ function maxMoves(unit)
     if moveAllowance % moveMult > 0 then
         moveAllowance = moveAllowance - moveAllowance % moveMult + moveMult
     end
-    if unit.type.domain == 0 then
+    if unit.type.domain == 0 or unit.type.domain >= 3 then
         return math.min(math.max( moveAllowance,moveMult),fullHpMove)
     elseif unit.type.domain == 1 then
         return fullHpMove
     elseif unit.type.domain == 2 then
         return math.min(math.max( moveAllowance,2*moveMult),fullHpMove)
-    else
     end
 end
 gen.maxMoves = maxMoves
@@ -1050,18 +2241,15 @@ function gen.rehomeUnitsInCapturedCity(city,defender)
 		citySupportTable[city.id] = citySupportTable[city.id] or 0
 		return (freeSupport+city.totalShield - citySupportTable[city.id])> 0 	
     end
-	local function taxiDistance(tileA,tileB)
-		return math.abs(tileA.x-tileB.x)+math.abs(tileA.y-tileB.y)
-	end
 	for unit in civ.iterateUnits() do
 		if unit.owner == defender and unit.homeCity == city and civ.getTile(unit.location.x,unit.location.y,unit.location.z) then
 			local bestCitySoFar = nil
 			local bestDistanceSoFar = 1000000
 			for candidateCity in civ.iterateCities() do
 				if candidateCity.owner == defender and canSupportAnotherUnit(candidateCity) 
-					and taxiDistance(candidateCity.location,unit.location) <bestDistanceSoFar then
+					and tileDist(candidateCity.location,unit.location) <bestDistanceSoFar then
 					bestCitySoFar = candidateCity
-					bestDistanceSoFar = taxiDistance(bestCitySoFar.location,unit.location)
+					bestDistanceSoFar = tileDist(bestCitySoFar.location,unit.location)
 				end
 			end
 			unit.homeCity = bestCitySoFar
@@ -1071,6 +2259,30 @@ function gen.rehomeUnitsInCapturedCity(city,defender)
 		end
 	end
 end
+
+--#gen.homeToNearestCity(unit)-->void
+--  finds the nearest city (of the same tribe) that can support another
+--  unit, and sets the unit's home city to that city
+--  if there is no suitable city, the unit's home city isn't changed
+function gen.homeToNearestCity(unit)
+    local bestDist = 1000000
+    local bestCity = nil
+    local function dist(unit,city)
+        return tileDist(unit.location,city.location,0)
+    end
+    for city in civ.iterateCities() do
+        if city.owner == unit.owner and dist(unit,city) < bestDist and
+            gen.cityCanSupportAnotherUnit(city) then
+            bestCity = city
+            bestDist = dist(unit,city)
+        end
+    end
+    if bestCity then
+        unit.homeCity = bestCity
+    end
+end
+
+
 
 
 -- gen.selectNextActiveUnit(activeUnit,source,customWeightFn)-->void
@@ -1119,7 +2331,9 @@ function gen.selectNextActiveUnit(activeUnit,source,customWeightFn)
     end
     saveActiveUnit = activeUnit
     -- if unit activated manually, clear the manual wait for that unit
-    waitingUnits[activeUnit.id]=nil
+    if source then
+        waitingUnits[activeUnit.id]=nil
+    end
     local bestWaitingUnit = nil
     local bestWaitingValue = math.huge
     local bestNotWaitingUnit = nil
@@ -1133,7 +2347,7 @@ function gen.selectNextActiveUnit(activeUnit,source,customWeightFn)
         if unit.location.z ~= activeUnit.location.z then
             weight = weight+10000
         end
-        weight = weight+math.abs(unit.location.x-activeUnit.location.x)+math.abs(unit.location.y-activeUnit.location.y)
+        weight = weight+tileDist(unit.location,activeUnit.location)
         return weight
     end
     customWeightFn = customWeightFn or defaultWeightFunction
@@ -1209,6 +2423,12 @@ function gen.linkActivationFunction(activationFn)
 end
 
 
+--gen.getActivationFunction()-->function(unit,source)
+--provides the unit activation function linked to the general library
+function gen.getActivationFunction()
+    return activationFunction
+end
+
 
 --gen.getTileID(tileObject or int,int or nil,int or nil)-->int (by Knighttime, converts a tile/coordinates to a single integer as an ID number)
 -- Returns a single-value numeric key that uniquely identifies a tile on any map
@@ -1229,38 +2449,24 @@ function gen.getTileID (tileORX,y,z)
 	local tileOffset = tile.x + (tile.y * mapWidth)
 	return mapOffset + tileOffset
 end
+gen.getTileId = gen.getTileID
 
-
--- distance(tileUnitCityA,tileUnitCityB)-->integer
--- gen.distance(tileUnitCityA,tileUnitCityB)-->integer
--- returns the distance (1-norm, not Euclidian) (in terms of tiles, not coordinates) between 
--- objects A and B, that have a natural location (also converts doubles and triples of tables)
--- zDist is the number of tiles that one unit of z coordinate "distance" is equivalent to
-local function distance(tileUnitCityA,tileUnitCityB,zDist)
-    zDist = zDist or 0
-    local locA = nil
-    local locB = nil
-    if type(tileUnitCityA)=="table" then
-        locA=toTile(tileUnitCityA)
-    elseif civ.isUnit(tileUnitCityA) or civ.isCity(tileUnitCityA) then
-        locA=tileUnitCityA.location
-    elseif civ.isTile(tileUnitCityA) then
-        locA = tileUnitCityA
-    else
-        error("gen.distance: first argument must be a tile (or coordinates of a tile), or a unit or a city.")
+-- gen.getTileFromID(tileID) --> tileObject
+function gen.getTileFromID(ID)
+    local mapWidth, mapHeight, mapQuantity = civ.getMapDimensions()
+    local baseMapOffset = mapWidth*mapHeight
+    local z = math.floor(ID/baseMapOffset)
+    if z < 0 or z >3 then
+        print("getTileFromID: did not receive a valid ID")
+        return nil
     end
-    if type(tileUnitCityB)=="table" then
-        locB=toTile(tileUnitCityB)
-    elseif civ.isUnit(tileUnitCityB) or civ.isCity(tileUnitCityB) then
-        locB=tileUnitCityB.location
-    elseif civ.isTile(tileUnitCityB) then
-        locB = tileUnitCityB
-    else
-        error("gen.distance: second argument must be a tile (or coordinates of a tile), or a unit or a city.")
-    end
-    return (math.abs(locA.x-locB.x)+math.abs(locA.y-locB.y)+2*zDist*math.abs(locA.z-locB.z))//2
+    local tileOffset = ID % baseMapOffset
+    local y = math.floor(tileOffset/mapWidth)
+    local x = tileOffset % mapWidth
+    return civ.getTile(x,y,z)
 end
-gen.distance = distance
+gen.getTileFromId = gen.getTileFromID
+
 
 
 --gen.unitTypeOnTile(tile,unitTypeOrTableOfUnitType)-->bool
@@ -1286,14 +2492,26 @@ end
 local function getAdjacentTiles(tile)
     tile = toTile(tile)
     local xVal,yVal,zVal = tile.x,tile.y,tile.z
-    return {civ.getTile(xVal-2,yVal,zVal),
-            civ.getTile(xVal-1,yVal+1,zVal),
-            civ.getTile(xVal,yVal+2,zVal),
-            civ.getTile(xVal+1,yVal+1,zVal),
-            civ.getTile(xVal+2,yVal,zVal),
-            civ.getTile(xVal+1,yVal-1,zVal),
-            civ.getTile(xVal,yVal-2,zVal),
-            civ.getTile(xVal-1,yVal-1,zVal),}
+    if flatMap then
+        return {civ.getTile(xVal-2,yVal,zVal),
+                civ.getTile(xVal-1,yVal+1,zVal),
+                civ.getTile(xVal,yVal+2,zVal),
+                civ.getTile(xVal+1,yVal+1,zVal),
+                civ.getTile(xVal+2,yVal,zVal),
+                civ.getTile(xVal+1,yVal-1,zVal),
+                civ.getTile(xVal,yVal-2,zVal),
+                civ.getTile(xVal-1,yVal-1,zVal),}
+    else
+        local xMax,yMax,zMax = civ.getMapDimensions()
+        return {civ.getTile((xVal-2)%xMax,yVal,zVal),
+                civ.getTile((xVal-1)%xMax,yVal+1,zVal),
+                civ.getTile((xVal)%xMax,yVal+2,zVal),
+                civ.getTile((xVal+1)%xMax,yVal+1,zVal),
+                civ.getTile((xVal+2)%xMax,yVal,zVal),
+                civ.getTile((xVal+1)%xMax,yVal-1,zVal),
+                civ.getTile((xVal)%xMax,yVal-2,zVal),
+                civ.getTile((xVal-1)%xMax,yVal-1,zVal),}
+    end
 end
 gen.getAdjacentTiles = getAdjacentTiles
 
@@ -1471,5 +2689,424 @@ end
 gen.copyTable = copyTable
 
 
+--#gen.errorForNilKey(table,tableName)-->void
+-- generates an error when a key with a nil
+-- value is accessed from the table
+-- useful for debugging in certain circumstances
+function gen.errorForNilKey(table,tableName)
+    local mt = getmetatable(table) or {}
+    setmetatable(table,mt)
+    mt.__index = function(myTable,key) error("The "..tableName.." table doesn't have a value associated with "..tostring(key)..".") end
+end
+-- gen.noNewKey(table,tableName)-->void
+-- generates an error if attempting to set a key in
+-- a table that doesn't already exist
+function gen.noNewKey(table,tableName)
+    local mt = getmetatable(table) or {}
+    setmetatable(table,mt)
+    mt.__newindex = function(myTable,key)
+        error("The "..tableName.." table can't accept values for indices that don't already exist.")end
+end
 
+-- gen.noGlobal()
+-- after gen.noGlobal is run, errors will be generated when trying to create a new
+-- global variable, or when accessing a global variable that doesn't already exist
+-- if you want to have a 'console' table to access certain functions from the console,
+-- you should declare it (but you don't have to fill it) before running this function
+function gen.noGlobal()
+    gen.errorForNilKey(_G,"Global")
+    gen.noNewKey(_G,"Global")
+end
+
+local state = "stateNotLinked"
+
+-- gen.linkState(stateTable)
+-- links the state table to the General Library
+-- provides access to the state table so that
+-- gen.getState() can provide it
+
+
+function gen.linkState(stateTable)
+    if type(stateTable) == "table" then
+        state = stateTable
+    else
+        error("gen.linkState: linkState takes a table as an argument.")
+    end
+end
+
+-- gen.getState()
+-- returns the state table submitted to gen.linkState
+-- If you're writing a module intended for use by others,
+-- it is recommended that
+-- you use a linkState system with a sub table, so that
+-- table keys don't accidentally conflict
+function gen.getState()
+    return state
+end
+
+-- gen.cityRadiusTiles(cityOrTileOrCoordTable) --> table
+--  returns a table of tiles around a center tile, the 
+--  size of a city 'footprint'.  The indices are listed below
+--  and are based on how city.workers determines which tiles
+--  are worked
+--
+--      
+--
+--      #       #       #       #       #
+--          #       #       #       #       #
+--      #       #       #       #       #
+--          #       20      13      #       #
+--      #       12      8       9       #
+--          19      7       1       14      #
+--      #       6       21      2       #
+--          18      5       3       15      #
+--      #       11      4       10      #
+--          #       17      16      #       #
+--      #       #       #       #       #
+--          #       #       #       #       #
+--
+--
+function gen.cityRadiusTiles(input)
+    if civ.isCity(input) then
+        input = input.location
+    end
+    local tile = toTile(input)
+    local xVal = tile.x
+    local yVal = tile.y
+    local zVal = tile.z
+    if flatMap then
+        return {
+        [1] = civ.getTile(xVal+1,yVal-1,zVal),
+        [2] = civ.getTile(xVal+2,yVal,zVal),
+        [3] = civ.getTile(xVal+1,yVal+1,zVal),
+        [4] = civ.getTile(xVal,yVal+2,zVal),
+        [5] = civ.getTile(xVal-1,yVal+1,zVal),
+        [6] = civ.getTile(xVal-2,yVal,zVal),
+        [7] = civ.getTile(xVal-1,yVal-1,zVal),
+        [8] = civ.getTile(xVal,yVal-2,zVal),
+        [9] = civ.getTile(xVal+2,yVal-2,zVal),
+        [10] = civ.getTile(xVal+2,yVal+2,zVal),
+        [11] = civ.getTile(xVal-2,yVal+2,zVal),
+        [12] = civ.getTile(xVal-2,yVal-2,zVal),
+        [13] = civ.getTile(xVal+1,yVal-3,zVal),
+        [14] = civ.getTile(xVal+3,yVal-1,zVal),
+        [15] = civ.getTile(xVal+3,yVal+1,zVal),
+        [16] = civ.getTile(xVal+1,yVal+3,zVal),
+        [17] = civ.getTile(xVal-1,yVal+3,zVal),
+        [18] = civ.getTile(xVal-3,yVal+1,zVal),
+        [19] = civ.getTile(xVal-3,yVal-1,zVal),
+        [20] = civ.getTile(xVal-1,yVal-3,zVal),
+        [21] = civ.getTile(xVal,yVal,zVal),
+        }
+    else
+        local width,height,maps = civ.getMapDimensions()
+        return {
+        [1] = civ.getTile((xVal+1)%width,yVal-1,zVal),
+        [2] = civ.getTile((xVal+2)%width,yVal,zVal),
+        [3] = civ.getTile((xVal+1)%width,yVal+1,zVal),
+        [4] = civ.getTile((xVal)%width,yVal+2,zVal),
+        [5] = civ.getTile((xVal-1)%width,yVal+1,zVal),
+        [6] = civ.getTile((xVal-2)%width,yVal,zVal),
+        [7] = civ.getTile((xVal-1)%width,yVal-1,zVal),
+        [8] = civ.getTile((xVal)%width,yVal-2,zVal),
+        [9] = civ.getTile((xVal+2)%width,yVal-2,zVal),
+        [10] = civ.getTile((xVal+2)%width,yVal+2,zVal),
+        [11] = civ.getTile((xVal-2)%width,yVal+2,zVal),
+        [12] = civ.getTile((xVal-2)%width,yVal-2,zVal),
+        [13] = civ.getTile((xVal+1)%width,yVal-3,zVal),
+        [14] = civ.getTile((xVal+3)%width,yVal-1,zVal),
+        [15] = civ.getTile((xVal+3)%width,yVal+1,zVal),
+        [16] = civ.getTile((xVal+1)%width,yVal+3,zVal),
+        [17] = civ.getTile((xVal-1)%width,yVal+3,zVal),
+        [18] = civ.getTile((xVal-3)%width,yVal+1,zVal),
+        [19] = civ.getTile((xVal-3)%width,yVal-1,zVal),
+        [20] = civ.getTile((xVal-1)%width,yVal-3,zVal),
+        [21] = civ.getTile((xVal)%width,yVal,zVal),
+        }
+    end
+end
+
+    
+
+-- gen.getTilesInRadius(centre,radius,minRadius=0,maps=nil) --> table
+--      produces a table of nearby tiles to centre,
+--      lower index means closer tile (or, same distance),
+--      not counting z axis if multiple maps are used
+--      starts at 1, no missing indices (if a tile doesn't exist, there
+--      won't be an empty entry, the next tile will use that entry)
+--      centre = a tile or table of coordinates 
+--          central til around which we will find tiles
+--      radius = integer
+--          is the distance (in tiles, not coordinates) from the centre to the furthest
+--          tiles desired
+--      minRadius = integer
+--          is the distance in tiles from the centre for the nearest tile to be
+--          included (e.g. if you don't want centre itself, set minRadius to 1, if you
+--          want a ring only, set minRadius to radius)
+--      maps = nil or integer in 0-3 or table of integers
+--          if nil, only get tiles from the map that centre is on
+--          if integer, only get tiles from that map
+--          if table of integers, tiles from all maps listed
+--          e.g. {1,3} means get tiles from maps 1 and 3
+--
+--      
+function gen.getTilesInRadius(centre,radius,minRadius,maps)
+    centre = toTile(centre)
+    local cX,cY,cZ = centre.x,centre.y,centre.z
+    minRadius = minRadius or 0
+    local doMap = {}
+    if type(maps) == "number" then
+        doMap[maps] = true
+    elseif type(maps) == "table" then
+        for __,mapNumber in pairs(maps) do
+            doMap[mapNumber] = true
+        end
+    else
+        doMap[centre.z] = true
+    end
+    local function addTileRing(centreX,centreY,rad,map,table,firstUnusedIndex,width) --> next unused index
+        local index = firstUnusedIndex
+        local twoDist = 2*rad
+        if flatMap then
+            for i=1,twoDist do
+                local nextTile = civ.getTile(centreX+i,centreY+twoDist-i,map)
+                if nextTile then
+                    table[index] = nextTile
+                    index= index+1
+                end
+            end
+            for i=1,twoDist do
+                local nextTile = civ.getTile(centreX+twoDist-i,centreY-i,map)
+                if nextTile then
+                    table[index] = nextTile
+                    index= index+1
+                end
+            end
+            for i=1,twoDist do
+                local nextTile = civ.getTile(centreX-i,centreY-twoDist+i,map)
+                if nextTile then
+                    table[index] = nextTile
+                    index= index+1
+                end
+            end
+            for i=1,twoDist do
+                local nextTile = civ.getTile(centreX-twoDist+i,centreY+i,map)
+                if nextTile then
+                    table[index] = nextTile
+                    index= index+1
+                end
+            end
+        else
+            for i=1,twoDist do
+                local nextTile = civ.getTile((centreX+i)%width,centreY+twoDist-i,map)
+                if nextTile then
+                    table[index] = nextTile
+                    index= index+1
+                end
+            end
+            for i=1,twoDist do
+                local nextTile = civ.getTile((centreX+twoDist-i)%width,centreY-i,map)
+                if nextTile then
+                    table[index] = nextTile
+                    index= index+1
+                end
+            end
+            for i=1,twoDist do
+                local nextTile = civ.getTile((centreX-i)%width,centreY-twoDist+i,map)
+                if nextTile then
+                    table[index] = nextTile
+                    index= index+1
+                end
+            end
+            for i=1,twoDist do
+                local nextTile = civ.getTile((centreX-twoDist+i)%width,centreY+i,map)
+                if nextTile then
+                    table[index] = nextTile
+                    index= index+1
+                end
+            end
+        end
+        -- the central tile won't be captured above
+        if rad==0 then
+            local nextTile = civ.getTile(centreX,centreY,map)
+            if nextTile then
+                table[index] = nextTile
+                index= index+1
+            end
+        end
+        return index
+    end
+    local mapWidth,mapHeight,numberOfMaps = civ.getMapDimensions()
+    local tableOfTiles = {}
+    local nextIndex = 1
+    for rad = minRadius,radius do
+        for z = 0,numberOfMaps-1 do
+            if doMap[z] then
+                nextIndex= addTileRing(cX,cY,rad,z,tableOfTiles,nextIndex,mapWidth)
+            end
+        end
+    end
+    return tableOfTiles               
+end
+
+-- gen.clearGapsInArray(table,lowestValue=1)-->void
+-- Re-indexes all integer keys and values
+-- in a table, so that there are no gaps.
+-- Starts at lowestValue, and maintains order
+-- of integer keys
+-- Non integer keys (including other numbers)
+-- and integers below lowestValue are left unchanged
+function gen.clearGapsInArray(table,lowestValue)
+    lowestValue = lowestValue or 1
+    local largestIndex = lowestValue-1
+    for index,val in pairs(table) do
+        if type(index) == "number" and index > largestIndex then
+            largestIndex = index
+        end
+    end
+    local nextIndex = lowestValue
+    for i=lowestValue,largestIndex do
+        if table[i] ~= nil then
+            if nextIndex < i then
+                table[nextIndex] = table[i]
+                table[i] = nil
+            end
+            nextIndex = nextIndex+1
+        end
+    end
+end
+
+local musicFolder = ""
+-- gen.playMusic(fileName)
+function gen.playMusic(fileName)
+    civ.playMusic(musicFolder.."\\"..fileName)
+end
+
+-- gen.setMusicDirectory(path)
+function gen.setMusicDirectory(path)
+    musicFolder = path
+end
+
+-- the ephemeralTable is a table for shared data
+-- since it is not saved, it doesn't have to be serializeable,
+-- so you don't have to worry about making keys and
+-- values text or numbers
+-- However, the information will not be preserved after a save and load
+local ephemeralTable = {}
+-- gen.getEphemeralTable()-->table
+function gen.getEphemeralTable()
+    return ephemeralTable
+end
+
+local genStateTable = "stateTableNotLinked"
+-- gen.linkGeneralLibraryState(stateTable) --> void
+-- links a sub table of the state table for the purposes of
+-- providing a table for functions in the General Library
+-- this is distinct from getState, which provides a state
+-- 'visible' state table to the end user
+function gen.linkGeneralLibraryState(stateTable)
+    if type(stateTable) == "table" then
+        genStateTable = stateTable
+    else
+        error("gen.linkGeneralLibraryState: linkGeneralLibraryState takes a table as an argument.")
+    end
+    genStateTable.limitedExecutions = genStateTable.limitedExecutions or {}
+end
+
+-- gen.limitedExecutions(key,maxTimes,limitedFunction)--> void
+-- if the value at key is less than maxTimes, limitedFunction will execute,
+-- and the value at key will increment by 1
+-- Otherwise, don't execute limitedFunction
+-- Note: limitedFunction()-->void
+function gen.limitedExecutions(key,maxTimes,limitedFunction)
+    genStateTable.limitedExecutions[key] = genStateTable.limitedExecutions[key] or 0
+    if genStateTable.limitedExecutions[key] < maxTimes then
+        genStateTable.limitedExecutions[key] = genStateTable.limitedExecutions[key]+1
+        limitedFunction()
+    end
+end
+
+-- gen.justOnce(key,limitedFunction) --> void
+-- wrapper for gen.limitedExecutions with maxTimes being 1
+function gen.justOnce(key,limitedFunction)
+    gen.limitedExecutions(key,1,limitedFunction)
+end
+
+-- gen.isSinglePlayerGame() --> boolean
+-- returns true if there is exactly one human player, false otherwise
+
+function gen.isSinglePlayerGame()
+    local humanMask = civ.game.humanPlayers
+    -- not humanMask >= 0, so don't have to worry about negatives
+    if humanMask == 0 then
+        -- no human player, so not single player game
+        return false
+    end
+    -- if there is exactly one human player, then humanMask
+    -- will be a power of 2, and so will have an integer logarithm
+    return (math.log(humanMask,2) == math.floor(math.log(humanMask,2)))
+end
+
+
+-- gen.tableWrap(item)-->table
+-- if item is a table, return the table
+-- otherwise, return a table with the item as element 1
+-- This is useful so that the scenario designer doesn't have
+-- to wrap a single element in a table
+-- gen.tableWrap(item,needsWrapFn)-->table
+--  needsWrapFn(item)-->bool
+--  if true, item needs a wrapping table, if not, it doesn't
+--  useful if you can distinguish between tables that represent other
+--  data structures, and tables of such data structures
+--
+
+function gen.tableWrap(item,needsWrapFn)
+    needsWrapFn = needsWrapFn or function(item) return type(item)~="table" end
+    if needsWrapFn(item) then
+        return {item}
+    else
+        return item
+    end
+end
+
+--
+-- gen.copyUnitAttributes(parent,child)-->void
+-- copies the attributes of the 'parent' unit to the 'child' unit
+-- all attributes accessible through lua are copied (except unit type,
+-- and unit id number, and carriedBy)
+--  Useful if a unit's type must be changed (by creating a new unit), but everything
+--  else should stay the same
+function gen.copyUnitAttributes(parent,child)
+    child.owner = parent.owner
+    child:teleport(parent.location)
+    child.homeCity = parent.homeCity
+    child.damage = parent.damage
+    child.moveSpent = parent.moveSpent
+    if parent.gotoTile then
+        gen.setToGoingTo(child,parent.gotoTile)
+    else
+        child.order = parent.order
+    end
+    child.attributes = parent.attributes
+    child.veteran = parent.veteran
+end
+
+-- gen.nearbyUnits(center,radius) --> iterator providing units
+--      provides an iterator over all the units within radius
+--      tiles of the center tile
+
+function gen.nearbyUnits(center,radius)
+    return coroutine.wrap(function ()
+        for __,tile in pairs(gen.getTilesInRadius(center,radius,0,{0,1,2,3,})) do
+            for unit in tile.units do
+                coroutine.yield(unit)
+            end
+        end
+    end)
+end
+
+
+--
+--
+--
 return gen
